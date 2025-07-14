@@ -1,0 +1,2334 @@
+---
+title: "Location–scale models in ecology: handling heterogeneity in continuous, counts and proportions"
+subtitle: "step by step online tutorial"
+date: "`r Sys.Date()`"
+author: 
+ - name: Shinichi Nakagawa
+ - name: Santiago Ortega 
+ - name: Elena Gazzea
+ - name: Malgorzata Lagisz
+ - name: Anna Lenz
+ - name: Erick Lundgren
+ - name: Ayumi Mizuno*
+format: 
+  html:
+    toc: true
+    toc-location: left
+    toc-depth: 6
+    toc-float: false
+    toc-title: "**CONTENTS**"
+    output-file: "index.html"
+    # embed-resources: true
+    # code-fold: true
+    code-link: true
+    code-tools: true
+    # number-sections: false
+    # bibliography: ./bib/ref.bib
+    fontsize: "12"
+    mainfont: "Source Sans Pro"
+    monofont: "Fira Code"
+    # fontcolor: ""
+    page-layout: article
+    code-overflow: wrap
+    df_print: paged
+    theme: cosmo
+    code-line-numbers: false
+    grid:
+      margin-width: 120px
+# crossref: 
+#   fig-title: Figure     # (default is "Figure")
+#   tbl-title: Table     # (default is "Table")
+#   title-delim: "—"     # (default is ":")
+#   fig-prefix: Fig.     # (default is "Figure")
+#   tbl-prefix: Table.   # (default is "Table")
+editor_options: 
+  chunk_output_type: console
+execute:
+  warning: false
+  message: false
+  tidy: true
+  # cache: true
+---
+
+If you have any questions, errors or bug reports, please feel free to contact Ayumi Mizuno (amizuno\@ualberta.ca / ayumi.mizuno5\@gmail.com).
+
+Also, some of the models in this tutorial take a long time to run. To make the tutorial faster, we have precomputed selected models and saved them as `.rds` files. If you download the `.qmd` file (the source of this web page) and wish to re-run the models and display the saved results on your own machine, you will need to:
+
+1\. Download the required `.rds` files from here ([google drive](https://drive.google.com/drive/folders/1CvshmYMowXSB9MdbCprP1LP7llZNxIbe?usp=drive_link))
+
+2\. Place the files in the appropriate location on your machine (e.g., `your_project/Rdata/`)
+
+3\. Adjust the file paths in the code if your folder structure is different
+
+We use `here::here()` to make file paths more reproducible across systems. If you store the files in a different location, rename the files, or change the folder structure, be sure to update the file paths in functions such as `readRDS()` accordingly.
+
+```{r}
+#| eval: false
+# Example: loading a saved model
+## You will see the same code throughout this tutorial
+## this line means: *Read the file brms_m1.rds located inside the Rdata folder, starting from the project root.*
+## Throughout this tutorial, you will see similar code structures appear multiple times. Please feel free to modify these code chunks as needed to fit your own environment or file structure.
+
+dat <- read.csv(here("data", "XXX.csv"), header = TRUE)
+brms_m1 <- readRDS(here("Rdata", "brms_m1.rds"))
+```
+
+# Introduction
+
+This tutorial provides a step-by-step guide to applying location-scale models in ecology, evolution, and environmental sciences. We focus on practical applications and demonstrate how to implement these models in `R` using the `glmmTMB` and `brms` packages.
+
+After a brief introduction to both modeling frameworks, we present worked examples using real datasets. In the final section, we also discuss approaches for model comparison and selection.
+
+# Preparation
+
+## Load required packages
+
+Our tutorial uses `R` statistical software and existing `R` packages, which you will first need to download and install.
+
+This tutorial makes use of several R packages for data manipulation, model fitting, diagnostics, visualisation, and reporting:
+
+-   `dplyr`, `tibble`, `tidyverse` - for efficient and tidy data manipulation.
+
+-   `brms`, `glmmTMB`, `arm` - for fitting generalised linear mixed models.
+
+-   `cmdstanr` - interfaces with the CmdStan backend to accelerate Bayesian sampling via within-chain parallelisation. is a C++ library for Bayesian inference, in order to enable within-chain parallelisation to speeding up the sampling process.
+
+-   `DHARMa`, `loo`, `MuMIn` - for model diagnostics, cross-validation, and multi-model inference (note that both `loo` and `Mumin` contain functions with the same names, so call them with explicit namespaces, e.g. `loo::loo( )`).
+
+-   `ggplot2`, `patchwork`, `bayesplot`, `tidybayes` - for flexible and publication-ready visualisations.
+
+-   `gt`, `kableExtra`, `knitr` - for creating clean tables.
+
+-   `here` - for consistent file path management across projects.
+
+-   `ape`, `TreeTools` - for phylogenetic analyses and tree manipulation.
+
+```{r}
+#| label: load_packages
+
+# Load required packages
+
+pacman::p_load(
+  ## data manipulation
+  dplyr, tibble, tidyverse,
+  
+  ## model fitting
+  ape, arm, brms, broom.mixed, cmdstanr, emmeans, glmmTMB, MASS, phytools, rstan, TreeTools,
+  
+  ## model checking and evaluation
+  DHARMa, loo, MuMIn, parallel,
+  
+  ## visualisation
+  bayesplot, ggplot2, patchwork, tidybayes,
+  
+  ## reporting and utilities
+  gt, here, kableExtra, knitr
+)
+```
+
+## `glmmTMB` vs `brms`
+
+`glmmTMB` is a powerful and flexible `R` package for fitting generalized linear mixed models (GLMMs), including models with random effect structures and scale (dispersion) part. It is built on the Template Model Builder (TMB) framework, which allows fast and efficient maximum likelihood estimation even for large and complex models.
+
+`brms` is an `R` package that allows users to fit Bayesian generalized (non-)linear multilevel models using the probabilistic programming language Stan. It provides a user-friendly formula syntax similar to that of `lme4` or `glmmTMB`, and supports a wide range of distributions, link functions, and advanced model components, including location-scale modeling.
+
+Both packages are suitable for fitting location-scale models and are widely used in ecology and its related fields. Therefore, we selected them to illustrate how location-scale models can be practically applied in real data analysis.
+
+While `brms` is a powerful and flexible package for Bayesian regression modeling, some readers may not be familiar with its usage. Below, we provide a brief introduction to fitting models using `brms`, focusing on the basic location-scale structure and key functions relevant to our analysis. You can also find some examples each section…
+
+If you get stuck or are unsure about something, it might be helpful to check the below:
+
+-   <https://paulbuerkner.com/brms/index.html>
+
+-   <https://discourse.mc-stan.org/>
+
+This example shows how to fit a simple location-scale model, where both the mean ($\mu$) and the variability ($\sigma$) of a continuous outcome variable $y$ are modeled as functions of a predictor $x$.
+
+```{r}
+#| eval: false
+
+# Example dataset
+# y is continuous response, x is a predictor
+# specify the model using bf()
+formula1 <- bf(
+  y ~ 1 + x,  # location part
+  sigma = ~ 1 + x # scale part - specified by sigma
+)
+
+# generate default priors based on the formula and data
+default_priors <- default_prior(
+                        formula1,
+                        data = dat,                             
+                        family = gaussian()                               
+                          )
+
+# fit the model - you can change N of iter, warmup (and thin), and also chains.
+  m1 <- brm(formula1,
+                  data = dat,           
+                  family = gaussian(),                   
+                  prior = default_priors,                
+                  iter = 2000,   # total iterations per Markov-chain (i.e., how many posterior samples are drawn, including warm-up)
+                       
+                  warmup = 1000, # number of early draws used only for adapting the sampler (step-size, mass matrix). These samples are discarded
+                  thin = 1,      # keep every n-th post-warm-up draw. 1 means keep all draws                    
+                  chains = 2,    #  number of independent MCMC chains run in parallel. Provides a convergence check (via Rhat)                    
+             )
+summary(m1)
+```
+
+After fitting the model, you can use `summary(m1)` to inspect the estimated coefficients and sigma with 95% Credible Intervals, along with diagnostic statistics such as Rhat and effective sample size. To better understand how to interpret the model output, please refer to the “**Bonus - brms**” part in the next section.
+
+### Parallel Processing
+
+Before fitting our models with `brms`, we configure some global options to optimize sampling speed using parallel processing:
+
+1.  `parallel::detectCores()`: This function automatically detects the number of logical CPU cores available on your machine. This is a convenient way to ensure your code adapts to different computing environments.
+2.  `options(mc.cores = parallel::detectCores())`: The mc.cores option is a global setting primarily used by rstan (the engine behind brms). It controls the number of MCMC chains that will be run in parallel. By setting it to `detectCores()`, you are telling brms to run as many chains concurrently as your CPU allows, significantly speeding up the overall sampling process.
+3.  `options(brms.threads = 6)`: The brms.threads option specifies the number of CPU threads that Stan's internal operations can utilize within a single MCMC chain. This enables within-chain parallelisation, further accelerating computations, especially for complex or large datasets. The value 6 is an example; you can adjust this based on your specific CPU architecture and memory.
+
+::: {.callout-tip appearance="simple" icon="false"}
+Threading is a powerful feature that enables you to split a chain into multiple parallel threads, significantly reducing computation time. However, it requires installing both `cmdstanr` and the underlying `CmdStan` backend.
+
+```{r}
+#| code-fold: true
+#| eval: false
+#| label: Set up CmdStan and confirm proper installation
+cmdstanr::install_cmdstan()
+cmdstanr::check_cmdstan_toolchain()
+cmdstanr::cmdstan_version()
+
+```
+:::
+
+These settings are crucial for making Bayesian model fitting with `brms` more efficient, particularly for complex models or large datasets.
+
+```{r}
+parallel::detectCores()
+
+options(mc.cores = parallel::detectCores())
+
+options(brms.threads = 6)  # Set global default
+```
+
+::: {.callout-tip appearance="simple" icon="false"}
+`brms` models can be computationally intensive and take a significant amount of time to run. To streamline your workflow, we provide the pre-fit models in RDS files, allowing you to load them directly without needing to re-run the lengthy estimation process.
+:::
+
+## Specifying the Scale Component
+
+Here's how the scale component is handled in `glmmTMB` and `brms`, along with common parameter names for various distributions:
+
+| Distribution | Scale Parameter (Example) | `glmmTMB` Specification | `brms` Specification (Example) |
+|:-----------------|:-----------------|:-----------------|:-----------------|
+| Gaussian | $\sigma$ | `dispformula = ~ ...` | `bf(..., sigma ~ ...)` |
+| Negative Binomial | $\theta$ | `dispformula = ~ ...` | `bf(..., shape ~ ...)` |
+| Conway-Maxwell-Poisson | $\nu$ | `dispformula = ~ ...` | `bf(..., nu ~ ...)` |
+| Beta-Binomial | $\phi$ | `dispformula = ~ ...` | `bf(..., phi ~ ...)` |
+
+*Note: In `glmmTMB`, `dispformula` is generally used to model the dispersion or scale parameter, regardless of its specific Greek letter notation, which varies by distribution.*
+
+The scale part varies depending on the distribution: for example, $\sigma$ for Gaussian or $\theta$ for negative binomial, $\nu$ for Conway–Maxwell–Poisson, $\phi$ for beta- binomial distribution (see the main text).
+
+# Fixed-effects location–scale model (model 1)
+
+Model 1 is a fixed-effects location-scale model, which allows us to model both the mean (location) and variance (scale) of a response variable simultaneously. This is particularly useful when we suspect that the variance of the response variable may differ across groups or treatments.
+
+## Dataset overview
+
+This dataset comes from a study by [Cleasby et al. (2011)](https://doi.org/10.1186/1756-0500-4-431), which investigated the effects of early-life food supplementation on adult morphology in a wild population of house sparrows (*Passer domesticus*). In particular, we focus on adult tarsus length as a measure of skeletal size. The dataset includes adult birds that either received supplemental food as chicks or not, and compares their tarsus length by treatment and sex.
+
+### Questions
+
+1.  **Does early-life food supplementation increase adult size? Specifically, does it increase the average tarsus length in adulthood?**
+2.  **Does early-life food supplementation lead to lower variation in adult tarsus length?**
+3.  **Are there sex-specific effects of food supplementation? Do the effects on mean or variance differ between males and females?**
+
+**Variables included**
+
+The dataset includes adult birds that either received supplemental food as chicks or not, and compares their tarsus length by treatment and sex. We use the following variables:
+
+::: {.callout-note appearance="simple" icon="false"}
+-   `Sex`: Biological sex of the bird (“Male” or “Female”)
+-   `AdTarsus`: Adult tarsus length (mm)
+-   `Treatment`: Whether the bird received food supplementation as a chick (`Fed`) or not (`Control`)
+:::
+
+## Visualise the datasets
+
+The plot shows how adult tarsus length varies by treatment (early-life food supplementation) and sex. Boxplots summarise the central tendency and spread, while the jittered points reveal the distribution of individual values. As shown in the plot, there is a clear tendency for reduced variability in the **male treatment group** (`Fed`), suggesting that early-life food supplementation may lead to more canalised development in males.
+
+```{r}
+#| label: show_data - model1
+#| fig-width: 8
+#| fig-height: 6
+
+# load the datasets　----
+
+dat_tarsus <- read.csv(here("data", "SparrowTarsusData.csv"), header = TRUE)
+
+ggplot(dat_tarsus, aes(x = Treatment, y = AdTarsus, fill = Sex)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.5, position = position_dodge(width = 0.8)) +
+  geom_jitter(
+    aes(color = Sex),
+    size = 2, alpha = 0.7,
+    position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.8)
+  ) +
+  scale_fill_manual(values = c("Male" = "#1f78b4", "Female" = "#e31a1c")) + 
+  scale_color_manual(values = c("Male" = "#1f78b4", "Female" = "#e31a1c")) +
+  labs(title = "Adult tarsus length by treatment and sex",
+       x = "Treatment", y = "Tarsus length (mm)") +
+  theme_classic() +
+  theme(legend.position = "right")
+```
+
+## Run models and interpret results
+
+We fit and compare two types of models to understand the structure of adult tarsus length:
+
+-   Location-only model: Estimates the mean of adult tarsus length as a function of sex and early-life food supplementation (treatment).
+
+-   Location-scale model: Estimates both the mean and the variability (residual dispersion) of adult tarsus length, allowing us to examine whether treatment and sex influence not only the average trait value but also its individual variation.
+
+This approach enables us to detect subtle patterns, such as sex-specific canalisation, that may not be captured when modeling the mean alone.
+
+### Model fitting
+
+::: panel-tabset
+## Location model
+
+First, we fit a location-only model as the baseline model.
+
+```{r}
+#| label: model_fitting1 - gaussian model1
+
+# location-only model ----
+
+## log-transformation was applied to AdTarsus to reduce skewness and stabilize residual variance.
+model_0 <- glmmTMB(
+    log(AdTarsus) ~ 1 + Sex + Treatment + Sex:Treatment,
+    data = dat_tarsus, 
+    family = gaussian)
+
+summary(model_0)
+
+## to quantify the uncertainty in parameter estimates, we computed 95% confidence intervals using the confint() function.
+## this function returns the lower and upper bounds for each fixed/random effect parameters. If a confidence interval does not include zero, it suggests that the corresponding predictor has a statistically significant effect (at approximately the 0.05 level).
+
+confint(model_0) # check 95%CI
+```
+
+## Residual diagnostics
+
+We can check the residuals of the model to assess the model fit and assumptions. The Q-Q plot should show points falling along a straight line.
+
+```{r}
+# | label: model0_diagnostics - model1
+
+# plot a q-q plot of residuals to visually assess the normality assumption
+# the data points should fail approximately along the reference line
+res <- residuals(model_0)
+
+qqnorm(res) # visual check for normality of residuals
+qqline(res) # reference line for normal distribution
+```
+
+The residuals mostly follow a straight line in the Q-Q plot, but there are some deviations, particularly at the lower and upper ends. This suggests that the model may not fully capture the distribution of the data, indicating some potential issues with normality or heteroscedasticity.
+
+## Location-scale model
+
+Then, we fit a location-scale model.
+
+```{r}
+#| label: model_fitting2 - model1
+
+# location-scale model ---- 
+
+model_1 <- glmmTMB(
+    log(AdTarsus) ~ 1 + Sex + Treatment + Sex:Treatment, # location part
+    dispformula = ~ 1 + Sex + Treatment + Sex:Treatment, # scale part
+    data = dat_tarsus, 
+    family = gaussian
+    )
+summary(model_1)
+
+confint(model_1) 
+```
+
+## Model comparison
+
+Now we can compare the two models to see if the location-scale model provides a better fit to the data than the location-only model. We can use the `anova()` function to compare the two models based on their AIC values. Alternatively, we can use the `model.sel()` function from the `MuMIn` package to compare AICc values, which is more appropriate for small sample sizes.
+
+```{r}
+#| label: model_comparison - model1
+
+# compare models ----
+## we can use the anova() function to compare the two models of AIC 
+## model.sel() from the MuMIn package can be used to compare AICc values.
+model.sel(model_0, model_1)
+```
+
+## Summary of model results
+
+The results of the location-only model (Model 0) and the location-scale model (Model 1) are summarised below.
+
+```{r}
+#| echo: false
+#| label: model0_results
+
+# Location-only model (Model 0) ----
+
+## extract fixed effect estimates/95CIs from the model
+coefs_0 <- summary(model_0)$coefficients$cond
+conf_0 <- confint(model_0)
+
+## remove the "cond." prefix from row names to match with coefficient names, 
+## keep only the rows that match the location model term, and match the row order between coefficients and confidence intervals
+rownames(conf_0) <- gsub("^cond\\.", "", rownames(conf_0))
+conf_0 <- conf_0[rownames(conf_0) %in% rownames(coefs_0), ]
+match_0 <- match(rownames(coefs_0), rownames(conf_0))
+
+## create a data frame 
+results_0 <- data.frame(
+  Term = rownames(coefs_0),
+  Estimate = coefs_0[, "Estimate"],
+  StdError = coefs_0[, "Std. Error"],
+  `2.5%` = conf_0[match_0, "2.5 %"],
+  `97.5%` = conf_0[match_0, "97.5 %"]
+)
+
+## rename 95%CI columns to avoid issues with special characters in column names 
+colnames(results_0)[which(names(results_0) == "X2.5.")] <- "CI_low"
+colnames(results_0)[which(names(results_0) == "X97.5.")] <- "CI_high"
+
+## display results ----
+gt(results_0) %>%
+  tab_header(title = "Location-only model") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
+```
+
+```{r}
+#| label: model1_results
+#| echo: false
+
+# Location-scale model (Model 1) ----
+
+## extract fixed effect estimates/95%CIs from the model
+summary_1 <- summary(model_1)
+conf_1 <- confint(model_1)
+
+# location part ----
+
+coefs_1_loc <- summary_1$coefficients$cond
+conf_1_loc <- conf_1[grep("^cond", rownames(conf_1)), ]
+
+rownames(conf_1_loc) <- gsub("^cond\\.", "", rownames(conf_1_loc))
+conf_1_loc <- conf_1_loc[rownames(conf_1_loc) %in% rownames(coefs_1_loc), ]
+match_loc <- match(rownames(coefs_1_loc), rownames(conf_1_loc))
+
+results_1_loc <- data.frame(
+  Term = rownames(coefs_1_loc),
+  Estimate = coefs_1_loc[, "Estimate"],
+  StdError = coefs_1_loc[, "Std. Error"],
+  CI_low = conf_1_loc[match_loc, "2.5 %"],
+  CI_high = conf_1_loc[match_loc, "97.5 %"]
+)
+
+colnames(results_1_loc)[which(names(results_1_loc) == "X2.5.")] <- "CI_low"
+colnames(results_1_loc)[which(names(results_1_loc) == "X97.5.")] <- "CI_high"
+
+
+# dispersion part ----
+
+coefs_1_disp <- summary_1$coefficients$disp
+conf_1_disp <- conf_1[grep("^disp", rownames(conf_1)), ]
+
+rownames(conf_1_disp) <- gsub("^disp\\.", "", rownames(conf_1_disp))
+conf_1_disp <- conf_1_disp[rownames(conf_1_disp) %in% rownames(coefs_1_disp), ]
+match_disp <- match(rownames(coefs_1_disp), rownames(conf_1_disp))
+
+results_1_disp <- data.frame(
+  Term = rownames(coefs_1_disp),
+  Estimate = coefs_1_disp[, "Estimate"],
+  StdError = coefs_1_disp[, "Std. Error"],
+  CI_low = conf_1_disp[match_disp, "2.5 %"],
+  CI_high = conf_1_disp[match_disp, "97.5 %"]
+)
+
+colnames(results_1_loc)[which(names(results_1_disp) == "X2.5.")] <- "CI_low"
+colnames(results_1_loc)[which(names(results_1_disp) == "X97.5.")] <- "CI_high"
+
+
+# display results ----
+gt(results_1_loc) %>%
+  tab_header(title = "Location-scale model (location part)") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
+
+gt(results_1_disp) %>%
+  tab_header(title = "Location-scale model (dispersion part)") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
+```
+
+## bonus - `brms`
+
+Of course, we can also fit the location–scale model using the `brms`! Here we show how to fit the same model as above using `brms`. The results should be similar to those obtained with `glmmTMB`.
+
+```{r}
+#| label: model_fitting3 - brms model1
+#| eval: false
+
+# specify the model using bf()
+formula1 <- bf(
+  log(AdTarsus) ~  1 + Sex + Treatment + Sex:Treatment, 
+  sigma = ~ 1 + Sex + Treatment + Sex:Treatment
+)
+
+# generate default priors based on the formula and data
+default_priors <- default_prior(
+                        formula1,
+                        data = dat_tarsus,                             
+                        family = gaussian() # default link function for gaussian family                                 
+                          )
+
+# fit the model - you can change N of iter, warmup, thin, and also chains.
+# adapt_delta = 0.95 helps to reduce divergent transitions
+system.time(
+  brms_g1 <- brm(formula1,
+                  data = dat_tarsus,           
+                  family = gaussian(),                   
+                  prior = default_priors,                
+                  iter = 2000,                          
+                  warmup = 1000, 
+                  thin = 1,                              
+                  chains = 2,                            
+                  control = list(adapt_delta = 0.95) 
+             )
+)
+
+summary(brms_g1)
+
+```
+
+```{r}
+#| label: model_result - brms model1 (SN)
+#| echo: false
+
+brms_g1 <- readRDS(here("Rdata", "brms_SN1.rds"))
+summary(brms_g1)
+
+```
+
+First, you need to check the effective sample size (`\*\*\_ESS`) and `Rhat` values. ESS should be greater than **400** ([Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221)), and R-hat should be close to **1.0** (ideally \< 1.01). If these conditions are not met, you may need to increase the number of iterations or adjust the model specification.
+
+Then, we can check the output - it is divided into two parts: **Location (mean) part** (how the average changes) and **Scale (dispersion) part** (how the variability changes - in Gaussian data, the scale part is $\sigma$)
+
+Here is the explanation of the output table:
+
+------------------------------------------------------------------------
+
+`Estimate`: posterior mean
+
+`Est.Err`: standard error of posterior mean
+
+`l-95% CI` and `u-95% CI`: Lower and upper bounds of the 95% **credible interval** (range where the true value lies with 95% probability, given the model and data)
+
+`Rhat`: Convergence diagnostic. Should be close to 1.00. If \>1.01, convergence may be poor.
+
+`Bulk_ESS` and `Tail_ESS`: Effective sample sizes for bulk and tail distributions. Should be \>400 for reliable estimates (larger is better).
+
+------------------------------------------------------------------------
+
+Now, you can find the results from `glmmTMB` and `brms` are very close to each other, but there are some differences in the estimates and standard errors. This came from the different estimation methods used by the two packages. `glmmTMB` uses maximum likelihood estimation, while `brms` uses Bayesian estimation with Markov Chain Monte Carlo (MCMC) sampling...
+:::
+
+### Comparison of location-only model and location-scale model
+
+There was no significant difference in the fit of the two models. location-scale model (model 1) had a lower AICc (-221.0) than location-only model (model 0: -220.0), with an AIC weight of 0.662 vs. 0.338 (see `Model comparison` tab).　
+
+::: {.callout-note appearance="simple" icon="false"}
+## Note on `AIC` vs `AICc`:
+
+While both `AIC` (Akaike Information Criterion) and `AICc` (AIC with correction) assess model fit by balancing goodness of fit and model complexity, AICc includes an additional correction for small sample sizes. When the sample size is limited relative to the number of estimated parameters, AICc is generally preferred because it reduces the risk of overfitting. As a result, AIC and AICc values may differ slightly, and model rankings based on them may also vary.
+:::
+
+### Interpretation of location-scale model :
+
+**Location (mean) part:**
+
+-   There was no significant effect of treatment, sex, or their interaction on the mean of `log(AdTarsus)` (all 95% CIs include 0).
+
+**Scale (dispersion) part:**
+
+-   There are a significant negative interaction between sex and treatment (`SexMale:TreatmentFed`; $\beta_{[\text{interaction}]}^{(s)}$ = -0.95, 95% CI = \[-1.66, -0.24\]). The estimate -0.95 in the dispersion model indicates that the residual variance in `log(AdTarsus)` is significantly lower in Fed males than in Control males.
+-   This indicates that variance in adult tarsus length was significantly reduced among males that received food supplementation as chicks.
+-   Neither treatment nor sex alone had a significant effect on variance (i.e., the reduction was specific to supplemented males).
+
+## Conclusion
+
+**Q1. Does early-life food supplementation increase adult size? Specifically, does it increase the average tarsus length in adulthood?**
+
+Answer: No clear evidence. In both the location-only and location-scale models, the effect of feeding (treatment) on the mean adult tarsus length was small and not statistically significant. This suggests that food supplementation did not lead to a measurable increase in average tarsus length.
+
+**Q2. Does early-life food supplementation lead to lower variation in adult tarsus length??**
+
+Answer: Partically yes - especially in males. The location-scale model revealed a significant reduction in variance in the male treatment group (Fed) compared to the male control group. This was supported by a significant negative interaction between sex and treatment in the dispersion model. In contrast, females showed no significant difference in variance between treatment groups. This indicates that early-life food supplementation reduced size variation only in males, not across all individuals.
+
+**Q3. Are there sex-specific effects of food supplementation? Do the effects on mean or variance differ between males and females?**
+
+Answer: Yes. The male treatment group (`Fed`) showed significantly reduced variance in adult tarsus length compared to the control group `(Control)`, while females did not show a significant difference in variance between treatment groups. There were no significant differences in mean tarsus length between sexes or treatments. This pattern suggests that early-life food supplementation may canalise trait development in males, leading to more uniform adult morphology under favourable nutritional conditions.
+
+------------------------------------------------------------------------
+
+Although the model comparison did not show a strong difference in overall fit between the location-only and location-scale models ($\Delta AICc = 1.3$), the location-scale model revealed an important and previously overlooked pattern:
+
+*Early-life food supplementation significantly reduced trait variance in males, but not in females.*
+
+This result would have been missed in a traditional location-only analysis that focuses solely on mean differences. By modeling both the mean and the dispersion, we were able to detect a sex-specific canalisation effect, highlighting the value of using location-scale models when investigating trait variability and developmental plasticity.
+
+<!-- need to fix the Santi's sections - add glmmTMB?? -->
+
+<!-- for now, I downloaded all RDS files in my computer -->
+
+# Adding random effects in the location part only (model 2)
+
+Model 2 is a location-scale model with random effects in the location part only. This allows us to account for individual-level variation in the mean response while still modeling the dispersion separately.
+
+## Dataset overview
+
+This dataset comes from [Drummond et al (2025)](https://doi.org/10.1093/beheco/araf050), which examined the benefits of brood reduction in the blue-footed booby (*Sula nebouxii*).Focusing on two-chick broods, the research explored whether the death of one chick (brood reduction) primarily benefits the surviving sibling (via increased resource acquisition) or the parents (by lessening parental investment). In this species, older chicks establish a strong dominance hierarchy over their younger siblings. Under stressful environmental conditions, this often results in the death of the second-hatched chick, with parental intervention being extremely rare.
+
+For this tutorial, we will specifically examine data from two-chick broods where both chicks survived to fledging. Our analysis will focus on how hatching order influences the body condition of chicks at fledging.
+
+### Questions
+
+1.  **Do first hatched chicks have a higher body mass than second-hatched chicks?**
+2.  **Does the variability in body mass differ between first and second-hatched chicks?**
+
+### Variables included
+
+::: {.callout-note appearance="simple" icon="false"}
+-   `SMI`: Scaled Mass Index, a measure that accounts for body mass relative to size
+-   `RANK`: The order in which chicks hatched (1 for first-hatched, 2 for second-hatched)
+-   `NEST_ID`: Identifier for the nest where the chicks were raised
+-   `YEAR`: The year in which the chicks were born
+:::
+
+## Visualise the dataset
+
+The plot displays the distribution of body condition, measured as Scaled Mass Index (SMI), for blue-footed booby chicks based on their `hatching order`. Violin plots illustrate the overall density distribution of SMI for both "First-Hatched" and "Second-Hatched" chicks. Each individual empty circle represents the SMI of a single chick. The plot visually highlights individual variability and allows for the comparison of both central tendency (black solid line) and spread of body condition between the two hatching orders.
+
+```{r}
+#| label: show_data - model2
+#| fig-width: 8
+#| fig-height: 6
+
+dat <- read_csv(here("data","SMI_Drummond_et_al_2025.csv")) %>%subset(REDUCTION == 0)
+
+dat<- dat%>%
+  dplyr::select(-TIME, -ST_DATE, -HATCHING_DATE,-REDUCTION,-RING) %>%
+  mutate(SMI = as.numeric(SMI), # Scaled mass index
+         NEST = as.factor(NEST), 
+         WORKYEAR = as.factor(WORKYEAR),
+         RANK = factor(RANK, levels = c("1", "2")))
+
+
+ggplot(dat, aes(x = RANK, y = SMI, fill = RANK, color = RANK)) +
+ geom_violin(aes(fill = RANK),
+              color = "#8B8B83",
+              width = 0.8, 
+              alpha = 0.3,
+              position = position_dodge(width = 0.7)) +
+  geom_jitter(aes(color = RANK),
+              size = 3,
+              alpha = 0.4,
+              shape = 1,
+              position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.15)) + 
+  stat_summary(fun = mean,              
+               geom = "crossbar",       
+               width = 0.1,             
+               color = "black",         
+               linewidth = 0.5,         
+               position = position_dodge(width = 0.7))+
+  labs(
+    title = "Body Condition (SMI) by Hatching Order",
+    x = "Hatching Order",
+    y = "Scaled Mass Index (g)"
+  ) +
+  scale_fill_manual(
+    values = c("1" = "#1F78B4", "2" = "#E31A1C") # 
+  ) +
+  scale_color_manual(
+    values = c("1" = "#1F78B4", "2" = "#E31A1C") # 
+  ) +
+  scale_x_discrete(
+    labels = c("1" = "First-Hatched", "2" = "Second-Hatched"),
+    expand = expansion(add = 0.5)
+  ) +
+  theme_classic(base_size = 16) +
+  theme(
+    axis.text = element_text(color = "#6E7B8B", size = 14),
+    axis.title = element_text(color = "#6E7B8B", size = 14),
+    legend.position = "none",
+    axis.text.x = element_text(angle = 0, hjust = 0.5)
+  )
+
+```
+
+## Run models and interpret results
+
+We will fit three progressively complex Bayesian models to the data using the `brms` package. All models incorporate `NEST_ID` and `YEAR` random effects to account for non-independence of chicks within the same nest and observations within the same year.
+
+The models are as follows:
+
+a.  Location-only model: Estimates the average difference in Scaled Mass Index (SMI) between the two hatching orders.
+b.  Location-scale model: Estimates both the average difference (location) and differences in the variability (scale) of SMI between hatching orders.
+
+::: panel-tabset
+## Location model
+
+Following the previous section, we first fit a location-only model as our baseline and applied a log-transformation to `SMI`.
+
+```{r}
+#| label: model_fitting2-model1
+
+model2_1<-glmmTMB(log(SMI) ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
+              family = gaussian(),data=dat)
+
+
+summary(model2_1)
+confint(model2_1)
+
+```
+
+Then we use the 'DHARMa' package to simulate residuals and plot them automatically. This step is crucial for checking the model's assumptions, such as normality and homoscedasticity of residuals.
+
+```{r}
+# | label: model_diagnostics - model0
+simulationOutput <- simulateResiduals(fittedModel = model2_1, plot = F)
+plot(simulationOutput)
+```
+
+The QQ plot and Kolmogorov-Smirnov (KS) test reveal that the model's residuals aren't uniformly distributed, hinting at potential issues with the chosen distribution or the model's underlying structure. While tests for overdispersion and outliers showed no significant concerns, the boxplots and Levene test highlight a lack of uniformity within residual groups and non-homogeneous variances. This suggests the model doesn't fully capture the data's complexity and might benefit from adjustments, perhaps by incorporating a location-scale model to better handle varying dispersion.
+
+## Location-scale model
+
+```{r}
+#| label: model_fitting2 - model2 - glmmtmb
+
+# location-scale model ---- 
+
+model2_2 <- glmmTMB(
+    log(SMI) ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
+    dispformula = ~ 1 + RANK,     
+    data = dat, 
+    family = gaussian
+    )
+summary(model2_2)
+
+confint(model2_2)
+```
+
+## Model comparison
+
+Finally, we compare the location-scale model with the location-only model based on AICc values (`model.sel()` from the `MuMIn` package).
+
+```{r}
+#| label: model_comparison - model2 - glmmtmb
+
+model.sel(model2_1, model2_2)
+```
+
+## Summary of model results
+
+The results of the location-only model (Model 0) and the location-scale model (Model 1) are summarized below.
+
+```{r}
+#| echo: false
+#| label: model2_1_results - glmmtmb
+
+## Ask Erick for a simpler way of making tables
+```
+
+```{r}
+#| echo: false
+#| label: model2_2_results - glmmtmb
+
+
+```
+
+## Bonus
+
+Here is how to fit the same location-scale model using the `brms` package for comparison.
+
+### Location-only model
+
+<!-- I will remove the commentout results. -->
+
+```{r}
+#| label: model_fitting1 - model2 - brms
+#| eval: false
+
+m1 <- bf(log(SMI) ~ 1 + RANK + (1|NEST) + (1|WORKYEAR))
+prior1<-default_prior(m1, data = dat, family = gaussian())
+
+fit1 <- brm(
+  m1,
+  prior = prior1,
+  data = dat,
+  family = gaussian(),
+  iter = 6000,     
+  warmup = 1000,   
+  chains = 4,  cores=4,
+  backend = "cmdstanr",
+  control = list(
+    adapt_delta = 0.99,  # Keep high if you have divergent transitions
+    max_treedepth = 15   # Keep high if hitting max_treedepth warnings
+    ),
+  seed = 123,      
+  refresh = 500    # Less frequent progress updates (reduces overhead)
+)
+
+summary(fit1)
+```
+
+```{r}
+#| label: model1_result - model2 - brms
+#| echo: false
+
+fit1 <- readRDS(here("Rdata","mod1RED.rds"))
+
+summary(fit1)
+```
+
+### Location-scale model
+
+```{r}
+#| label: model_fitting2 - model2 - brms
+#| eval: false
+
+m2 <- bf(log(SMI) ~ 1 + RANK + (1|NEST) + (1|WORKYEAR),
+         sigma~ 1 + RANK)
+prior2 <- default_prior(m2,data = dat,family = gaussian())
+
+fit2 <- brm(
+ m2,
+ prior= prior2,
+ data = dat,
+ family = gaussian(),
+ iter = 6000,     
+ warmup = 1000,   
+ chains = 4,  cores=4,
+ backend = "cmdstanr",
+ control = list(
+   adapt_delta = 0.99,  # Keep high if you have divergent transitions
+   max_treedepth = 15   # Keep high if hitting max_treedepth warnings
+ ),
+ seed = 123,      
+ refresh = 500    # Less frequent progress updates (reduces overhead)
+)
+
+```
+
+```{r}
+#| label: model2_result - model2 - brms
+#| echo: false
+
+fit2 <- readRDS(here("Rdata","mod2RED.rds"))
+summary(fit2)
+```
+
+### Model comparison
+
+<!-- Once I finalised the online tutorial, I will remove the `eval: false` option so that the models will be fitted and the results will be displayed in the online tutorial. For now, I will keep the `eval: false` option to avoid errors. -->
+
+```{r}
+#| label: model_comparison - model2 - brms
+#| eval: false
+
+f1loo <- loo::loo(fit1)
+f2loo <- loo::loo(fit2)
+
+#Model comparison 
+fc <- loo::loo_compare(f1loo, f2loo)
+fc
+
+#     elpd_diff se_diff
+# fit2   0.0       0.0  
+# fit1 -10.3       7.6  
+```
+
+### Summary of brms model results
+
+<!-- Once I finalised the online tutorial, I will remove the `eval: false` option so that the models will be fitted and the results will be displayed in the online tutorial. For now, I will keep the `eval: false` option to avoid errors. -->
+
+```{r}
+#| label: fit1_results - model2 - brms
+#| echo: false
+
+results_df1 <- posterior_summary(fit1) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("term") %>%
+  filter(grepl("^b_|^sd_|^cor_", term) | term == "sigma") %>% 
+  filter(!term %in% c("b_sigma_Intercept", "b_sigma_RANK2")) %>% 
+  mutate(
+    Term_Display = case_when(
+      term == "b_Intercept" ~ "Intercept",
+      term == "b_RANK2" ~ "Second hatched chick",
+      term == "sd_NEST__Intercept" ~ "Nest ID ", 
+      term == "sd_WORKYEAR__Intercept" ~ "Year ",  
+      term == "sigma" ~ "Sigma", 
+      TRUE ~ term 
+    ),
+    Order_Rank = case_when(
+      term == "b_Intercept" ~ 1,
+      term == "b_RANK2" ~ 2,
+      term == "sd_NEST__Intercept" ~ 3,
+      term == "sd_WORKYEAR__Intercept" ~ 4,
+      term == "sigma" ~ 5,
+     
+      TRUE ~ 99 
+    ),
+    Submodel = case_when(
+      Order_Rank %in% 1:2 ~ "Location Model", 
+      Order_Rank %in% 3:4 ~ "Random Effects",
+      Order_Rank == 5 ~ "Residual Standard Deviation", 
+      TRUE ~ NA_character_ 
+    )
+  ) %>%
+  
+  filter(!is.na(Submodel)) %>% 
+  arrange(Order_Rank) %>%
+  dplyr::select(
+    Submodel, 
+    Term = Term_Display,
+    Estimate = Estimate,
+    `Std.error` = Est.Error,
+    `95% CI (low)` = Q2.5,
+    `95% CI (high)` = Q97.5
+  ) %>%
+  gt(groupname_col = "Submodel") %>%
+  tab_header(
+    title = "Model 1: Posterior Summary"
+  ) %>%
+  fmt_number(
+    columns = c(Estimate, `Std.error`, `95% CI (low)`, `95% CI (high)`),
+    decimals = 3
+  ) %>%
+  cols_align(
+    align = "center",
+    columns = everything()
+  )
+
+```
+
+```{r}
+#| label: fit2_results - model2 - brms
+#| echo: false
+
+results_df2 <- posterior_summary(fit2) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("term") %>%
+  filter(grepl("^b_|^sd_|^cor_", term)) %>%
+  mutate(
+    Term_Display = case_when(
+      term == "b_Intercept" ~ "Intercept",
+      term == "b_sigma_Intercept" ~ "Intercept (sigma)",
+      term == "b_RANK2" ~ "Second hatched chick",
+      term == "b_sigma_RANK2" ~ "Second hatched chick (sigma)",
+      term == "sd_NEST__Intercept" ~ "Nest ID",
+      term == "sd_WORKYEAR__Intercept" ~ "Year",
+      TRUE ~ term
+    ),
+    Order_Rank = case_when(
+      term == "b_Intercept" ~ 1,
+      term == "b_RANK2" ~ 2,
+      
+      grepl("^b_", term) & !grepl("sigma", term) ~ 3, # Other fixed effects (no sigma)
+      term == "b_sigma_Intercept" ~ 4,
+      term == "b_sigma_RANK2" ~ 5,
+      term == "sd_NEST__Intercept" ~ 6,
+      term == "sd_WORKYEAR__Intercept" ~ 7,
+      TRUE ~ 99
+    ),
+    Submodel = case_when(
+      Order_Rank %in% 1:3 ~ "Location Submodel",
+      Order_Rank %in% 4:5 ~ "Scale Submodel",
+      Order_Rank %in% 6:7 ~ "Random effects",
+      
+      TRUE ~ NA_character_ # No subtitle for other terms (SDs), though in this filter they might all fall into a category
+    )
+  ) %>%
+  arrange(Order_Rank) %>%
+  dplyr::select(
+    Submodel, # Include Submodel column
+    Term = Term_Display,
+    Estimate = Estimate,
+    `Std.error` = Est.Error,
+    `95% CI (low)` = Q2.5,
+    `95% CI (high)` = Q97.5
+  ) %>%
+  gt(groupname_col = "Submodel") %>% 
+  tab_header(
+    title = "Model 2: Posterior Summary"
+  ) %>%
+  fmt_number(
+    columns = c(Estimate, `Std.error`, `95% CI (low)`, `95% CI (high)`),
+    decimals = 3
+  ) %>%
+  cols_align(
+    align = "center",
+    columns = everything()
+  )
+
+```
+
+```{r}
+#| label: result_summaries - model2 - brms
+#| echo: false
+
+results_df1
+results_df2
+
+```
+:::
+
+### Comparison of location-only model and location-scale model
+
+The location-scale model (Model 2) was the most-supported model based on AICc values (-8070.8) compared to the location-only model (-8048.8; see `Model comparison` tab for details).
+
+### Interpretation of location-scale model :
+
+**Location (mean) part:**
+
+-   There was a conclusive effect of hatching order on the mean of `log(SMI)`, with second-hatched chicks having a lower SMI than first-hatched chicks ($\beta_{[\text{first-second}]}^{(l)}$ = -0.018, 95% CI = \[-0.024, -0.013\]).
+
+**Scale (dispersion) part:**
+
+-   The scale component revealed a conclusive difference in the variability of SMI between hatching orders. The second-hatched chicks exhibited greater variability in SMI compared to first-hatched chicks ($\beta_{[\text{first-second}]}^{(s)}$ = 0.130, 95% CI = \[0.077, 0.183\]).
+
+**Location (mean) random effects:**
+
+-   There is very little variation in the average body condition across different nests ($\sigma_{[\text{Nest_ID}]}^{(l)}$ = 0.049, 95% CI \[0.044, 0.054\]), suggesting that most nests have similar average body conditions for their chicks.
+
+-   There is also very little variation in the average body condition across different years ($\sigma_{[\text{Year}]}^{(l)}$ = 0.092, 95% CI \[0.069, 0.124\]),implying generally consistent average body conditions from year to year.
+
+## Conclusion
+
+**Do first hatched chicks have a higher body mass than second-hatched chicks?**
+
+Answer: Answer: Yes, first-hatched chicks have a significantly higher Scaled Mass Index (SMI) than second-hatched chicks at fledging, with a mean difference of approximately 0.018 on the log scale.
+
+**Does the variability in body mass differ between first and second-hatched chicks?**
+
+Answer: Yes, the variability in body mass (SMI) is significantly greater in second-hatched chicks compared to first-hatched chicks. This indicates that second-hatched chicks show more variation in their body condition at fledging.
+
+# Double-hierarchical location-scale model (Model 3)
+
+Following up on the previous example analyzing the scaled mass index (SMI) at fledging [Drummond et al(2025)](https://doi.org/10.1093/beheco/araf050), we now extend our approach by fitting a double-hierarchical Gaussian location-scale model. This extends Model 2 by introducing nest identity as a correlated random effect in both the location (mean) and scale (variance) components. This extension allows us to examine not only how average `log(SMI)` and its variability differ across nests, but also whether these two forms of nest-level variation are correlated. The main distinction between Model 2 and Model 3 lies in how they handle variation. Model 2 includes random effects only for the mean, assuming constant variance across groups. In contrast, Model 3 accounts for group-level variability by including random effects in both the mean and the variance components. This makes Model 3 particularly useful when:
+
+-   Group-level variability (heteroscedasticity) is present
+
+<!-- -->
+
+-   There may be a correlation between group-level means and variances (e.g., nests with higher average SMI also show more variability)
+
+-   Both the average and variability are biologically meaningful or expected to vary across groups
+
+By modeling variation explicitly, Model 3 can yield better fit and more nuanced inference, especially in ecological or evolutionary contexts where both central tendencies and dispersion carry important signals.
+
+## Dataset overview
+
+We use the same dataset as in Model 2, but extend the location-scale framework by moving from Model 2 to Model 3, a double-hierarchical location-scale model. This extension allows us to model group-level variation in both the mean (location) and the variance (scale), as well as their potential correlation.
+
+### Question
+
+**Variation between and within nests** Do nests with generally healthier (heavier) chicks also tend to have chicks that are more similar in their body condition?
+
+## Run models and interpret results
+
+In this section, we compare Model 1 and Model 3 using the `brms` package, since `glmmTMB` does not support estimating correlations between random effects in the location and scale components. Model 3 - the double-hierarchical location-scale model - extends Model 2 by incorporating random effects for NEST_ID in both the mean and the variability of SMI. Crucially, it also estimates the correlation between these nest-level effects. For instance, a positive correlation would indicate that nests with higher average SMI also exhibit greater variability in SMI.
+
+::: panel-tabset
+## Double-hierarchical Location-scale model
+
+```{r}
+#| label: model_fitting - model3
+#| eval: false
+
+m3 <- bf(log(SMI) ~ 1 + RANK+ (1|q|NEST) + (1|WORKYEAR),
+         sigma~ 1 + RANK + (1|q|NEST) + (1|WORKYEAR))
+prior3<-default_prior(m3,data = dat,family = gaussian())
+ 
+fit3 <- brm(
+  m3,
+  prior= prior3,
+  data = dat,
+  family = gaussian(),
+  iter = 6000,     
+  warmup = 1000,   
+  chains = 4,  
+  cores=4,
+  backend = "cmdstanr",
+  control = list(
+    adapt_delta = 0.99,  
+    max_treedepth = 15  
+    ),
+  seed = 123,      
+  refresh = 500)
+
+```
+
+```{r}
+#| label: model_results - model3
+#| echo: false
+
+fit3 <- readRDS(here("Rdata", "mod3RED.rds"))
+summary(fit3)
+
+```
+
+## Model comparison
+
+We compare the double-hierarchical location-scale model (Model 3) with the previous location-only model (Model 1) to examine whether the added complexity of Model 3 leads to a better fit to the data.
+
+```{r}
+#| label: model_comparison - model3
+#| eval: false
+
+f1loo <- loo::loo(fit1)
+f3loo <- loo::loo(fit3)
+
+#Model comparison 
+fc2 <- loo::loo_compare(f1loo, f3loo)
+fc2
+#  elpd_diff se_diff
+# fit3    0.0       0.0 
+# fit1 -357.2      37.4 
+```
+
+## Summary of model results
+
+The impact of including random effects in the scale component becomes clear when comparing the results of Model 1 with those of the double-hierarchical location-scale model (Model 3).
+
+```{r}
+#| label: fit1_results - again- model3
+#| echo: false
+
+results_df1 <- posterior_summary(fit1) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("term") %>%
+  filter(grepl("^b_|^sd_|^cor_", term) | term == "sigma") %>% 
+  filter(!term %in% c("b_sigma_Intercept", "b_sigma_RANK2")) %>% 
+  mutate(
+    Term_Display = case_when(
+      term == "b_Intercept" ~ "Intercept",
+      term == "b_RANK2" ~ "Second hatched chick",
+      term == "sd_NEST__Intercept" ~ "Nest ID ", 
+      term == "sd_WORKYEAR__Intercept" ~ "Year ",  
+      term == "sigma" ~ "Sigma", 
+      TRUE ~ term 
+    ),
+    Order_Rank = case_when(
+      term == "b_Intercept" ~ 1,
+      term == "b_RANK2" ~ 2,
+      term == "sd_NEST__Intercept" ~ 3,
+      term == "sd_WORKYEAR__Intercept" ~ 4,
+      term == "sigma" ~ 5,
+     
+      TRUE ~ 99 
+    ),
+    Submodel = case_when(
+      Order_Rank %in% 1:2 ~ "Location Model", 
+      Order_Rank %in% 3:4 ~ "Random Effects",
+      Order_Rank == 5 ~ "Residual Standard Deviation", 
+      TRUE ~ NA_character_ 
+    )
+  ) %>%
+  
+  filter(!is.na(Submodel)) %>% 
+  arrange(Order_Rank) %>%
+  dplyr::select(
+    Submodel, 
+    Term = Term_Display,
+    Estimate = Estimate,
+    `Std.error` = Est.Error,
+    `95% CI (low)` = Q2.5,
+    `95% CI (high)` = Q97.5
+  ) %>%
+  gt(groupname_col = "Submodel") %>%
+  tab_header(
+    title = "Model 1: Posterior Summary"
+  ) %>%
+  fmt_number(
+    columns = c(Estimate, `Std.error`, `95% CI (low)`, `95% CI (high)`),
+    decimals = 3
+  ) %>%
+  cols_align(
+    align = "center",
+    columns = everything()
+  )
+
+```
+
+```{r}
+#| label: fit3_results - model3
+#| echo: false
+
+results_df3 <- posterior_summary(fit3) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("term") %>%
+  filter(grepl("^b_|^sd_|^cor_", term)) %>%
+  mutate(
+    Term_Display = case_when(
+      term == "b_Intercept" ~ "Intercept",
+      term == "b_sigma_Intercept" ~ "Intercept ",
+      term == "b_RANK2" ~ "Second hatched chick",
+      term == "b_sigma_RANK2" ~ "Second hatched chick ",
+      term == "sd_NEST__Intercept" ~ "Nest ID",
+      term == "sd_NEST__sigma_Intercept" ~ "Nest ID (sigma)",
+      term == "sd_WORKYEAR__Intercept" ~ "Year",
+      term == "sd_WORKYEAR__sigma_Intercept" ~ "Year (sigma)",
+      term == "cor_NEST__Intercept__sigma_Intercept" ~ "Nest ID with NEST ID (sigma)",
+      TRUE ~ term
+    ),
+    Order_Rank = case_when(
+      term == "b_Intercept" ~ 1,
+      term == "b_RANK2" ~ 2,
+      grepl("^b_", term) & !grepl("sigma", term) ~ 3, # Other fixed effects (no sigma)
+      term == "b_sigma_Intercept" ~ 4,
+      term == "b_sigma_RANK2" ~ 5,
+      term == "sd_NEST__Intercept" ~ 6, # <-- Added comma here
+      term == "sd_WORKYEAR__Intercept" ~ 7,
+      term == "sd_NEST__sigma_Intercept" ~ 8,
+      term == "sd_WORKYEAR__sigma_Intercept" ~ 9,
+      grepl("^b_", term) & grepl("sigma", term) ~ 10,  # Other fixed effects (sigma)
+      grepl("^sd_", term) ~ 11, # Other SD terms
+      grepl("^cor_", term) ~ 12, # Correlation
+      TRUE ~ 99
+    ),
+    Submodel = case_when(
+      Order_Rank %in% 1:3 ~ "Location Submodel",
+      Order_Rank %in% 4:5 ~ "Scale Submodel",
+      Order_Rank %in% 6:9 ~ "Random effects",
+      Order_Rank == 12 ~ "Correlation",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  arrange(Order_Rank) %>%
+  dplyr::select(
+    Submodel,
+    Term = Term_Display,
+    Estimate = Estimate,
+    `Std.error` = Est.Error,
+    `95% CI (low)` = Q2.5,
+    `95% CI (high)` = Q97.5
+  ) %>%
+  gt(groupname_col = "Submodel") %>%
+  tab_header(
+    title = "Model 3: Posterior Summary"
+  ) %>%
+  fmt_number(
+    columns = c(Estimate, `Std.error`, `95% CI (low)`, `95% CI (high)`),
+    decimals = 3
+  ) %>%
+  cols_align(
+    align = "center",
+    columns = everything()
+  )
+
+
+```
+
+```{r}
+#| label: result_summaries - model3
+#| echo: false
+#| eval: false
+
+results_df1
+results_df3
+
+```
+:::
+
+### Comparison of location-only model and location-scale model
+
+The model comparison results indicate that the double-hierarchical location-scale model (Model 3) is the most supported by the data, as it has the lowest LOO (Leave-One-Out Cross-Validation) information criterion value. This suggests that this model provides the best fit to the data while accounting for both the average differences in body condition and the variability in body condition between first and second-hatched chicks.
+
+### Interpretation of location-scale model :
+
+**Scale (dispersion) random effects:**
+
+-   There is notable variation in body condition within nests ($\sigma_{[\text{Nest_ID}]}^{(s)}$ = 0.37, 95% CI \[0.316, 0.399\]). This indicates that some nests consistently produce chicks with more consistent body conditions than others.
+
+-   The consistency of chick body conditions varies notably across work years ($\sigma_{[\text{Year}]}^{(s)}$ = 0.277, 95% CI \[0.183, 0.411\]), implying some years yield chicks with more consistent body conditions than others.
+
+**Correlation between location and scale random effects:**
+
+-   The correlation between the nest-specific random effects for the average body condition and the variability in body condition is negative ($\rho_{[\text{Nest_ID}]}$ = -0.457, 95% CI \[-0.584, -0.326\]). This suggests that nests with higher average body conditions tend to produce chicks with more consistent body condition values (less dispersion).
+
+## Conclusion
+
+**Do nests with generally healthier (heavier) chicks also tend to have chicks that are more similar in their body condition?**
+
+Answer: Yes, there's a tendency for nests with higher average chick body condition to also exhibit greater consistency among their chicks' body conditions. This is supported by a negative correlation between nest-specific average body condition and its variability.
+
+# Beyond Gaussian 1
+
+This dataset comes from [Mizuno and Soma (2023)](https://doi.org/10.1098/rsos.231057), which investigates the visual preferences of estrildid finches. The study measured how often birds gazed at different visual stimuli (white dots vs. white stripes) under two conditions: food-deprived and food-supplied. The research originally tested the sensory bias hypothesis, which suggests that a pre-existing preference for whitish, round objects (like seeds) may have influenced the evolution of plumage patterns.
+
+Here, to keep things simple, we use only a subset of the data related to the white dot pattern stimulus. We analyse how gaze frequency toward dot stimuli differs between the two conditions (food-deprived vs. food-supplied), using a location-scale model with a negative binomial distribution.
+
+Although this model includes two random effects (individual and species), it follows the same basic structure as Model 2 - the only difference is that we use a non-Gaussian distribution (negative binomial) instead of a Gaussian one.
+
+### Questions
+
+1.  **Do birds gaze at dot patterns more (or less) when food-deprived compared to food-supplied?**
+2.  **Does the variability in gaze responses differ between conditions?**
+
+### Variables included
+
+The dataset contains the following variables:
+
+::: {.callout-note appearance="simple" icon="false"}
+-   `species` and `phylo`: The species of the bird (12 species).
+-   `id`: The individual bird's ID.
+-   `sex`: Male or female.
+-   `condition`: The condition under which the data was collected (food-deprived or food-supplied).
+-   `frequency`: The total frequency of gazes towards the stimulus over a 1-hour period.
+-   `p_dot`: Having plumage dot patterns or not.
+-   `termite`: The presence of termite-eating diet.
+:::
+
+## Visualise the datasets
+
+::: panel-tabset
+## Condition
+
+First, we visualise the data to understand how gaze frequency varies by condition and species.
+
+```{r}
+#| label: show_data
+#| fig-width: 8
+#| fig-height: 6
+
+set.seed(42) 
+
+# load the dataset ----
+dat_pref <- read.csv(here("data", "AM_preference.csv"), header = TRUE)
+
+dat_pref <- dat_pref %>%
+  dplyr::select(-stripe, -full, -subset) %>%
+  rename(frequency = dot) %>%
+  mutate(species = phylo, across(c(condition, sex), as.factor))
+  
+ggplot(dat_pref, aes(x = condition,
+                     y = frequency)) +
+    geom_violin(color = "#8B8B83", fill = "white",
+              width = 1.2, alpha = 0.3) +
+  geom_jitter(aes(shape = sex, color = sex),
+              size = 3, alpha = 0.8,
+              width = 0.15, height = 0) +
+  labs(
+    title = "Total frequency of gazes towards dot patterns",
+    x = "Condition",
+    y = "Total frequency of gazes (1hr)"
+  ) +
+  scale_shape_manual(values = c("M" = 17, "F" = 16),
+                     labels = c("M" = "Male", "F" = "Female")) +
+  scale_color_manual(values = c("M" = "#009ACD", "F" = "#FF4D4D"),
+                     labels = c("M" = "Male", "F" = "Female")) +
+  theme_classic(base_size = 16) +
+  theme(
+    axis.text = element_text(color = "#6E7B8B", size = 14),
+    axis.title = element_text(color = "#6E7B8B", size = 14),
+    legend.title = element_text(color = "#6E7B8B"),
+    legend.text = element_text(color = "#6E7B8B"),
+    legend.position = "right",
+  axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+## Species
+
+The plot breaks down the same gaze data by species. Each point is a bird’s gaze frequency under a condition. Colored lines represent species-specific means across conditions, helping to visualise - how different species vary in their average gazing behaviour, whether species respond differently to food deprivation. Faceting by species can help compare species-level patterns.
+
+```{r}
+#| label: show_data2
+#| fig-width: 8
+#| fig-height: 6
+
+ggplot(dat_pref, aes(x = condition, y = frequency)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    title = "Total frequency of gazes towards dot patterns by species",
+    x = "Condition",
+    y = "Total frequency of gazes (1hr)"
+  ) +
+  stat_summary(fun = mean, geom = "line", aes(group = species, color = species)) +
+  theme_classic() +
+  facet_wrap(~ species)
+```
+:::
+
+## Run models and interpret results
+
+We fit and compare two types of models to analyse gaze frequency toward white dot patterns using the `glmmTMB` package:
+
+-   Location-only model: Estimates how the mean gaze frequency varies between the two experimental conditions (`food-deprived` vs. `food-supplied`).
+
+-   Location-scale model: Estimates how both the mean and the variability (`dispersion`) of gaze frequency vary between conditions.
+
+These models help us examine whether internal states such as hunger (represented by food deprivation) influence not only the average number of gazes, but also the species/individual variability in gaze behaviour. Such variability may reflect differences in exploratory tendencies among species/individuals. Please note that in this section, species are not modelled with phylogenetic relatedness. For an example of how to fit a location–scale phylogenetic regression model, see *Section Model selection (example 2)*.
+
+### Model fitting
+
+::: panel-tabset
+## Location model
+
+We use negative binomial model here, as the response variable `frequency` is a count of gazes and may exhibit overdispersion. In The `glmmTMB` package, we can specify the family as `nbinom2` for negative binomial distribution with a log link function.
+
+```{r}
+#| label: model_fitting1 - nb model
+
+# location model ----
+## the mean (location) of gaze frequency with condition and sex as fixed effects; assumes constant variance.
+
+model_0 <- glmmTMB(
+  frequency ~ 1 +  condition + sex + (1 | species) + (1 | id), # location part (mean)
+  data = dat_pref,
+  family = nbinom2(link = "log")
+)
+ 
+summary(model_0)
+
+confint(model_0)
+```
+
+## Residual diagnostics
+
+For Gaussian models, we can use the Q-Q plot to show whether the residuals fall along a straight line. However, for non-Gaussian models, we can use the `DHARMa` package to check the residuals. The `DHARMa` package provides a set of diagnostic tools for generalized linear mixed models (GLMMs) and allows us to simulate residuals and check for overdispersion, outliers, and uniformity.
+
+```{r}
+#| label: residual_diagnostics - nb model
+
+# location-only model (NB) ----
+# main diagnostic plots
+model0_res <- simulateResiduals(model_0, plot = TRUE, seed = 42)
+
+# formal test for over/underdispersion
+testDispersion(model0_res) 
+```
+
+The `DHARMa` diagnostics indicate no issues with overdispersion or outliers (Dispersion test: `p = 0.456`; Outlier test: `p = 0.88`). However, the KS test for uniformity is significant (`p = 2e-05`), suggesting deviation from the expected residual distribution. Additionally, residuals show non-uniform patterns across levels of the categorical predictor (catPred), and the Levene’s test indicates heterogeneity of variance among groups. These results suggest that the model may not fully capture the structure associated with the categorical predictor.
+
+## Location-scale model
+
+The result from`DHARMa` diagnostics suggests that the location-only model may not fully capture the structure of the data. Therefore, we can fit a location-scale model to account for both the mean and variance of the response variable.
+
+```{r}
+#| label: model_fitting 2 - nb model
+
+# location-scale model ---- 
+# both the mean (location) and the variance (scale) as functions of condition and sex.
+
+model_1 <- glmmTMB(
+  frequency ~ 1 + condition + sex + (1 | species) + (1 | id),
+   dispformula = ~ condition + sex,     
+  data = dat_pref,                          
+  family = nbinom2(link = "log")
+)
+summary(model_1)
+
+confint(model_1)
+```
+
+## Model comparison
+
+Let's compare the two models to see if the location-scale model provides a better fit to the data than the location-only model.
+
+```{r}
+#| label: model_comparison - nb model
+
+# compare models ----
+model.sel(model_0, model_1)
+```
+
+## Summary of model results
+
+You can quickly check the results of the location-only model (model 0) and the location-scale model (model 1) below.
+
+```{r}
+#| echo: false
+#| label: model0_results - nb model
+
+# Location-only model (Model 0) ----
+
+coefs_0 <- summary(model_0)$coefficients$cond
+conf_0 <- confint(model_0)
+rownames(conf_0) <- gsub("^cond\\.", "", rownames(conf_0))
+conf_0 <- conf_0[rownames(conf_0) %in% rownames(coefs_0), ]
+match_0 <- match(rownames(coefs_0), rownames(conf_0))
+
+results_0 <- data.frame(
+  Term = rownames(coefs_0),
+  Estimate = coefs_0[, "Estimate"],
+  StdError = coefs_0[, "Std. Error"],
+  `2.5%` = conf_0[match_0, "2.5 %"],
+  `97.5%` = conf_0[match_0, "97.5 %"]
+)
+
+colnames(results_0)[which(names(results_0) == "X2.5.")] <- "CI_low"
+colnames(results_0)[which(names(results_0) == "X97.5.")] <- "CI_high"
+
+gt(results_0) %>%
+  tab_header(title = "Location-only model") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
+```
+
+```{r}
+#| echo: false
+#| label: model1_results - nb model
+
+# Location-scale model (Model 1) ----
+summary_1 <- summary(model_1)
+conf_1 <- confint(model_1)
+
+## location part ----
+coefs_1_loc <- summary_1$coefficients$cond
+conf_1_loc <- conf_1[grep("^cond", rownames(conf_1)), ]
+rownames(conf_1_loc) <- gsub("^cond\\.", "", rownames(conf_1_loc))
+conf_1_loc <- conf_1_loc[rownames(conf_1_loc) %in% rownames(coefs_1_loc), ]
+match_loc <- match(rownames(coefs_1_loc), rownames(conf_1_loc))
+
+results_1_loc <- data.frame(
+  Term = rownames(coefs_1_loc),
+  Estimate = coefs_1_loc[, "Estimate"],
+  StdError = coefs_1_loc[, "Std. Error"],
+  CI_low = conf_1_loc[match_loc, "2.5 %"],
+  CI_high = conf_1_loc[match_loc, "97.5 %"]
+)
+
+colnames(results_1_loc)[which(names(results_1_loc) == "X2.5.")] <- "CI_low"
+colnames(results_1_loc)[which(names(results_1_loc) == "X97.5.")] <- "CI_high"
+
+
+## dispersion part ----
+coefs_1_disp <- summary_1$coefficients$disp
+conf_1_disp <- conf_1[grep("^disp", rownames(conf_1)), ]
+rownames(conf_1_disp) <- gsub("^disp\\.", "", rownames(conf_1_disp))
+conf_1_disp <- conf_1_disp[rownames(conf_1_disp) %in% rownames(coefs_1_disp), ]
+match_disp <- match(rownames(coefs_1_disp), rownames(conf_1_disp))
+
+results_1_disp <- data.frame(
+  Term = rownames(coefs_1_disp),
+  Estimate = coefs_1_disp[, "Estimate"],
+  StdError = coefs_1_disp[, "Std. Error"],
+  CI_low = conf_1_disp[match_disp, "2.5 %"],
+  CI_high = conf_1_disp[match_disp, "97.5 %"]
+)
+
+colnames(results_1_loc)[which(names(results_1_disp) == "X2.5.")] <- "CI_low"
+colnames(results_1_loc)[which(names(results_1_disp) == "X97.5.")] <- "CI_high"
+
+# display results ----
+gt(results_1_loc) %>%
+  tab_header(title = "Location-scale model (location part)") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
+
+gt(results_1_disp) %>%
+  tab_header(title = "Location-scale model (dispersion part)") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
+```
+
+## Bonus 1 - Conway-Maxwell-Poisson (CMP) model
+
+The `Conway-Maxwell-Poisson (CMP)` model is a flexible count data model that can handle overdispersion **and** underdispersion.
+
+```{r}
+#| label: model fitting 3 - cmp_model
+#| eval: false
+
+# CMP model ----
+
+model_2 <-  glmmTMB(
+  frequency ~ 1 + condition + sex + (1 | species) + (1 | id),
+  dispformula = ~ condition + sex, 
+  data = dat_pref,
+  family = compois(link = "log")
+)
+summary(model_2)
+
+confint(model_2)
+
+model.sel(model_0, model_1, model_2)
+```
+
+```{r}
+#| label: model result 3 - cmp_model
+#| echo: false
+
+model_2 <- readRDS(here("Rdata", "model_CMP_AM.rds"))
+summary(model_2)
+
+confint(model_2)
+
+model.sel(model_0, model_1, model_2)
+
+```
+
+Here, we compared three generalised linear mixed models. **model_0** was a `Negative Binomial (NB)` model with a single, overall estimated dispersion parameter (i.e., not modelled as a function of predictors). **model_1** extended this by modelling the `NB` dispersion parameter as a function of condition and sex. **model_2** further used a `Conway-Maxwell-Poisson (CMP)` distribution, which can accommodate both under- and over-dispersion, with its dispersion parameter similarly modelled by condition and sex.
+
+Model comparison based on AICc strongly favored the location-scale CMP model (model_2: AICc = 2159.2, model weight = 0.999), with the location-scale NB model (model_1: AICc = 2172.8) and the NB model with a single dispersion parameter (model_0: AICc = 2176.8) performing substantially worse.
+
+In all three models, food-supplied birds showed significantly lower gaze frequencies toward dot stimuli. There was no evidence of sex differences in the location part in any model.
+
+Regarding the dispersion parameter, in the location-scale `NB` model (model_1), the dispersion part revealed a significant change in residual variance in the food-supplied condition ($\beta_{[\text{conditionSupplied}]}^{(l)}$ = –0.662). Given the parameterization of the Negative Binomial distribution (where a smaller dispersion parameter $\theta$ indicates greater overdispersion), this suggests an increase in overdispersion when food was supplied, implying less consistent behavior across individuals. However, this effect was not statistically significant in the location-scale `CMP` model (model_2), where the corresponding estimate was 1.20 (p = 0.12). In the `CMP` model, a positive estimate for the dispersion parameter $\nu$ would imply a decrease in overdispersion (i.e., more consistent behavior) if it were significant.
+
+Random effects in all models consistently showed greater variance among species than among id within species. For example, in the location-scale CMP model, species-level variance was 0.246, while individual-level variance was 0.151.
+
+### Comparing Negative Binomial and CMP Models
+
+Below, we compare the Negative Binomial (NB) and Conway-Maxwell-Poisson (CMP) models to assess which better fits the data. Model selection is based on AICc and residual diagnostics.
+
+```{r}
+#| label: model_comparison 2
+#| echo: false
+#| fig-cap: "Model comparison of location-only and location-scale models in negative Binomial (NB) and Conway-Maxwell-Poisson (CMP) distributions."
+#| fig-subcap: 
+#|   - location-only model (NB) 
+#|   - location-scale model (NB)
+#|   - location-scale model (CMP)
+#| layout-ncol: 3
+#| column: page
+#| eval: false
+
+model0_res <- simulateResiduals(model_0, plot = TRUE)
+model1_res <- simulateResiduals(model_1, plot = TRUE)
+model2_res <- simulateResiduals(model_2, plot = TRUE)
+```
+
+All models passed the `DHARMa` dispersion and outlier tests, indicating appropriate handling of overall variance and absence of extreme observations. However, the Kolmogorov–Smirnov (KS) test consistently revealed significant deviations from the expected uniform distribution of residuals in all three cases, suggesting remaining misfits in distributional shape. The location-scale `CMP` model performed best in terms of within-group residual uniformity, showing no significant deviation in any predictor level. In contrast, both the location-only `NB` model and the location-scale `NB` model exhibited within-group deviations in some categories. These results collectively suggest that while none of the models perfectly capture the residual structure, the location-scale `CMP` model may offer the best overall fit among the candidates for the observed data characteristics.
+
+## Bonus 2 - brms
+
+You can also fit the location-scale model using the `brms` package. The difference is that in `brms`, you can specify scale parts using `shape`. Below, we show how to fit the same location-scale negative binomial model as above using `brms`.
+
+```{r}
+#| label: model_fitting3 - brms model1 (nb)
+#| eval: false
+
+formula1 <- bf(
+  frequency ~ condition + sex + (1 | species) + (1 | id),
+  shape ~ condition + sex
+)
+
+prior1 <- default_prior(formula1, 
+                        data = dat_pref, 
+                        family = negbinomial(link = "log", link_shape = "log")
+)
+
+system.time(model_nb_brms <- brm(formula1, 
+            data = dat_pref, 
+            prior = prior1,
+            chains = 2, 
+            iter = 5000, 
+            warmup = 3000,
+            thin = 1,
+            family = negbinomial(link = "log", link_shape = "log"),
+            # control = list(adapt_delta = 0.95)
+)
+)
+summary(model_nb_brms)
+```
+
+```{r}
+#| label: model_nb_results
+#| echo: false
+
+model_nb_brms <- readRDS(here("Rdata", "model_nb_AM.rds"))
+summary(model_nb_brms)
+
+```
+:::
+
+### Comparison of location-only model and location-scale model
+
+-   Modeling dispersion improves model fit and better captures the structure of the data.
+
+-   Location-scale model had a lower AICc (2172.8) than location-only model (2176.8), indicating better model fit. It also had a higher model weight (0.877 vs. 0.123), suggesting stronger support for the location-scale model.
+
+### Interpretation of location-scale model :
+
+**Location (mean) part:**
+
+-   The supplied condition significantly lowers gaze frequency (\$\beta\^{(l)}\_{\[\text{deprived–supplied}\]} = -0.845, 95% CI \[-1.08, -0.61\]).
+
+-   There is no significant sex difference in mean gaze frequency (\$\beta\^{(l)}\_{\[\text{sex-male}\]} = -0.104, 95% CI \[-0.37, 0.16\]).
+
+**Scale (dispersion) part:**
+
+-   The supplied condition significantly increases residual variance (\$\beta\^{(s)}\_{\[\text{deprived–supplied}\]} = -0.662, 95% CI \[1.15, -0.18\]). This suggests more varied gaze behaviour across individuals under the supplied condition.
+
+-   There is no significant sex difference in the variability of gaze frequency (\$\beta\^{(s)}\_{\[\text{sex-male}\]} = 0.132, 95% CI \[-0.36, 0.62\]).
+
+**Location (mean) random effects:**
+
+-   Species-level (\$\sd\_{\[\text{species}\]} = 0.55, 95% CI \[0.31, 0.99\]): Indicates some variation in mean gaze frequency among species.
+
+**Location (dispersion) random effects:** - Individual-level (\$\sd\_{\[\text{species}\]} = 0.34, 95% CI \[0.17, 0.68\]): Suggests variation among individuals within species, but this is smaller than the variation across species.
+
+## Conclusion
+
+**Q1: Do birds gaze at dot patterns more (or less) when food-deprived compared to food-supplied?**
+
+Answer: Yes. In the location (mean) part of the model, the coefficient for the supplied condition is significantly negative. This indicates that participants made fewer gazes toward dot stimuli in the food-supplied condition compared to the food-deprived condition. So, the average gaze frequency is lower when food is supplied.
+
+**Q2: Does the variability in gaze responses differ between conditions?**
+
+Answer: Yes. In the scale (dispersion) part of the model, the coefficient for the food-supplied condition is significantly negative. Since lower θ values imply greater dispersion, this result suggests that individual gaze responses were more variable when food was supplied. In other words, birds showed more consistent gaze responses when food was deprived, and more varied responses when food was available.
+
+# Beyond Gaussian 2
+
+This dataset comes from [Lundgren et al. (2022)](https://doi.org/10.1111/1365-2656.13766), which examined the activity and impact of feral dunkeys (*Equus africanus asinus*) between wetlands with and without cougar (*Puma concolor*) predation.
+
+For this example, we will focus on the effect of cougar predation on the percentage of ground trampled by feral donkeys.
+
+## Questions
+
+1.  **Does cougar predation affect the percentage of ground trampled by feral donkeys?**
+2.  **Does cougar predation affect the variability in the percentage of ground trampled by feral donkeys?**
+
+### Variables included
+
+::: {.callout-note appearance="simple" icon="false"}
+-   `cover`: Percentage of ground trampled by feral donkeys
+-   `Site`: Name of the site where the data was collected
+-   `Access_point`: Access point to the sites
+-   `if_kill`: Whether a cougar kill (dead donkey) was found at the site (1 = yes, 0 = no)
+:::
+
+## Visualise the dataset
+
+iolin plots illustrate the overall density distribution of percentage of trampled Bare Ground for both areas with (Yes) and without (No) donkey kills Each individual empty circle represents the trampled bare ground cover of a single observation. The plot visually highlights individual variability and allows for the comparison of both central tendency (indicated by the black solid line, representing the mean) and spread of trampled bare ground cover between areas where burro kills are absent versus present.
+
+```{r}
+#| label: show_data - beyond_gaussian2
+#| fig-width: 8
+#| fig-height: 6
+
+dat <- read.csv(here("data","Lundgren_Cougar_Burro_Trophic_Cascade_Trampled_BareGround.csv"))
+
+dat <- dat %>%
+  dplyr::select(Site, Pool, if_kill, cover) %>%
+  mutate(Site=as.factor(Site),
+         if_kill=as.factor(if_kill),
+         cover=as.numeric(cover)
+  )
+
+str(dat)
+
+
+ggplot(dat, aes(x = if_kill, y = cover, fill = if_kill)) +
+  geom_violin(
+    aes(fill = if_kill), # Fill violins based on 'if_kill'
+    color = "#8B8B83", # Outline color for violins
+    width = 0.8,
+    alpha = 0.3,
+    position = position_dodge(width = 0.7)
+  ) +
+  geom_jitter(
+    aes(color = if_kill), # Color jittered points based on 'if_kill'
+    size = 3,
+    alpha = 0.4,
+    shape = 1, # Open circles for jittered points
+    position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.15)
+  ) +
+  stat_summary(
+    fun = mean,
+    geom = "crossbar",
+    width = 0.1,
+    color = "black", # Black crossbar for mean
+    linewidth = 0.5,
+    position = position_dodge(width = 0.7)
+  ) +
+  labs(
+    title = "Donkey Trampling by Cougar Kill Presence",
+    x = "Cougar Kill Presence",
+    y = "Proportion Trampled Bare Ground"
+  ) +
+  scale_fill_manual(
+    values = c("burro kills absent" = "cornflowerblue", "burro kills present" = "firebrick")
+  ) +
+  scale_color_manual( # Add scale_color_manual for jitter points
+    values = c("burro kills absent" = "cornflowerblue", "burro kills present" = "firebrick")
+  ) +
+  scale_x_discrete(
+    labels = c("burro kills absent" = "No", "burro kills present" = "Yes"),
+    expand = expansion(add = 0.5)
+  ) +
+  theme_classic(base_size = 16) +
+  theme(
+    axis.text = element_text(color = "#6E7B8B", size = 14),
+    axis.title = element_text(color = "#6E7B8B", size = 14),
+    legend.position = "none",
+    axis.text.x = element_text(angle = 0, hjust = 0.5)
+  )
+
+```
+
+## Run models and interpret results
+
+We will fit two zero-one inflated beta regression models to the data using the `brms` package. We'll use the `brms` package because the `glmmTMB` (frequentist) approach does not allow for values of '1', while the `brms` package allows us to fit zero-one inflation models to account for these boundary values. All models incorporate `Pool` as a random effect to account for non-independence of observations collected at the same wetland access point
+
+The models are as follows:
+
+a.  Location-Only Model: This model will estimate the average difference in the percentage of trampled bare ground between areas where "burro kills are absent" and where "burro kills are present."
+b.  Location-Scale Model: This more comprehensive model will estimate both the average difference (location) and any differences in the variability (scale) of the percentage of trampled bare ground between areas with and without burro kills.
+
+### Model fitting
+
+::::: panel-tabset
+## Location-only model
+
+::: {.callout-tip appearance="simple" icon="false"}
+`zoi ~ if_kill` (Zero-One Inflation): This part of the model estimates how if_kill (cougar kill presence) influences the probability that an observation is exactly 0% or exactly 100% trampled bare ground. If `if_kill` increases the zoi probability, it means that areas with burro kills are more likely to have either no trampled ground or completely trampled ground, compared to areas without burro kills.
+
+`coi ~ if_kill` (Conditional on Inflation): This is where we distinguish between the 0% and 100% boundaries. If an observation is exactly at a boundary (0% or 100% trampled bare ground), the coi part of the model estimates how `if_kill` influences the probability that this boundary observation is 100% (fully trampled) rather than 0% (no trampled ground). So, if `coi` increases with `if_kill`, it suggests that if a site has exact boundary values, the presence of burro kills makes it more likely for that site to be completely trampled (100%) rather than completely untrampled (0%).
+:::
+
+```{r}
+#| label: model_fitting1 - beyond_gaussian2
+#| eval: false
+
+m0<-bf(cover ~ if_kill + (1|Pool),
+       zoi~  if_kill, 
+       coi~  if_kill) 
+prior1<-default_prior(m0, family=zero_one_inflated_beta(), data=dat)
+
+# Since this model is time-consuming, reload without running it:
+rerun <- F
+if(rerun){
+  
+  fit0 <- brm(
+   m0,
+   data = dat,
+   family = zero_one_inflated_beta(),
+   prior = prior1,
+   iter = 6000,
+   warmup = 1000,
+   chains = 2,  cores=2,
+   control = list(
+     adapt_delta = 0.99,
+     max_treedepth = 15
+   ),
+   seed = 123,
+   refresh = 500
+  )
+  saveRDS(fit0, file = here("Rdata", "fit0_BETA_Burros.rds"))
+  
+}else{
+  fit0 <- readRDS(here("Rdata", "fit0_BETA_Burros.rds"))
+}
+
+summary(fit0)
+```
+
+```{r}
+#| label: model_fitting1_results - beyond_gaussian2
+#| echo: false
+
+fit0 <- readRDS(here("Rdata", "fit0_BETA_Burros.rds"))
+summary(fit0)
+```
+
+## Location-scale model
+
+::: {.callout-tip appearance="simple" icon="false"}
+`phi` (Precision/Scale Parameter): This part of the model estimates how `if_kill` (cougar kill presence) influences the variability of the percentage of trampled bare ground for observations that fall between 0% and 100% (i.e., not exactly at the boundaries). A higher `phi` value indicates lower variability (data points are more tightly clustered around the mean). A lower `phi` value indicates higher variability (data points are more spread out).
+:::
+
+```{r}
+#| label: model_fitting2 - beyond_gaussian2
+#| eval: false
+m1<-bf(cover ~ if_kill + (1|Pool),
+       zoi~  if_kill, 
+       coi~  if_kill,
+       phi~if_kill) 
+prior2<-default_prior(m1, family=zero_one_inflated_beta(), data=dat)
+
+rerun <- F
+if(rerun){
+  fit1 <- brm(
+   m1,
+   data = dat,
+   family = zero_one_inflated_beta(),
+   prior = prior2,
+   iter = 6000,
+   warmup = 1000,
+   chains = 2,  cores=2,
+   control = list(
+     adapt_delta = 0.99,
+     max_treedepth = 15
+   ),
+   seed = 123,      #
+   refresh = 500    #
+  )
+  saveRDS(fit1, file = here("Rdata", "fit1_BETA_Burros.rds"))
+}else{
+  fit1 <- readRDS(here("Rdata", "fit1_BETA_Burros.rds"))
+}
+
+summary(fit1)
+```
+
+```{r}
+#| label: model_fitting2_results - beyond_gaussian2
+#| echo: false
+
+fit1 <- readRDS(here("Rdata", "fit1_BETA_Burros.rds"))
+summary(fit1)
+```
+
+## Model Comparison
+
+```{r}
+#| label: model_comparison - beyond_gaussian2
+#| eval: false
+f0loo <- loo::loo(fit0)
+f1loo <- loo::loo(fit1)
+
+fc<-loo::loo_compare(f0loo, f1loo)
+fc
+#      elpd_diff se_diff
+# fit1  0.0       0.0   
+# fit0 -2.7       1.6   
+```
+:::::
+
+### Model Comparison Results
+
+Our analysis of the model comparison results shows that the location-scale model is the most supported by the data. This is indicated by its lowest LOO (Leave-One-Out Cross-Validation) information criterion value.
+
+### Model Interpretation
+
+**Location (mean) part:**
+
+On average, the log-odds of the mean percentage of trampled bare ground are lower when burro kills are present compared to when they are absent (estimate = -1.22, 95% CI \[-2.27, -0.18\]). This suggests that the presence of burro kills is associated with a lower average percentage of trampled bare ground.
+
+**Scale (dispersion/phi) part:** The log-precision (phi) is lower when burro kills are present, compared to when they are absent (estimate = -1.07, 95% CI \[-2.01, -0.04\]). Suggesting that the percentage of trampled bare ground exhibits more variation or less consistency in areas where burro kills are present.
+
+**Zero-One Inflation (zoi) part:** The log-odds of observing exactly 0% or 100% trampled bare ground are lower when burro kills are present (estimate = -1.71, 95% CI \[-2.55, -0.89\]). In other words, areas with burro kills are less likely to be at the extreme boundaries of either no trampled ground or entirely trampled ground.
+
+**Conditional on Inflation (coi) part:** The log-odds of a boundary observation being 100% rather than 0% are lower when burro kills are present (estimate = -4.20, 95% CI \[-12.07, -0.08\]). This implies that if a boundary value is encountered with burro kills, it is less likely to be 100% (and potentially more likely to be 0%) compared to the "burro kills absent" scenario.
+
+## Conclusion
+
+**Does cougar predation affect the percentage of ground trampled by feral donkeys?**
+
+Answer: Yes, cougar predation, affects the average percentage of ground trampled by feral donkeys.
+
+**Does cougar predation affect the variability in the percentage of ground trampled by feral donkeys?**
+
+Answer: The model provides evidence that cougar predation affects the variability in the percentage of ground trampled by feral donkeys.
+
+# Model selection
+
+This section outlines general guidelines for model selection and refinement, based on the results from the previous examples (sections XX and Beyond Gaussian 1). These steps can be applied to any model fitting process, whether using `glmmTMB`, `brms`, or other packages.
+
+1.  **Identify data type and plot raw data** to understand the distribution and structure of the response variable. This helps in selecting an appropriate model family (e.g., Gaussian, Poisson, Negative Binomial, Beta).
+2.  **Begin with a simpler model** (e.g., a location-only model assuming homoscedasticity) to establish a baseline for interpretation.
+3.  **Check residual diagonostics** to detect possible model misspecification, such as overdispersion or non-uniformity of residuals. If issues are detected, consider more complex models (e.g., location-scale models) that account for heterogeneity in variance.
+4.  **Gradually increase model complexity**: Introduce additional components, such as group-level effects on the scale (variance), and consider estimating correlations between random effects when theoretically or empirically justified—especially when supported by sufficient sample size.
+5.  **Compare models using information criteria**:
+
+-   For frequentist models: use **AIC** (Akaike Information Criterion)
+-   For Bayesian models: use **LOO** (Leave-One-Out Cross-Validation) or **WAIC** (Widely Applicable Information Criterion).
+
+Ultimately, the goal is not only to improve statistical fit but also to gain biological insights. For example, finding that a scale predictor improves model fit may suggest biologically meaningful heterogeneity.
+
+We demonstrate these steps using the previous examples, where we started with a location-only model and then moved to a location-scale model to account for heterogeneity in variance. We also compared models using AICc and LOO criteria to select the best-fitting model. Although parts of the examples below may repeat content from earlier sections, we present them again here in sequence to illustrate a typical approach to model selection and refinement.
+
+::: {.callout-tip appearance="simple" icon="false"}
+One important thing to keep in mind is that `DHARMa` does not work with models fitted using `brms`. This means that you cannot check residual diagnostics for the location-only double-hierarchical model (model 3) if it was fitted with brms. If you want to use `DHARMa` for residual diagnostics, you need to run model 2.5 instead - in other words, you cannot include the correlation part.
+:::
+
+```{=html}
+<!-- ## Example 1
+Santi's data
+
+### Step 1: Identify data type and plot raw data
+ -->
+```
+
+## Example 2
+
+::: panel-tabset
+We revisit the dataset on Estrildid finches to examine how food supplementation affects gaze frequency toward dot patterns (as introduced in Beyond Gaussian 1).
+
+To avoid repeating the structure of the previous example, we now take a more realistic modeling approach by incorporating phylogenetic non-independence as a random effect. The response variable, frequency, is a count variable, which supports the use of Poisson or Negative Binomial distributions. However, as visualised in the plots below, there is substantial between-species variation—both in mean gaze frequency and in the degree of within-species variability.
+
+To better capture this structure, we include phylogeny as a random effect, distinct from the previously used species effect. While species was treated as a simple categorical grouping factor, the phylogenetic random effect accounts for shared evolutionary history and allows for correlated responses among closely related species.
+
+In the following sections, we will:
+
+-   Include phylogeny as a random effect in the location and/or scale parts of the model.
+
+-   Compare models with and without phylogenetic structure to evaluate whether accounting for evolutionary history improves model fit.
+
+### Step 1
+
+#### Identify data type and plot raw data
+
+<!-- This is the same figures as in the previous example - should O skip?? -->
+
+The violin plot by condition and sex shows that gaze frequency is generally higher in the food-deprived condition, with some individuals—especially females—showing very high values (over 500). The faceted line plot by species shows: - Consistent directional trends (e.g., reduced gazing in the supplied condition) - Species-specific differences in variance, suggesting possible heteroscedasticity
+
+These patterns raise two important considerations: 1. Overdispersion is likely present, particularly in the deprived condition, where the spread of counts is large. 2. A phylogenetic effect may be at play, since species vary not only in their average gaze frequencies but also in how consistent individuals are within each species - possibly due to traits shaped by common ancestry.
+
+```{r}
+#| label: identify_data_type - eg2
+#| fig-width: 8
+#| fig-height: 6
+
+ggplot(dat_pref, aes(x = condition,
+                     y = frequency)) +
+    geom_violin(color = "#8B8B83", fill = "white",
+              width = 1.2, alpha = 0.3) +
+  geom_jitter(aes(shape = sex, color = sex),
+              size = 3, alpha = 0.8,
+              width = 0.15, height = 0) +
+  labs(
+    title = "Total frequency of gazes towards dot patterns",
+    x = "Condition",
+    y = "Total frequency of gazes (1hr)"
+  ) +
+  scale_shape_manual(values = c("M" = 17, "F" = 16),
+                     labels = c("M" = "Male", "F" = "Female")) +
+  scale_color_manual(values = c("M" = "#009ACD", "F" = "#FF4D4D"),
+                     labels = c("M" = "Male", "F" = "Female")) +
+  theme_classic(base_size = 16) +
+  theme(
+    axis.text = element_text(color = "#6E7B8B", size = 14),
+    axis.title = element_text(color = "#6E7B8B", size = 14),
+    legend.title = element_text(color = "#6E7B8B"),
+    legend.text = element_text(color = "#6E7B8B"),
+    legend.position = "right",
+  axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+ggplot(dat_pref, aes(x = condition, y = frequency)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    title = "Total frequency of gazes towards dot patterns by species",
+    x = "Condition",
+    y = "Total frequency of gazes (1hr)"
+  ) +
+  stat_summary(fun = mean, geom = "line", aes(group = species, color = species)) +
+  theme_classic() +
+  facet_wrap(~ species)
+```
+
+### Steps 2 and 3
+
+#### Begin with a simpler model and heck residual diagnostics
+
+From the previous analysis, we already know that a location-only model without phylogenetic effects does not adequately capture the structure of the data. However, here we re-examine this model before moving on.
+
+```{r}
+#| label: model_fitting - eg2
+
+model_0 <- glmmTMB(
+  frequency ~ 1 +  condition + sex + (1 | species) + (1 | id), # location part (mean)
+  data = dat_pref,
+  family = nbinom2(link = "log")
+)
+
+```
+
+To evaluate model adequacy, we use the DHARMa package to simulate and visualize residuals. The plots allow us to assess residual uniformity, potential over- or underdispersion, outliers, and leverage.
+
+```{r}
+#| label: residual_diagnostics - eg2
+# main diagnostic plots
+
+model0_res <- simulateResiduals(model_0, plot = TRUE, seed = 42)
+
+# formal test for over/underdispersion
+testDispersion(model0_res) 
+```
+
+Although the dispersion test (p = 0.456) suggests no clear evidence of overdispersion based on the mean–variance relationship, the KS test indicates that the residuals deviate from a uniform distribution. These two tests assess different aspects of model adequacy: the dispersion test evaluates whether the variance is correctly specified as a function of the mean, while the KS test can detect broader misfits, such as unmodeled structure, zero inflation, or group-specific heteroscedasticity. Thus, even in the absence of overdispersion, the presence of non-uniform residuals supports the need for a more flexible model.
+
+Since we have found the limitations of the model without phylogenetic effects, we now proceed to fit the same model using the `brms` package, this time including the phylogenetic effect as a random effect to account for the non-independence among species. Including both species and phylogeny as random effects allows us to distinguish between two sources of variation: the phylogenetic effect captures correlations arising from shared evolutionary history, whereas the species-level random intercept absorbs residual species-specific variation not accounted for by the tree—such as ecological or methodological factors. Including both terms helps avoid underestimating heterogeneity at the species level and provides a more accurate partitioning of variance.
+
+First, we run the same model as above, but using the `brms` package. Then, we will gradually increase the model complexity by adding phylogenetic effects and a scale part to the model.
+
+```{r}
+#| label: model_fitting1 - eg2
+#| eval: false
+
+formula_eg2.0 <- bf(
+  frequency ~ condition + sex + (1 | species) + (1 | id)
+)
+
+prior_eg2.0 <- default_prior(formula_eg2.0, 
+                        data = dat_pref, 
+                        family = negbinomial(link = "log")
+)
+
+model_eg2.0 <- brm(formula_eg2.0, 
+            data = dat_pref, 
+            prior = prior_eg2.0,
+            chains = 2, 
+            iter = 5000, 
+            warmup = 3000,
+            thin = 1,
+            family = negbinomial(link = "log"),
+            save_pars = save_pars(all = TRUE)
+            # control = list(adapt_delta = 0.95)
+)
+
+```
+
+Then, we add the phylogenetic effect as a random effect to the model. This allows us to account for the non-independence among species due to shared evolutionary history.
+
+```{r}
+#| label: model_fitting2 - eg2
+#| eval: false
+
+tree <- read.nexus(here("data", "AM_est_tree.txt"))
+tree　<-force.ultrametric(tree, method = "extend")
+# is.ultrametric(tree)
+
+tip <- c("Lonchura_cantans","Uraeginthus_bengalus","Neochmia_modesta",
+         "Lonchura_atricapilla","Padda_oryzivora","Taeniopygia_bichenovii",
+         "Emblema_pictum","Neochmia_ruficauda","Lonchura_maja",
+         "Taeniopygia_guttata","Chloebia_gouldiae","Lonchura_castaneothorax")
+tree <- KeepTip(tree, tip, preorder = TRUE, check = TRUE)
+
+# Create phylogenetic correlation matrix
+A <- ape::vcv.phylo(tree, corr = TRUE)
+
+# Specify the model formula (location-only)
+formula_eg2.1 <- bf(
+  frequency ~ condition + sex + 
+    (1 | a | gr(phylo, cov = A)) +  # phylogenetic random effect
+    (1 | species) +             # non-phylogenetic species-level random effect (ecological factors)
+    (1 | id)                    # individual-level random effect
+)
+
+prior_eg2.1 <- brms::get_prior(
+  formula = formula_eg2.1, 
+  data = dat_pref, 
+  data2 = list(A = A),
+  family = negbinomial(link = "log")
+)
+
+model_eg2.1 <- brm(
+  formula = formula_eg2.1, 
+  data = dat_pref, 
+  data2 = list(A = A),
+  chains = 2, 
+  iter = 12000, 
+  warmup = 10000,
+  thin = 1,
+  family = negbinomial(link = "log"),
+  prior = prior_eg2.1,
+  control = list(adapt_delta = 0.95),
+  save_pars = save_pars(all = TRUE)
+)
+```
+
+### Step 4
+
+#### Gradually increase model complexity
+
+In the previous model, variation in individual gaze frequency was modeled assuming a constant dispersion parameter across all groups. However, visual inspection of the raw data suggests heteroscedasticity (i.e., group-specific variance). To accommodate this, we now fit a location-scale model where the shape (dispersion) parameter is allowed to vary by condition and sex.
+
+This model helps capture structured variability in the data and may reveal whether the precision (or variability) of gaze frequency differs systematically between experimental groups.
+
+```{r}
+#| eval: false
+
+# Specify the model formula (location-scale) - the scale part does not include random effects
+formula_eg2.2 <- bf(
+  frequency ~ condition + sex + 
+    (1 | a | gr(phylo, cov = A)) +  
+    (1 | species) +          
+    (1 | id),              
+shape ~ condition + sex
+)
+
+prior_eg2.2 <- brms::get_prior(
+  formula = formula_eg2.2, 
+  data = dat_pref, 
+  data2 = list(A = A),
+  family = negbinomial(link = "log", link_shape = "log")
+)
+
+model_eg2.2 <- brm(
+  formula = formula_eg2.2, 
+  data = dat_pref, 
+  data2 = list(A = A),
+  chains = 2, 
+  iter = 12000, 
+  warmup = 10000,
+  thin = 1,
+  family = negbinomial(link = "log", link_shape = "log"),
+  prior = prior_eg2.2,
+  control = list(adapt_delta = 0.95),
+  save_pars = save_pars(all = TRUE)
+)
+
+```
+
+```{r}
+#| eval: false
+
+# specify the model formula (location-scale)
+## the scale part includes phylogenetic random effects and individual-level random effects
+
+formula_eg2.3 <- bf(
+  frequency ~ condition + sex + 
+    (1 |a| gr(phylo, cov = A)) +  # phylogenetic random effect
+    (1 | species) +            # non-phylogenetic species-level random effect (ecological factors)
+    (1 | id),              # individual-level random effect
+shape ~ condition + sex +
+    (1 |a| gr(phylo, cov = A)) +  
+    (1 | species) +  
+    (1 | id)          
+    )
+
+prior_eg2.3 <- brms::get_prior(
+  formula = formula_eg2.3, 
+  data = dat_pref, 
+  data2 = list(A = A),
+  family = negbinomial(link = "log", link_shape = "log")
+)
+
+model_eg2.3 <- brm(
+  formula = formula_eg2.3, 
+  data = dat_pref, 
+  data2 = list(A = A),
+  chains = 2, 
+  iter = 12000, 
+  warmup = 10000,
+  thin = 1,
+  family = negbinomial(link = "log", link_shape = "log"),
+  prior = prior_eg2.3,
+  control = list(adapt_delta = 0.95),
+  save_pars = save_pars(all = TRUE)
+)
+
+summary(model_eg2.3)
+
+```
+
+### Step 5
+
+#### Compare models using information criteria
+
+To assess whether model fit improves with increased complexity, we compare models using Leave-One-Out Cross-Validation (LOO).
+
+```{r}
+#| eval: false
+
+options(future.globals.maxSize = 2 * 1024^3)
+loo_eg2.0 <- loo::loo(model_eg2.0, moment_match = TRUE,
+                      reloo = TRUE, cores = 2)
+loo_eg2.1 <- loo::loo(model_eg2.1, moment_match = TRUE, 
+                      reloo = TRUE, cores = 2)
+loo_eg2.2 <- loo::loo(model_eg2.2, moment_match = TRUE,
+                      reloo = TRUE, cores = 2)
+loo_eg2.3 <- loo::loo(model_eg2.3, moment_match = TRUE,
+                      reloo = TRUE, cores = 2)
+
+fc_eg2 <- loo::loo_compare(loo_eg2.0, loo_eg2.1, loo_eg2.2, loo_eg2.3)
+
+print(fc_eg2)
+#             elpd_diff se_diff
+# model_eg2.3   0.0       0.0  
+# model_eg2.1 -11.5       4.5  
+# model_eg2.2 -11.7       5.3  
+# model_eg2.0 -13.5       4.9  
+
+summary(model_eg2.3)
+```
+
+Model eg2.3, which includes both phylogenetic and species-level effects on the location and scale parts, performs best (highest elpd).
+
+ELPD stands for Expected Log Predictive Density. It is a measure of out-of-sample predictive accuracy—that is, how well a model is expected to predict new, unseen data. - It is used in Bayesian model comparison, especially when using LOO-CV (Leave-One-Out Cross-Validation). - Higher ELPD means better predictive performance. - It is calculated by taking the log-likelihood of each observation, averaged over posterior draws, and then summed over all observations. - It rewards models that fit the data well without overfitting.
+
+```{r}
+#| echo: false
+
+model_eg2.3 <- readRDS(here("Rdata", "model_eg2.3.rds"))
+summary(model_eg2.3)
+
+```
+
+Accounting for phylogeny captures much of the between-species structure, it highlights evolutionary constraints or shared ecological traits. The remaining species-specific variance suggests additional factors (e.g., experimental nuances) not captured by the tree alone.
+:::
+
+# References
+
+-   Cleasby IR, Burke T, Schroeder J, Nakagawa S. (2011) Food supplements increase adult tarsus length, but not growth rate, in an island population of house sparrows (Passer domesticus). *BMC Research Notes*. 4:1-1. doi: 10.1186/1756-0500-4-431
+-   Drummond H, Rodriguez C, Ortega S. (2025). Long-Term Insights into Who Benefits from Brood Reduction. *Behavioral Ecology*. doi: 10.1093/beheco/araf050
+-   Mizuno A, Soma M. (2023) Pre-existing visual preference for white dot patterns in estrildid finches: a comparative study of a multi-species experiment. *Royal Society Open Science*. 10:231057. doi: 10.1098/rsos.231057
+-   Lundgren EJ, Ramp D, Middleton OS, Wooster EI, Kusch E, Balisi M, Ripple WJ, Hasselerharm CD, Sanchez JN, Mills M, Wallach AD. (2022) A novel trophic cascade between cougars and feral donkeys shapes desert wetlands. *Journal of Animal Ecology*. 91:2348-57. doi: 10.1111/1365-2656.13766
+-   Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, Paul-Christian Bürkner (2021). Rank-Normalization, Folding, and Localization: An Improved Rhat for Assessing Convergence of MCMC (with Discussion). *Bayesian Analysis*. 16:667-718. doi: 10.1214/20-BA1221
+
+# Information about R session
+
+This section shows the current R session information, including R version, platform, and loaded packages.
+
+```{r}
+sessionInfo()
+```
