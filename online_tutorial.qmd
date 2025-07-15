@@ -53,26 +53,43 @@ execute:
 
 If you have any questions, errors or bug reports, please feel free to contact Ayumi Mizuno (amizuno\@ualberta.ca / ayumi.mizuno5\@gmail.com).
 
-Also, some of the models in this tutorial take a long time to run. To make the tutorial faster, we have precomputed selected models and saved them as `.rds` files. If you download the `.qmd` file (the source of this web page) and wish to re-run the models and display the saved results on your own machine, you will need to:
+Some of the models in this tutorial take a long time to run. To make the tutorial faster and easier to follow, we have precomputed selected models and saved them as .rds files.
 
-1\. Download the required `.rds` files from here ([google drive](https://drive.google.com/drive/folders/1CvshmYMowXSB9MdbCprP1LP7llZNxIbe?usp=drive_link))
+If you would like to re-run the code yourself and reproduce the results shown in the tutorial, please make sure to do the following:
 
-2\. Create the folder (`online_tutorial.qmd` and `.rds` files in `Rdata`) in the appropriate location on your machine
+1.  Download the following files:
 
-3\. Adjust the file paths in the code if your folder structure is different
+    -   online_tutorial.qmd (the source file for this website)
 
-We use `here::here()` to make file paths more reproducible across systems. If you store the files in a different location, rename the files, or change the folder structure, be sure to update the file paths in functions such as `readRDS()` accordingly.
+    -   All datasets in the data folder
+
+    -   The precomputed .rds files from Google Drive Google Drive link: <https://drive.google.com/drive/folders/1CvshmYMowXSB9MdbCprP1LP7llZNxIbe?usp=drive_link>
+
+2.  Create a folder structure like this on your machine:
 
 ```{r}
 #| eval: false
-# Example: loading a saved model
-## You will see the same code throughout this tutorial
-## this line means: *Read the file brms_m1.rds located inside the Rdata folder, starting from the project root.*
-## Throughout this tutorial, you will see similar code structures appear multiple times. Please feel free to modify these code chunks as needed to fit your own environment or file structure.
 
-dat <- read.csv(here("data", "XXX.csv"), header = TRUE)
+    your-project-folder/
+    ├── online_tutorial.qmd
+    ├── data/
+    │   └── (CSV files)
+    └── Rdata/
+        └── (RDS files from Google Drive)
+```
+
+3.  Adjust file paths if your folder structure is different. We use `here::here()`to help make paths more portable, but if you move or rename files/folders, make sure to update functions like `readRDS()` or `read.csv()` accordingly:
+
+```{r}
+#| eval: false
+
+# this is example
+
+dat <- read.csv(here("data", "XXX.csv"), header = TRUE) 
 brms_m1 <- readRDS(here("Rdata", "brms_m1.rds"))
 ```
+
+You will see similar code snippets throughout the tutorial. Feel free to modify them based on your own setup. If everything is placed correctly, the `.qmd` file should run without any issues.
 
 # Introduction
 
@@ -1282,13 +1299,13 @@ The model comparison results indicate that the double-hierarchical location-scal
 
 **Scale (dispersion) random effects:**
 
--   There is notable variation in body condition within nests ($\sigma_{[\text{Nest\_ID}]}^{(s)}$ = 0.37, 95\% CI \[0.316, 0.399\]). This indicates that some nests consistently produce chicks with more consistent body conditions than others.
+-   There is notable variation in body condition within nests ($\sigma_{[\text{Nest\_ID}]}^{(s)}$ = 0.37, 95% CI \[0.316, 0.399\]). This indicates that some nests consistently produce chicks with more consistent body conditions than others.
 
--   The consistency of chick body conditions varies notably across work years ($\sigma_{[\text{Year}]}^{(s)}$ = 0.277, 95\% CI \[0.183, 0.411\]), implying some years yield chicks with more consistent body conditions than others.
+-   The consistency of chick body conditions varies notably across work years ($\sigma_{[\text{Year}]}^{(s)}$ = 0.277, 95% CI \[0.183, 0.411\]), implying some years yield chicks with more consistent body conditions than others.
 
 **Correlation between location and scale random effects:**
 
--   The correlation between the nest-specific random effects for the average body condition and the variability in body condition is negative ($\rho_{[\text{Nest\_ID}]}$ = -0.457, 95\% CI \[-0.584, -0.326\]). This suggests that nests with higher average body conditions tend to produce chicks with more consistent body condition values (less dispersion).
+-   The correlation between the nest-specific random effects for the average body condition and the variability in body condition is negative ($\rho_{[\text{Nest\_ID}]}$ = -0.457, 95% CI \[-0.584, -0.326\]). This suggests that nests with higher average body conditions tend to produce chicks with more consistent body condition values (less dispersion).
 
 ## Conclusion
 
@@ -1709,21 +1726,20 @@ summary(model_nb_brms)
 
 **Location (mean) part:**
 
--  The supplied condition significantly lowers gaze frequency ($\beta_{[\text{conditionSupplied}]}^{(l)}$ = -0.845, 95\% CI \[-1.08, -0.61\]$). 
--   There is no significant sex difference in mean gaze frequency ($\beta_{[\text{sex-male}]}^{(l)}$ = -0.104, 95\% CI \[-0.37, 0.16\]$).
+-   The supplied condition significantly lowers gaze frequency ($\beta_{[\text{conditionSupplied}]}^{(l)}$ = -0.845, 95% CI \[-1.08, -0.61\]\$).
+-   There is no significant sex difference in mean gaze frequency ($\beta_{[\text{sex-male}]}^{(l)}$ = -0.104, 95% CI \[-0.37, 0.16\]\$).
 
 **Scale (dispersion) part:**
 
--   The supplied condition significantly increases residual variance ($\beta_{[\text{deprived–supplied}]}^{(s)}$ = -0.662, 95\% CI \[1.15, -0.18\]$). This suggests more varied gaze behaviour across individuals under the supplied condition.
+-   The supplied condition significantly increases residual variance ($\beta_{[\text{deprived–supplied}]}^{(s)}$ = -0.662, 95% CI \[1.15, -0.18\]\$). This suggests more varied gaze behaviour across individuals under the supplied condition.
 
--   There is no significant sex difference in the variability of gaze frequency ($\beta_{[\text{sex-male}]}^{(s)}$ = 0.132, 95\% CI \[-0.36, 0.62\]$).
+-   There is no significant sex difference in the variability of gaze frequency ($\beta_{[\text{sex-male}]}^{(s)}$ = 0.132, 95% CI \[-0.36, 0.62\]\$).
 
 **Location (mean) random effects:**
 
--   Species-level ($sd_{[\text{species}]}$ = 0.55, 95\% CI \[0.31, 0.99\]$): Indicates some variation in mean gaze frequency among species.
+-   Species-level ($sd_{[\text{species}]}$ = 0.55, 95% CI \[0.31, 0.99\]\$): Indicates some variation in mean gaze frequency among species.
 
-
-**Location (dispersion) random effects:** - Individual-level ($sd_{[\text{species}]}$ = 0.34, 95\% CI \[0.17, 0.68\]): Suggests variation among individuals within species, but this is smaller than the variation across species.
+**Location (dispersion) random effects:** - Individual-level ($sd_{[\text{species}]}$ = 0.34, 95% CI \[0.17, 0.68\]): Suggests variation among individuals within species, but this is smaller than the variation across species.
 
 ## Conclusion
 
