@@ -56,7 +56,7 @@ Also, some of the models in this tutorial take a long time to run. To make the t
 
 1\. Download the required `.rds` files from here ([google drive](https://drive.google.com/drive/folders/1CvshmYMowXSB9MdbCprP1LP7llZNxIbe?usp=drive_link))
 
-2\. Place the files in the appropriate location on your machine (e.g., `your_project/Rdata/`)
+2\. Create the folder (`online_tutorial.qmd` and `.rds` files in `Rdata`) in the appropriate location on your machine
 
 3\. Adjust the file paths in the code if your folder structure is different
 
@@ -1031,7 +1031,7 @@ The location-scale model (Model 2) was the most-supported model based on AICc va
 
 **Location (mean) random effects:**
 
--   There is very little variation in the average body condition across different nests ($\sigma_{[\text{Nest_ID}]}^{(l)}$ = 0.049, 95% CI \[0.044, 0.054\]), suggesting that most nests have similar average body conditions for their chicks.
+-   There is very little variation in the average body condition across different nests ($\sigma_{[\text{Nest\_ID}]}^{(l)}$ = 0.049, 95% CI \[0.044, 0.054\]), suggesting that most nests have similar average body conditions for their chicks.
 
 -   There is also very little variation in the average body condition across different years ($\sigma_{[\text{Year}]}^{(l)}$ = 0.092, 95% CI \[0.069, 0.124\]),implying generally consistent average body conditions from year to year.
 
@@ -1281,13 +1281,13 @@ The model comparison results indicate that the double-hierarchical location-scal
 
 **Scale (dispersion) random effects:**
 
--   There is notable variation in body condition within nests ($\sigma_{[\text{Nest_ID}]}^{(s)}$ = 0.37, 95% CI \[0.316, 0.399\]). This indicates that some nests consistently produce chicks with more consistent body conditions than others.
+-   There is notable variation in body condition within nests ($\sigma_{[\text{Nest\_ID}]}^{(s)}$ = 0.37, 95\% CI \[0.316, 0.399\]). This indicates that some nests consistently produce chicks with more consistent body conditions than others.
 
--   The consistency of chick body conditions varies notably across work years ($\sigma_{[\text{Year}]}^{(s)}$ = 0.277, 95% CI \[0.183, 0.411\]), implying some years yield chicks with more consistent body conditions than others.
+-   The consistency of chick body conditions varies notably across work years ($\sigma_{[\text{Year}]}^{(s)}$ = 0.277, 95\% CI \[0.183, 0.411\]), implying some years yield chicks with more consistent body conditions than others.
 
 **Correlation between location and scale random effects:**
 
--   The correlation between the nest-specific random effects for the average body condition and the variability in body condition is negative ($\rho_{[\text{Nest_ID}]}$ = -0.457, 95% CI \[-0.584, -0.326\]). This suggests that nests with higher average body conditions tend to produce chicks with more consistent body condition values (less dispersion).
+-   The correlation between the nest-specific random effects for the average body condition and the variability in body condition is negative ($\rho_{[\text{Nest\_ID}]}$ = -0.457, 95\% CI \[-0.584, -0.326\]). This suggests that nests with higher average body conditions tend to produce chicks with more consistent body condition values (less dispersion).
 
 ## Conclusion
 
@@ -1708,21 +1708,21 @@ summary(model_nb_brms)
 
 **Location (mean) part:**
 
--   The supplied condition significantly lowers gaze frequency (\$\beta\^{(l)}\_{\[\text{deprived–supplied}\]} = -0.845, 95% CI \[-1.08, -0.61\]).
-
--   There is no significant sex difference in mean gaze frequency (\$\beta\^{(l)}\_{\[\text{sex-male}\]} = -0.104, 95% CI \[-0.37, 0.16\]).
+-  The supplied condition significantly lowers gaze frequency ($\beta_{[\text{conditionSupplied}]}^{(l)}$ = -0.845, 95\% CI \[-1.08, -0.61\]$). 
+-   There is no significant sex difference in mean gaze frequency ($\beta_{[\text{sex-male}]}^{(l)}$ = -0.104, 95\% CI \[-0.37, 0.16\]$).
 
 **Scale (dispersion) part:**
 
--   The supplied condition significantly increases residual variance (\$\beta\^{(s)}\_{\[\text{deprived–supplied}\]} = -0.662, 95% CI \[1.15, -0.18\]). This suggests more varied gaze behaviour across individuals under the supplied condition.
+-   The supplied condition significantly increases residual variance ($\beta_{[\text{deprived–supplied}]}^{(s)}$ = -0.662, 95\% CI \[1.15, -0.18\]$). This suggests more varied gaze behaviour across individuals under the supplied condition.
 
--   There is no significant sex difference in the variability of gaze frequency (\$\beta\^{(s)}\_{\[\text{sex-male}\]} = 0.132, 95% CI \[-0.36, 0.62\]).
+-   There is no significant sex difference in the variability of gaze frequency ($\beta_{[\text{sex-male}]}^{(s)}$ = 0.132, 95\% CI \[-0.36, 0.62\]$).
 
 **Location (mean) random effects:**
 
--   Species-level (\$\sd\_{\[\text{species}\]} = 0.55, 95% CI \[0.31, 0.99\]): Indicates some variation in mean gaze frequency among species.
+-   Species-level ($sd_{[\text{species}]}$ = 0.55, 95\% CI \[0.31, 0.99\]$): Indicates some variation in mean gaze frequency among species.
 
-**Location (dispersion) random effects:** - Individual-level (\$\sd\_{\[\text{species}\]} = 0.34, 95% CI \[0.17, 0.68\]): Suggests variation among individuals within species, but this is smaller than the variation across species.
+
+**Location (dispersion) random effects:** - Individual-level ($sd_{[\text{species}]}$ = 0.34, 95\% CI \[0.17, 0.68\]): Suggests variation among individuals within species, but this is smaller than the variation across species.
 
 ## Conclusion
 
