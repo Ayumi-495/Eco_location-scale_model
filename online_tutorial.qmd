@@ -15,7 +15,8 @@ format:
     toc: true
     toc-location: left
     toc-depth: 6
-    toc-float: false
+    toc-float: true
+    toc-expand: true
     toc-title: "**CONTENTS**"
     output-file: "index.html"
     # embed-resources: true
