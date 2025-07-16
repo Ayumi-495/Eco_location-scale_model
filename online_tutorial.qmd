@@ -128,7 +128,7 @@ This tutorial makes use of several R packages for data manipulation, model fitti
 
 pacman::p_load(
   ## data manipulation
-  dplyr, tibble, tidyverse,
+  dplyr, tibble, tidyverse, broom, broom.mixed,
   
   ## model fitting
   ape, arm, brms, broom.mixed, cmdstanr, emmeans, glmmTMB, MASS, phytools, rstan, TreeTools,
@@ -172,6 +172,7 @@ formula1 <- bf(
   y ~ 1 + x,  # location part
   sigma = ~ 1 + x # scale part - specified by sigma
 )
+#' [EJL: Unlike in frequentist models, such as with glmmTMB, here we explicitly write the intercept term as '1']
 
 # generate default priors based on the formula and data
 default_priors <- default_prior(
@@ -186,7 +187,6 @@ default_priors <- default_prior(
                   family = gaussian(),                   
                   prior = default_priors,                
                   iter = 2000,   # total iterations per Markov-chain (i.e., how many posterior samples are drawn, including warm-up)
-                       
                   warmup = 1000, # number of early draws used only for adapting the sampler (step-size, mass matrix). These samples are discarded
                   thin = 1,      # keep every n-th post-warm-up draw. 1 means keep all draws                    
                   chains = 2,    #  number of independent MCMC chains run in parallel. Provides a convergence check (via Rhat)                    
@@ -381,6 +381,8 @@ Now we can compare the two models to see if the location-scale model provides a 
 
 # compare models ----
 ## we can use the anova() function to compare the two models of AIC 
+anova(model_0, model_1)
+
 ## model.sel() from the MuMIn package can be used to compare AICc values.
 model.sel(model_0, model_1)
 ```
@@ -579,7 +581,7 @@ Here is the explanation of the output table:
 
 ------------------------------------------------------------------------
 
-Now, you can find the results from `glmmTMB` and `brms` are very close to each other, but there are some differences in the estimates and standard errors. This came from the different estimation methods used by the two packages. `glmmTMB` uses maximum likelihood estimation, while `brms` uses Bayesian estimation with Markov Chain Monte Carlo (MCMC) sampling...
+Now, you can find the results from `glmmTMB` and `brms` are very close to each other, but there are some differences in the estimates and standard errors. This came from the different estimation methods used by the two packages. `glmmTMB` uses maximum likelihood estimation, while `brms` uses Bayesian estimation with Markov Chain Monte Carlo (MCMC) sampling.
 :::
 
 ### Comparison of location-only model and location-scale model
@@ -747,6 +749,7 @@ Then we use the 'DHARMa' package to simulate residuals and plot them automatical
 # | label: model_diagnostics - model0
 simulationOutput <- simulateResiduals(fittedModel = model2_1, plot = F)
 plot(simulationOutput)
+
 ```
 
 The QQ plot and Kolmogorov-Smirnov (KS) test reveal that the model's residuals aren't uniformly distributed, hinting at potential issues with the chosen distribution or the model's underlying structure. While tests for overdispersion and outliers showed no significant concerns, the boxplots and Levene test highlight a lack of uniformity within residual groups and non-homogeneous variances. This suggests the model doesn't fully capture the data's complexity and might benefit from adjustments, perhaps by incorporating a location-scale model to better handle varying dispersion.
@@ -788,6 +791,15 @@ The results of the location-only model (Model 0) and the location-scale model (M
 #| label: model2_1_results - glmmtmb
 
 ## Ask Erick for a simpler way of making tables
+#' [ ERICK HERE. I don't know that way of making them pretty. But there is a helper function..]
+# Problem is, you still need to extract the malarkey from confint(m) and align it
+# which is super annoying. 
+# I have written custom functions to do that in the past but I don't have time right now :(
+model2_2.tidy <- model2_2 %>%
+  tidy()
+
+model2_2.tidy
+
 ```
 
 ```{r}
@@ -892,7 +904,7 @@ f2loo <- loo::loo(fit2)
 #Model comparison 
 fc <- loo::loo_compare(f1loo, f2loo)
 fc
-
+#' [EJL: Would be good to explain how to interpret the LOO results]
 #     elpd_diff se_diff
 # fit2   0.0       0.0  
 # fit1 -10.3       7.6  
