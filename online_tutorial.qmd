@@ -173,6 +173,7 @@ formula1 <- bf(
   sigma = ~ 1 + x # scale part - specified by sigma
 )
 #' [EJL: Unlike in frequentist models, such as with glmmTMB, here we explicitly write the intercept term as '1']
+# I do not think that is accurate. brms automatically includes the intercept - just like most R modeling frameworks. Writing `1 + x` is equivalent to `x` here... but may be I should ask Shinichi?
 
 # generate default priors based on the formula and data
 default_priors <- default_prior(
@@ -561,7 +562,7 @@ summary(brms_g1)
 
 ```
 
-First, you need to check the effective sample size (`\*\*\_ESS`) and `Rhat` values. ESS should be greater than **400** ([Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221)), and R-hat should be close to **1.0** (ideally \< 1.01). If these conditions are not met, you may need to increase the number of iterations or adjust the model specification.
+First, you need to check the effective sample size (`**_ESS`) and `Rhat` values. ESS should be greater than **400** ([Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221)), and R-hat should be close to **1.0** (ideally \< 1.01). If these conditions are not met, you may need to increase the number of iterations or adjust the model specification.
 
 Then, we can check the output - it is divided into two parts: **Location (mean) part** (how the average changes) and **Scale (dispersion) part** (how the variability changes - in Gaussian data, the scale part is $\sigma$)
 
@@ -1780,8 +1781,8 @@ You can also fit the location-scale model using the `brms` package. The differen
 #| eval: false
 
 formula1 <- bf(
-  frequency ~ condition + sex + (1 | species) + (1 | id),
-  shape ~ condition + sex
+  frequency ~ 1 + condition + sex + (1 | species) + (1 | id),
+  shape ~ 1 + condition + sex
 )
 
 prior1 <- default_prior(formula1, 
@@ -2437,7 +2438,7 @@ First, we run the same model as above, but using the `brms` package. Then, we wi
 #| eval: false
 
 formula_eg2.0 <- bf(
-  frequency ~ condition + sex + (1 | species) + (1 | id)
+  frequency ~ 1 + condition + sex + (1 | species) + (1 | id)
 )
 
 prior_eg2.0 <- default_prior(formula_eg2.0, 
@@ -2480,7 +2481,7 @@ A <- ape::vcv.phylo(tree, corr = TRUE)
 
 # Specify the model formula (location-only)
 formula_eg2.1 <- bf(
-  frequency ~ condition + sex + 
+  frequency ~ 1 + condition + sex + 
     (1 | a | gr(phylo, cov = A)) +  # phylogenetic random effect
     (1 | species) +             # non-phylogenetic species-level random effect (ecological factors)
     (1 | id)                    # individual-level random effect
@@ -2521,11 +2522,11 @@ This model helps capture structured variability in the data and may reveal wheth
 
 # Specify the model formula (location-scale) - the scale part does not include random effects
 formula_eg2.2 <- bf(
-  frequency ~ condition + sex + 
+  frequency ~ 1 + condition + sex + 
     (1 | a | gr(phylo, cov = A)) +  
     (1 | species) +          
     (1 | id),              
-shape ~ condition + sex
+shape ~ 1 + condition + sex
 )
 
 prior_eg2.2 <- brms::get_prior(
@@ -2558,11 +2559,11 @@ model_eg2.2 <- brm(
 ## the scale part includes phylogenetic random effects and individual-level random effects
 
 formula_eg2.3 <- bf(
-  frequency ~ condition + sex + 
+  frequency ~ 1 + condition + sex + 
     (1 |a| gr(phylo, cov = A)) +  # phylogenetic random effect
     (1 | species) +            # non-phylogenetic species-level random effect (ecological factors)
     (1 | id),              # individual-level random effect
-shape ~ condition + sex +
+shape ~ 1 + condition + sex +
     (1 |a| gr(phylo, cov = A)) +  
     (1 | species) +  
     (1 | id)          
