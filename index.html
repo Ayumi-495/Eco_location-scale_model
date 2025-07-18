@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.29">
+<meta name="generator" content="quarto-1.6.42">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Shinichi Nakagawa">
 <meta name="author" content="Santiago Ortega">
@@ -26,9 +26,8 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -39,7 +38,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -63,16 +62,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 <script src="online_tutorial_files/libs/clipboard/clipboard.min.js"></script>
-<script src="online_tutorial_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="online_tutorial_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="online_tutorial_files/libs/quarto-html/quarto.js"></script>
 <script src="online_tutorial_files/libs/quarto-html/popper.min.js"></script>
 <script src="online_tutorial_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="online_tutorial_files/libs/quarto-html/anchor.min.js"></script>
 <link href="online_tutorial_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="online_tutorial_files/libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="online_tutorial_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="online_tutorial_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="online_tutorial_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="online_tutorial_files/libs/bootstrap/bootstrap-53ebf1a67f6b8c9f24769331023d810e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+<link href="online_tutorial_files/libs/bootstrap/bootstrap-74d733dc50fb3e4f2865abfa728a31c0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -99,7 +97,7 @@ window.Quarto = {
 };
 </script>
 </head>
-<body class="quarto-light">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
 <div id="quarto-sidebar-toc-left" class="sidebar toc-left">
@@ -409,7 +407,7 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 12</code></pre>
+<pre><code>[1] 20</code></pre>
 </div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>mc.cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -699,23 +697,23 @@ Models ranked by AICc(x) </code></pre>
 <p>The results of the location-only model (Model 0) and the location-scale model (Model 1) are summarised below.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="pitistgnop" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#pitistgnop table {
+<div id="tmgwkzzkkx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#tmgwkzzkkx table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#pitistgnop thead, #pitistgnop tbody, #pitistgnop tfoot, #pitistgnop tr, #pitistgnop td, #pitistgnop th {
+#tmgwkzzkkx thead, #tmgwkzzkkx tbody, #tmgwkzzkkx tfoot, #tmgwkzzkkx tr, #tmgwkzzkkx td, #tmgwkzzkkx th {
   border-style: none;
 }
 
-#pitistgnop p {
+#tmgwkzzkkx p {
   margin: 0;
   padding: 0;
 }
 
-#pitistgnop .gt_table {
+#tmgwkzzkkx .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -741,12 +739,12 @@ Models ranked by AICc(x) </code></pre>
   border-left-color: #D3D3D3;
 }
 
-#pitistgnop .gt_caption {
+#tmgwkzzkkx .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#pitistgnop .gt_title {
+#tmgwkzzkkx .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -758,7 +756,7 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-width: 0;
 }
 
-#pitistgnop .gt_subtitle {
+#tmgwkzzkkx .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -770,7 +768,7 @@ Models ranked by AICc(x) </code></pre>
   border-top-width: 0;
 }
 
-#pitistgnop .gt_heading {
+#tmgwkzzkkx .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -782,13 +780,13 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pitistgnop .gt_bottom_border {
+#tmgwkzzkkx .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#pitistgnop .gt_col_headings {
+#tmgwkzzkkx .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -803,7 +801,7 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pitistgnop .gt_col_heading {
+#tmgwkzzkkx .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -823,7 +821,7 @@ Models ranked by AICc(x) </code></pre>
   overflow-x: hidden;
 }
 
-#pitistgnop .gt_column_spanner_outer {
+#tmgwkzzkkx .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -835,15 +833,15 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 4px;
 }
 
-#pitistgnop .gt_column_spanner_outer:first-child {
+#tmgwkzzkkx .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#pitistgnop .gt_column_spanner_outer:last-child {
+#tmgwkzzkkx .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#pitistgnop .gt_column_spanner {
+#tmgwkzzkkx .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -855,11 +853,11 @@ Models ranked by AICc(x) </code></pre>
   width: 100%;
 }
 
-#pitistgnop .gt_spanner_row {
+#tmgwkzzkkx .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#pitistgnop .gt_group_heading {
+#tmgwkzzkkx .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -885,7 +883,7 @@ Models ranked by AICc(x) </code></pre>
   text-align: left;
 }
 
-#pitistgnop .gt_empty_group_heading {
+#tmgwkzzkkx .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -900,15 +898,15 @@ Models ranked by AICc(x) </code></pre>
   vertical-align: middle;
 }
 
-#pitistgnop .gt_from_md > :first-child {
+#tmgwkzzkkx .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#pitistgnop .gt_from_md > :last-child {
+#tmgwkzzkkx .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#pitistgnop .gt_row {
+#tmgwkzzkkx .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -927,7 +925,7 @@ Models ranked by AICc(x) </code></pre>
   overflow-x: hidden;
 }
 
-#pitistgnop .gt_stub {
+#tmgwkzzkkx .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -940,7 +938,7 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#pitistgnop .gt_stub_row_group {
+#tmgwkzzkkx .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -954,15 +952,15 @@ Models ranked by AICc(x) </code></pre>
   vertical-align: top;
 }
 
-#pitistgnop .gt_row_group_first td {
+#tmgwkzzkkx .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#pitistgnop .gt_row_group_first th {
+#tmgwkzzkkx .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#pitistgnop .gt_summary_row {
+#tmgwkzzkkx .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -972,16 +970,16 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#pitistgnop .gt_first_summary_row {
+#tmgwkzzkkx .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#pitistgnop .gt_first_summary_row.thick {
+#tmgwkzzkkx .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#pitistgnop .gt_last_summary_row {
+#tmgwkzzkkx .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -991,7 +989,7 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#pitistgnop .gt_grand_summary_row {
+#tmgwkzzkkx .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1001,7 +999,7 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#pitistgnop .gt_first_grand_summary_row {
+#tmgwkzzkkx .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1011,7 +1009,7 @@ Models ranked by AICc(x) </code></pre>
   border-top-color: #D3D3D3;
 }
 
-#pitistgnop .gt_last_grand_summary_row_top {
+#tmgwkzzkkx .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1021,11 +1019,11 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#pitistgnop .gt_striped {
+#tmgwkzzkkx .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#pitistgnop .gt_table_body {
+#tmgwkzzkkx .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1034,7 +1032,7 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#pitistgnop .gt_footnotes {
+#tmgwkzzkkx .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1048,7 +1046,7 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pitistgnop .gt_footnote {
+#tmgwkzzkkx .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1057,7 +1055,7 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#pitistgnop .gt_sourcenotes {
+#tmgwkzzkkx .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1071,7 +1069,7 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pitistgnop .gt_sourcenote {
+#tmgwkzzkkx .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1079,72 +1077,72 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#pitistgnop .gt_left {
+#tmgwkzzkkx .gt_left {
   text-align: left;
 }
 
-#pitistgnop .gt_center {
+#tmgwkzzkkx .gt_center {
   text-align: center;
 }
 
-#pitistgnop .gt_right {
+#tmgwkzzkkx .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#pitistgnop .gt_font_normal {
+#tmgwkzzkkx .gt_font_normal {
   font-weight: normal;
 }
 
-#pitistgnop .gt_font_bold {
+#tmgwkzzkkx .gt_font_bold {
   font-weight: bold;
 }
 
-#pitistgnop .gt_font_italic {
+#tmgwkzzkkx .gt_font_italic {
   font-style: italic;
 }
 
-#pitistgnop .gt_super {
+#tmgwkzzkkx .gt_super {
   font-size: 65%;
 }
 
-#pitistgnop .gt_footnote_marks {
+#tmgwkzzkkx .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#pitistgnop .gt_asterisk {
+#tmgwkzzkkx .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#pitistgnop .gt_indent_1 {
+#tmgwkzzkkx .gt_indent_1 {
   text-indent: 5px;
 }
 
-#pitistgnop .gt_indent_2 {
+#tmgwkzzkkx .gt_indent_2 {
   text-indent: 10px;
 }
 
-#pitistgnop .gt_indent_3 {
+#tmgwkzzkkx .gt_indent_3 {
   text-indent: 15px;
 }
 
-#pitistgnop .gt_indent_4 {
+#tmgwkzzkkx .gt_indent_4 {
   text-indent: 20px;
 }
 
-#pitistgnop .gt_indent_5 {
+#tmgwkzzkkx .gt_indent_5 {
   text-indent: 25px;
 }
 
-#pitistgnop .katex-display {
+#tmgwkzzkkx .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#pitistgnop div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#tmgwkzzkkx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1197,23 +1195,23 @@ Models ranked by AICc(x) </code></pre>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="lwdnbpnyam" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lwdnbpnyam table {
+<div id="ppswxevotn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ppswxevotn table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#lwdnbpnyam thead, #lwdnbpnyam tbody, #lwdnbpnyam tfoot, #lwdnbpnyam tr, #lwdnbpnyam td, #lwdnbpnyam th {
+#ppswxevotn thead, #ppswxevotn tbody, #ppswxevotn tfoot, #ppswxevotn tr, #ppswxevotn td, #ppswxevotn th {
   border-style: none;
 }
 
-#lwdnbpnyam p {
+#ppswxevotn p {
   margin: 0;
   padding: 0;
 }
 
-#lwdnbpnyam .gt_table {
+#ppswxevotn .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1239,12 +1237,12 @@ Models ranked by AICc(x) </code></pre>
   border-left-color: #D3D3D3;
 }
 
-#lwdnbpnyam .gt_caption {
+#ppswxevotn .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#lwdnbpnyam .gt_title {
+#ppswxevotn .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1256,7 +1254,7 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-width: 0;
 }
 
-#lwdnbpnyam .gt_subtitle {
+#ppswxevotn .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1268,7 +1266,7 @@ Models ranked by AICc(x) </code></pre>
   border-top-width: 0;
 }
 
-#lwdnbpnyam .gt_heading {
+#ppswxevotn .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1280,13 +1278,13 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#lwdnbpnyam .gt_bottom_border {
+#ppswxevotn .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#lwdnbpnyam .gt_col_headings {
+#ppswxevotn .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1301,7 +1299,7 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#lwdnbpnyam .gt_col_heading {
+#ppswxevotn .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1321,7 +1319,7 @@ Models ranked by AICc(x) </code></pre>
   overflow-x: hidden;
 }
 
-#lwdnbpnyam .gt_column_spanner_outer {
+#ppswxevotn .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1333,15 +1331,15 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 4px;
 }
 
-#lwdnbpnyam .gt_column_spanner_outer:first-child {
+#ppswxevotn .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#lwdnbpnyam .gt_column_spanner_outer:last-child {
+#ppswxevotn .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#lwdnbpnyam .gt_column_spanner {
+#ppswxevotn .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1353,11 +1351,11 @@ Models ranked by AICc(x) </code></pre>
   width: 100%;
 }
 
-#lwdnbpnyam .gt_spanner_row {
+#ppswxevotn .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#lwdnbpnyam .gt_group_heading {
+#ppswxevotn .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1383,7 +1381,7 @@ Models ranked by AICc(x) </code></pre>
   text-align: left;
 }
 
-#lwdnbpnyam .gt_empty_group_heading {
+#ppswxevotn .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1398,15 +1396,15 @@ Models ranked by AICc(x) </code></pre>
   vertical-align: middle;
 }
 
-#lwdnbpnyam .gt_from_md > :first-child {
+#ppswxevotn .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#lwdnbpnyam .gt_from_md > :last-child {
+#ppswxevotn .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#lwdnbpnyam .gt_row {
+#ppswxevotn .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1425,7 +1423,7 @@ Models ranked by AICc(x) </code></pre>
   overflow-x: hidden;
 }
 
-#lwdnbpnyam .gt_stub {
+#ppswxevotn .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1438,7 +1436,7 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#lwdnbpnyam .gt_stub_row_group {
+#ppswxevotn .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1452,15 +1450,15 @@ Models ranked by AICc(x) </code></pre>
   vertical-align: top;
 }
 
-#lwdnbpnyam .gt_row_group_first td {
+#ppswxevotn .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#lwdnbpnyam .gt_row_group_first th {
+#ppswxevotn .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#lwdnbpnyam .gt_summary_row {
+#ppswxevotn .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1470,16 +1468,16 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#lwdnbpnyam .gt_first_summary_row {
+#ppswxevotn .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#lwdnbpnyam .gt_first_summary_row.thick {
+#ppswxevotn .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#lwdnbpnyam .gt_last_summary_row {
+#ppswxevotn .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1489,7 +1487,7 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#lwdnbpnyam .gt_grand_summary_row {
+#ppswxevotn .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1499,7 +1497,7 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#lwdnbpnyam .gt_first_grand_summary_row {
+#ppswxevotn .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1509,7 +1507,7 @@ Models ranked by AICc(x) </code></pre>
   border-top-color: #D3D3D3;
 }
 
-#lwdnbpnyam .gt_last_grand_summary_row_top {
+#ppswxevotn .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1519,11 +1517,11 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#lwdnbpnyam .gt_striped {
+#ppswxevotn .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#lwdnbpnyam .gt_table_body {
+#ppswxevotn .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1532,7 +1530,7 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#lwdnbpnyam .gt_footnotes {
+#ppswxevotn .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1546,7 +1544,7 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#lwdnbpnyam .gt_footnote {
+#ppswxevotn .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1555,7 +1553,7 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#lwdnbpnyam .gt_sourcenotes {
+#ppswxevotn .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1569,7 +1567,7 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#lwdnbpnyam .gt_sourcenote {
+#ppswxevotn .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1577,72 +1575,72 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#lwdnbpnyam .gt_left {
+#ppswxevotn .gt_left {
   text-align: left;
 }
 
-#lwdnbpnyam .gt_center {
+#ppswxevotn .gt_center {
   text-align: center;
 }
 
-#lwdnbpnyam .gt_right {
+#ppswxevotn .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#lwdnbpnyam .gt_font_normal {
+#ppswxevotn .gt_font_normal {
   font-weight: normal;
 }
 
-#lwdnbpnyam .gt_font_bold {
+#ppswxevotn .gt_font_bold {
   font-weight: bold;
 }
 
-#lwdnbpnyam .gt_font_italic {
+#ppswxevotn .gt_font_italic {
   font-style: italic;
 }
 
-#lwdnbpnyam .gt_super {
+#ppswxevotn .gt_super {
   font-size: 65%;
 }
 
-#lwdnbpnyam .gt_footnote_marks {
+#ppswxevotn .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#lwdnbpnyam .gt_asterisk {
+#ppswxevotn .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#lwdnbpnyam .gt_indent_1 {
+#ppswxevotn .gt_indent_1 {
   text-indent: 5px;
 }
 
-#lwdnbpnyam .gt_indent_2 {
+#ppswxevotn .gt_indent_2 {
   text-indent: 10px;
 }
 
-#lwdnbpnyam .gt_indent_3 {
+#ppswxevotn .gt_indent_3 {
   text-indent: 15px;
 }
 
-#lwdnbpnyam .gt_indent_4 {
+#ppswxevotn .gt_indent_4 {
   text-indent: 20px;
 }
 
-#lwdnbpnyam .gt_indent_5 {
+#ppswxevotn .gt_indent_5 {
   text-indent: 25px;
 }
 
-#lwdnbpnyam .katex-display {
+#ppswxevotn .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#lwdnbpnyam div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ppswxevotn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1693,23 +1691,23 @@ Models ranked by AICc(x) </code></pre>
 </div>
 </div>
 <div class="cell-output-display">
-<div id="lrgeruhbit" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lrgeruhbit table {
+<div id="qvrunxgmpg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qvrunxgmpg table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#lrgeruhbit thead, #lrgeruhbit tbody, #lrgeruhbit tfoot, #lrgeruhbit tr, #lrgeruhbit td, #lrgeruhbit th {
+#qvrunxgmpg thead, #qvrunxgmpg tbody, #qvrunxgmpg tfoot, #qvrunxgmpg tr, #qvrunxgmpg td, #qvrunxgmpg th {
   border-style: none;
 }
 
-#lrgeruhbit p {
+#qvrunxgmpg p {
   margin: 0;
   padding: 0;
 }
 
-#lrgeruhbit .gt_table {
+#qvrunxgmpg .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1735,12 +1733,12 @@ Models ranked by AICc(x) </code></pre>
   border-left-color: #D3D3D3;
 }
 
-#lrgeruhbit .gt_caption {
+#qvrunxgmpg .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#lrgeruhbit .gt_title {
+#qvrunxgmpg .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1752,7 +1750,7 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-width: 0;
 }
 
-#lrgeruhbit .gt_subtitle {
+#qvrunxgmpg .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1764,7 +1762,7 @@ Models ranked by AICc(x) </code></pre>
   border-top-width: 0;
 }
 
-#lrgeruhbit .gt_heading {
+#qvrunxgmpg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1776,13 +1774,13 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#lrgeruhbit .gt_bottom_border {
+#qvrunxgmpg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#lrgeruhbit .gt_col_headings {
+#qvrunxgmpg .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1797,7 +1795,7 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#lrgeruhbit .gt_col_heading {
+#qvrunxgmpg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1817,7 +1815,7 @@ Models ranked by AICc(x) </code></pre>
   overflow-x: hidden;
 }
 
-#lrgeruhbit .gt_column_spanner_outer {
+#qvrunxgmpg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1829,15 +1827,15 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 4px;
 }
 
-#lrgeruhbit .gt_column_spanner_outer:first-child {
+#qvrunxgmpg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#lrgeruhbit .gt_column_spanner_outer:last-child {
+#qvrunxgmpg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#lrgeruhbit .gt_column_spanner {
+#qvrunxgmpg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1849,11 +1847,11 @@ Models ranked by AICc(x) </code></pre>
   width: 100%;
 }
 
-#lrgeruhbit .gt_spanner_row {
+#qvrunxgmpg .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#lrgeruhbit .gt_group_heading {
+#qvrunxgmpg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1879,7 +1877,7 @@ Models ranked by AICc(x) </code></pre>
   text-align: left;
 }
 
-#lrgeruhbit .gt_empty_group_heading {
+#qvrunxgmpg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1894,15 +1892,15 @@ Models ranked by AICc(x) </code></pre>
   vertical-align: middle;
 }
 
-#lrgeruhbit .gt_from_md > :first-child {
+#qvrunxgmpg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#lrgeruhbit .gt_from_md > :last-child {
+#qvrunxgmpg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#lrgeruhbit .gt_row {
+#qvrunxgmpg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1921,7 +1919,7 @@ Models ranked by AICc(x) </code></pre>
   overflow-x: hidden;
 }
 
-#lrgeruhbit .gt_stub {
+#qvrunxgmpg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1934,7 +1932,7 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#lrgeruhbit .gt_stub_row_group {
+#qvrunxgmpg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1948,15 +1946,15 @@ Models ranked by AICc(x) </code></pre>
   vertical-align: top;
 }
 
-#lrgeruhbit .gt_row_group_first td {
+#qvrunxgmpg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#lrgeruhbit .gt_row_group_first th {
+#qvrunxgmpg .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#lrgeruhbit .gt_summary_row {
+#qvrunxgmpg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1966,16 +1964,16 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#lrgeruhbit .gt_first_summary_row {
+#qvrunxgmpg .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#lrgeruhbit .gt_first_summary_row.thick {
+#qvrunxgmpg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#lrgeruhbit .gt_last_summary_row {
+#qvrunxgmpg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1985,7 +1983,7 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#lrgeruhbit .gt_grand_summary_row {
+#qvrunxgmpg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1995,7 +1993,7 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#lrgeruhbit .gt_first_grand_summary_row {
+#qvrunxgmpg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2005,7 +2003,7 @@ Models ranked by AICc(x) </code></pre>
   border-top-color: #D3D3D3;
 }
 
-#lrgeruhbit .gt_last_grand_summary_row_top {
+#qvrunxgmpg .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2015,11 +2013,11 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#lrgeruhbit .gt_striped {
+#qvrunxgmpg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#lrgeruhbit .gt_table_body {
+#qvrunxgmpg .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2028,7 +2026,7 @@ Models ranked by AICc(x) </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#lrgeruhbit .gt_footnotes {
+#qvrunxgmpg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2042,7 +2040,7 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#lrgeruhbit .gt_footnote {
+#qvrunxgmpg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2051,7 +2049,7 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#lrgeruhbit .gt_sourcenotes {
+#qvrunxgmpg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2065,7 +2063,7 @@ Models ranked by AICc(x) </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#lrgeruhbit .gt_sourcenote {
+#qvrunxgmpg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2073,72 +2071,72 @@ Models ranked by AICc(x) </code></pre>
   padding-right: 5px;
 }
 
-#lrgeruhbit .gt_left {
+#qvrunxgmpg .gt_left {
   text-align: left;
 }
 
-#lrgeruhbit .gt_center {
+#qvrunxgmpg .gt_center {
   text-align: center;
 }
 
-#lrgeruhbit .gt_right {
+#qvrunxgmpg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#lrgeruhbit .gt_font_normal {
+#qvrunxgmpg .gt_font_normal {
   font-weight: normal;
 }
 
-#lrgeruhbit .gt_font_bold {
+#qvrunxgmpg .gt_font_bold {
   font-weight: bold;
 }
 
-#lrgeruhbit .gt_font_italic {
+#qvrunxgmpg .gt_font_italic {
   font-style: italic;
 }
 
-#lrgeruhbit .gt_super {
+#qvrunxgmpg .gt_super {
   font-size: 65%;
 }
 
-#lrgeruhbit .gt_footnote_marks {
+#qvrunxgmpg .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#lrgeruhbit .gt_asterisk {
+#qvrunxgmpg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#lrgeruhbit .gt_indent_1 {
+#qvrunxgmpg .gt_indent_1 {
   text-indent: 5px;
 }
 
-#lrgeruhbit .gt_indent_2 {
+#qvrunxgmpg .gt_indent_2 {
   text-indent: 10px;
 }
 
-#lrgeruhbit .gt_indent_3 {
+#qvrunxgmpg .gt_indent_3 {
   text-indent: 15px;
 }
 
-#lrgeruhbit .gt_indent_4 {
+#qvrunxgmpg .gt_indent_4 {
   text-indent: 20px;
 }
 
-#lrgeruhbit .gt_indent_5 {
+#qvrunxgmpg .gt_indent_5 {
   text-indent: 25px;
 }
 
-#lrgeruhbit .katex-display {
+#qvrunxgmpg .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#lrgeruhbit div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#qvrunxgmpg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2301,7 +2299,7 @@ Note on <code>AIC</code> vs <code>AICc</code>:
 <p><strong>Q1. Does early-life food supplementation increase adult size? Specifically, does it increase the average tarsus length in adulthood?</strong></p>
 <p>Answer: No clear evidence. In both the location-only and location-scale models, the effect of feeding (treatment) on the mean adult tarsus length was small and not statistically significant. This suggests that food supplementation did not lead to a measurable increase in average tarsus length.</p>
 <p><strong>Q2. Does early-life food supplementation lead to lower variation in adult tarsus length??</strong></p>
-<p>Answer: Partically yes - especially in males. The location-scale model revealed a significant reduction in variance in the male treatment group (Fed) compared to the male control group. This was supported by a significant negative interaction between sex and treatment in the dispersion model. In contrast, females showed no significant difference in variance between treatment groups. This indicates that early-life food supplementation reduced size variation only in males, not across all individuals.</p>
+<p>Answer: Partially yes - especially in males. The location-scale model revealed a significant reduction in variance in the male treatment group (Fed) compared to the male control group. This was supported by a significant negative interaction between sex and treatment in the dispersion model. In contrast, females showed no significant difference in variance between treatment groups. This indicates that early-life food supplementation reduced size variation only in males, not across all individuals.</p>
 <p><strong>Q3. Are there sex-specific effects of food supplementation? Do the effects on mean or variance differ between males and females?</strong></p>
 <p>Answer: Yes. The male treatment group (<code>Fed</code>) showed significantly reduced variance in adult tarsus length compared to the control group <code>(Control)</code>, while females did not show a significant difference in variance between treatment groups. There were no significant differences in mean tarsus length between sexes or treatments. This pattern suggests that early-life food supplementation may canalise trait development in males, leading to more uniform adult morphology under favourable nutritional conditions.</p>
 <hr>
@@ -2314,7 +2312,7 @@ Note on <code>AIC</code> vs <code>AICc</code>:
 <p>Model 2 is a location-scale model with random effects in the location part only. This allows us to account for individual-level variation in the mean response while still modeling the dispersion separately.</p>
 <section id="dataset-overview-1" class="level2"><h2 class="anchored" data-anchor-id="dataset-overview-1">Dataset overview</h2>
 <p>This dataset comes from <a href="https://doi.org/10.1093/beheco/araf050">Drummond et al (2025)</a>, which examined the benefits of brood reduction in the blue-footed booby (<em>Sula nebouxii</em>).Focusing on two-chick broods, the research explored whether the death of one chick (brood reduction) primarily benefits the surviving sibling (via increased resource acquisition) or the parents (by lessening parental investment). In this species, older chicks establish a strong dominance hierarchy over their younger siblings. Under stressful environmental conditions, this often results in the death of the second-hatched chick, with parental intervention being extremely rare.</p>
-<p>For this tutorial, we will specifically examine data from two-chick broods where both chicks survived to fledging. Our analysis will focus on how hatching order influences the body condition of chicks at fledging.</p>
+<p>For this tutorial, we will specifically examine data from two-chick broods where both chicks survived to fledgling. Our analysis will focus on how hatching order influences the body condition of chicks at fledgling.</p>
 <section id="questions-1" class="level3"><h3 class="anchored" data-anchor-id="questions-1">Questions</h3>
 <ol type="1">
 <li><strong>Do first hatched chicks have a higher body mass than second-hatched chicks?</strong></li>
@@ -2548,23 +2546,23 @@ Random terms (all models):
 <p>The results of the location-only model (Model 0) and the location-scale model (Model 1) are summarized below.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="brptolmvqk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#brptolmvqk table {
+<div id="mjehctanuv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mjehctanuv table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#brptolmvqk thead, #brptolmvqk tbody, #brptolmvqk tfoot, #brptolmvqk tr, #brptolmvqk td, #brptolmvqk th {
+#mjehctanuv thead, #mjehctanuv tbody, #mjehctanuv tfoot, #mjehctanuv tr, #mjehctanuv td, #mjehctanuv th {
   border-style: none;
 }
 
-#brptolmvqk p {
+#mjehctanuv p {
   margin: 0;
   padding: 0;
 }
 
-#brptolmvqk .gt_table {
+#mjehctanuv .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2590,12 +2588,12 @@ Random terms (all models):
   border-left-color: #D3D3D3;
 }
 
-#brptolmvqk .gt_caption {
+#mjehctanuv .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#brptolmvqk .gt_title {
+#mjehctanuv .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2607,7 +2605,7 @@ Random terms (all models):
   border-bottom-width: 0;
 }
 
-#brptolmvqk .gt_subtitle {
+#mjehctanuv .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2619,7 +2617,7 @@ Random terms (all models):
   border-top-width: 0;
 }
 
-#brptolmvqk .gt_heading {
+#mjehctanuv .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2631,13 +2629,13 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#brptolmvqk .gt_bottom_border {
+#mjehctanuv .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#brptolmvqk .gt_col_headings {
+#mjehctanuv .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2652,7 +2650,7 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#brptolmvqk .gt_col_heading {
+#mjehctanuv .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2672,7 +2670,7 @@ Random terms (all models):
   overflow-x: hidden;
 }
 
-#brptolmvqk .gt_column_spanner_outer {
+#mjehctanuv .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2684,15 +2682,15 @@ Random terms (all models):
   padding-right: 4px;
 }
 
-#brptolmvqk .gt_column_spanner_outer:first-child {
+#mjehctanuv .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#brptolmvqk .gt_column_spanner_outer:last-child {
+#mjehctanuv .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#brptolmvqk .gt_column_spanner {
+#mjehctanuv .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2704,11 +2702,11 @@ Random terms (all models):
   width: 100%;
 }
 
-#brptolmvqk .gt_spanner_row {
+#mjehctanuv .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#brptolmvqk .gt_group_heading {
+#mjehctanuv .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2734,7 +2732,7 @@ Random terms (all models):
   text-align: left;
 }
 
-#brptolmvqk .gt_empty_group_heading {
+#mjehctanuv .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2749,15 +2747,15 @@ Random terms (all models):
   vertical-align: middle;
 }
 
-#brptolmvqk .gt_from_md > :first-child {
+#mjehctanuv .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#brptolmvqk .gt_from_md > :last-child {
+#mjehctanuv .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#brptolmvqk .gt_row {
+#mjehctanuv .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2776,7 +2774,7 @@ Random terms (all models):
   overflow-x: hidden;
 }
 
-#brptolmvqk .gt_stub {
+#mjehctanuv .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2789,7 +2787,7 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#brptolmvqk .gt_stub_row_group {
+#mjehctanuv .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2803,15 +2801,15 @@ Random terms (all models):
   vertical-align: top;
 }
 
-#brptolmvqk .gt_row_group_first td {
+#mjehctanuv .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#brptolmvqk .gt_row_group_first th {
+#mjehctanuv .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#brptolmvqk .gt_summary_row {
+#mjehctanuv .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2821,16 +2819,16 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#brptolmvqk .gt_first_summary_row {
+#mjehctanuv .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#brptolmvqk .gt_first_summary_row.thick {
+#mjehctanuv .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#brptolmvqk .gt_last_summary_row {
+#mjehctanuv .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2840,7 +2838,7 @@ Random terms (all models):
   border-bottom-color: #D3D3D3;
 }
 
-#brptolmvqk .gt_grand_summary_row {
+#mjehctanuv .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2850,7 +2848,7 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#brptolmvqk .gt_first_grand_summary_row {
+#mjehctanuv .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2860,7 +2858,7 @@ Random terms (all models):
   border-top-color: #D3D3D3;
 }
 
-#brptolmvqk .gt_last_grand_summary_row_top {
+#mjehctanuv .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2870,11 +2868,11 @@ Random terms (all models):
   border-bottom-color: #D3D3D3;
 }
 
-#brptolmvqk .gt_striped {
+#mjehctanuv .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#brptolmvqk .gt_table_body {
+#mjehctanuv .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2883,7 +2881,7 @@ Random terms (all models):
   border-bottom-color: #D3D3D3;
 }
 
-#brptolmvqk .gt_footnotes {
+#mjehctanuv .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2897,7 +2895,7 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#brptolmvqk .gt_footnote {
+#mjehctanuv .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2906,7 +2904,7 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#brptolmvqk .gt_sourcenotes {
+#mjehctanuv .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2920,7 +2918,7 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#brptolmvqk .gt_sourcenote {
+#mjehctanuv .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2928,72 +2926,72 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#brptolmvqk .gt_left {
+#mjehctanuv .gt_left {
   text-align: left;
 }
 
-#brptolmvqk .gt_center {
+#mjehctanuv .gt_center {
   text-align: center;
 }
 
-#brptolmvqk .gt_right {
+#mjehctanuv .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#brptolmvqk .gt_font_normal {
+#mjehctanuv .gt_font_normal {
   font-weight: normal;
 }
 
-#brptolmvqk .gt_font_bold {
+#mjehctanuv .gt_font_bold {
   font-weight: bold;
 }
 
-#brptolmvqk .gt_font_italic {
+#mjehctanuv .gt_font_italic {
   font-style: italic;
 }
 
-#brptolmvqk .gt_super {
+#mjehctanuv .gt_super {
   font-size: 65%;
 }
 
-#brptolmvqk .gt_footnote_marks {
+#mjehctanuv .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#brptolmvqk .gt_asterisk {
+#mjehctanuv .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#brptolmvqk .gt_indent_1 {
+#mjehctanuv .gt_indent_1 {
   text-indent: 5px;
 }
 
-#brptolmvqk .gt_indent_2 {
+#mjehctanuv .gt_indent_2 {
   text-indent: 10px;
 }
 
-#brptolmvqk .gt_indent_3 {
+#mjehctanuv .gt_indent_3 {
   text-indent: 15px;
 }
 
-#brptolmvqk .gt_indent_4 {
+#mjehctanuv .gt_indent_4 {
   text-indent: 20px;
 }
 
-#brptolmvqk .gt_indent_5 {
+#mjehctanuv .gt_indent_5 {
   text-indent: 25px;
 }
 
-#brptolmvqk .katex-display {
+#mjehctanuv .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#brptolmvqk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#mjehctanuv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3032,23 +3030,23 @@ Random terms (all models):
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="baxccsowru" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#baxccsowru table {
+<div id="zrggyutwfl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zrggyutwfl table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#baxccsowru thead, #baxccsowru tbody, #baxccsowru tfoot, #baxccsowru tr, #baxccsowru td, #baxccsowru th {
+#zrggyutwfl thead, #zrggyutwfl tbody, #zrggyutwfl tfoot, #zrggyutwfl tr, #zrggyutwfl td, #zrggyutwfl th {
   border-style: none;
 }
 
-#baxccsowru p {
+#zrggyutwfl p {
   margin: 0;
   padding: 0;
 }
 
-#baxccsowru .gt_table {
+#zrggyutwfl .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3074,12 +3072,12 @@ Random terms (all models):
   border-left-color: #D3D3D3;
 }
 
-#baxccsowru .gt_caption {
+#zrggyutwfl .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#baxccsowru .gt_title {
+#zrggyutwfl .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3091,7 +3089,7 @@ Random terms (all models):
   border-bottom-width: 0;
 }
 
-#baxccsowru .gt_subtitle {
+#zrggyutwfl .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3103,7 +3101,7 @@ Random terms (all models):
   border-top-width: 0;
 }
 
-#baxccsowru .gt_heading {
+#zrggyutwfl .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3115,13 +3113,13 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#baxccsowru .gt_bottom_border {
+#zrggyutwfl .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#baxccsowru .gt_col_headings {
+#zrggyutwfl .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3136,7 +3134,7 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#baxccsowru .gt_col_heading {
+#zrggyutwfl .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3156,7 +3154,7 @@ Random terms (all models):
   overflow-x: hidden;
 }
 
-#baxccsowru .gt_column_spanner_outer {
+#zrggyutwfl .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3168,15 +3166,15 @@ Random terms (all models):
   padding-right: 4px;
 }
 
-#baxccsowru .gt_column_spanner_outer:first-child {
+#zrggyutwfl .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#baxccsowru .gt_column_spanner_outer:last-child {
+#zrggyutwfl .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#baxccsowru .gt_column_spanner {
+#zrggyutwfl .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3188,11 +3186,11 @@ Random terms (all models):
   width: 100%;
 }
 
-#baxccsowru .gt_spanner_row {
+#zrggyutwfl .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#baxccsowru .gt_group_heading {
+#zrggyutwfl .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3218,7 +3216,7 @@ Random terms (all models):
   text-align: left;
 }
 
-#baxccsowru .gt_empty_group_heading {
+#zrggyutwfl .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3233,15 +3231,15 @@ Random terms (all models):
   vertical-align: middle;
 }
 
-#baxccsowru .gt_from_md > :first-child {
+#zrggyutwfl .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#baxccsowru .gt_from_md > :last-child {
+#zrggyutwfl .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#baxccsowru .gt_row {
+#zrggyutwfl .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3260,7 +3258,7 @@ Random terms (all models):
   overflow-x: hidden;
 }
 
-#baxccsowru .gt_stub {
+#zrggyutwfl .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3273,7 +3271,7 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#baxccsowru .gt_stub_row_group {
+#zrggyutwfl .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3287,15 +3285,15 @@ Random terms (all models):
   vertical-align: top;
 }
 
-#baxccsowru .gt_row_group_first td {
+#zrggyutwfl .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#baxccsowru .gt_row_group_first th {
+#zrggyutwfl .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#baxccsowru .gt_summary_row {
+#zrggyutwfl .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3305,16 +3303,16 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#baxccsowru .gt_first_summary_row {
+#zrggyutwfl .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#baxccsowru .gt_first_summary_row.thick {
+#zrggyutwfl .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#baxccsowru .gt_last_summary_row {
+#zrggyutwfl .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3324,7 +3322,7 @@ Random terms (all models):
   border-bottom-color: #D3D3D3;
 }
 
-#baxccsowru .gt_grand_summary_row {
+#zrggyutwfl .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3334,7 +3332,7 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#baxccsowru .gt_first_grand_summary_row {
+#zrggyutwfl .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3344,7 +3342,7 @@ Random terms (all models):
   border-top-color: #D3D3D3;
 }
 
-#baxccsowru .gt_last_grand_summary_row_top {
+#zrggyutwfl .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3354,11 +3352,11 @@ Random terms (all models):
   border-bottom-color: #D3D3D3;
 }
 
-#baxccsowru .gt_striped {
+#zrggyutwfl .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#baxccsowru .gt_table_body {
+#zrggyutwfl .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3367,7 +3365,7 @@ Random terms (all models):
   border-bottom-color: #D3D3D3;
 }
 
-#baxccsowru .gt_footnotes {
+#zrggyutwfl .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3381,7 +3379,7 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#baxccsowru .gt_footnote {
+#zrggyutwfl .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3390,7 +3388,7 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#baxccsowru .gt_sourcenotes {
+#zrggyutwfl .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3404,7 +3402,7 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#baxccsowru .gt_sourcenote {
+#zrggyutwfl .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3412,72 +3410,72 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#baxccsowru .gt_left {
+#zrggyutwfl .gt_left {
   text-align: left;
 }
 
-#baxccsowru .gt_center {
+#zrggyutwfl .gt_center {
   text-align: center;
 }
 
-#baxccsowru .gt_right {
+#zrggyutwfl .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#baxccsowru .gt_font_normal {
+#zrggyutwfl .gt_font_normal {
   font-weight: normal;
 }
 
-#baxccsowru .gt_font_bold {
+#zrggyutwfl .gt_font_bold {
   font-weight: bold;
 }
 
-#baxccsowru .gt_font_italic {
+#zrggyutwfl .gt_font_italic {
   font-style: italic;
 }
 
-#baxccsowru .gt_super {
+#zrggyutwfl .gt_super {
   font-size: 65%;
 }
 
-#baxccsowru .gt_footnote_marks {
+#zrggyutwfl .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#baxccsowru .gt_asterisk {
+#zrggyutwfl .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#baxccsowru .gt_indent_1 {
+#zrggyutwfl .gt_indent_1 {
   text-indent: 5px;
 }
 
-#baxccsowru .gt_indent_2 {
+#zrggyutwfl .gt_indent_2 {
   text-indent: 10px;
 }
 
-#baxccsowru .gt_indent_3 {
+#zrggyutwfl .gt_indent_3 {
   text-indent: 15px;
 }
 
-#baxccsowru .gt_indent_4 {
+#zrggyutwfl .gt_indent_4 {
   text-indent: 20px;
 }
 
-#baxccsowru .gt_indent_5 {
+#zrggyutwfl .gt_indent_5 {
   text-indent: 25px;
 }
 
-#baxccsowru .katex-display {
+#zrggyutwfl .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#baxccsowru div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#zrggyutwfl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3514,23 +3512,23 @@ Random terms (all models):
 </div>
 </div>
 <div class="cell-output-display">
-<div id="rkwujborfq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#rkwujborfq table {
+<div id="ppdsuknvqg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ppdsuknvqg table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#rkwujborfq thead, #rkwujborfq tbody, #rkwujborfq tfoot, #rkwujborfq tr, #rkwujborfq td, #rkwujborfq th {
+#ppdsuknvqg thead, #ppdsuknvqg tbody, #ppdsuknvqg tfoot, #ppdsuknvqg tr, #ppdsuknvqg td, #ppdsuknvqg th {
   border-style: none;
 }
 
-#rkwujborfq p {
+#ppdsuknvqg p {
   margin: 0;
   padding: 0;
 }
 
-#rkwujborfq .gt_table {
+#ppdsuknvqg .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3556,12 +3554,12 @@ Random terms (all models):
   border-left-color: #D3D3D3;
 }
 
-#rkwujborfq .gt_caption {
+#ppdsuknvqg .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#rkwujborfq .gt_title {
+#ppdsuknvqg .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3573,7 +3571,7 @@ Random terms (all models):
   border-bottom-width: 0;
 }
 
-#rkwujborfq .gt_subtitle {
+#ppdsuknvqg .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3585,7 +3583,7 @@ Random terms (all models):
   border-top-width: 0;
 }
 
-#rkwujborfq .gt_heading {
+#ppdsuknvqg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3597,13 +3595,13 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#rkwujborfq .gt_bottom_border {
+#ppdsuknvqg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#rkwujborfq .gt_col_headings {
+#ppdsuknvqg .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3618,7 +3616,7 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#rkwujborfq .gt_col_heading {
+#ppdsuknvqg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3638,7 +3636,7 @@ Random terms (all models):
   overflow-x: hidden;
 }
 
-#rkwujborfq .gt_column_spanner_outer {
+#ppdsuknvqg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3650,15 +3648,15 @@ Random terms (all models):
   padding-right: 4px;
 }
 
-#rkwujborfq .gt_column_spanner_outer:first-child {
+#ppdsuknvqg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#rkwujborfq .gt_column_spanner_outer:last-child {
+#ppdsuknvqg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#rkwujborfq .gt_column_spanner {
+#ppdsuknvqg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3670,11 +3668,11 @@ Random terms (all models):
   width: 100%;
 }
 
-#rkwujborfq .gt_spanner_row {
+#ppdsuknvqg .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#rkwujborfq .gt_group_heading {
+#ppdsuknvqg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3700,7 +3698,7 @@ Random terms (all models):
   text-align: left;
 }
 
-#rkwujborfq .gt_empty_group_heading {
+#ppdsuknvqg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3715,15 +3713,15 @@ Random terms (all models):
   vertical-align: middle;
 }
 
-#rkwujborfq .gt_from_md > :first-child {
+#ppdsuknvqg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#rkwujborfq .gt_from_md > :last-child {
+#ppdsuknvqg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#rkwujborfq .gt_row {
+#ppdsuknvqg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3742,7 +3740,7 @@ Random terms (all models):
   overflow-x: hidden;
 }
 
-#rkwujborfq .gt_stub {
+#ppdsuknvqg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3755,7 +3753,7 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#rkwujborfq .gt_stub_row_group {
+#ppdsuknvqg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3769,15 +3767,15 @@ Random terms (all models):
   vertical-align: top;
 }
 
-#rkwujborfq .gt_row_group_first td {
+#ppdsuknvqg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#rkwujborfq .gt_row_group_first th {
+#ppdsuknvqg .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#rkwujborfq .gt_summary_row {
+#ppdsuknvqg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3787,16 +3785,16 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#rkwujborfq .gt_first_summary_row {
+#ppdsuknvqg .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#rkwujborfq .gt_first_summary_row.thick {
+#ppdsuknvqg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#rkwujborfq .gt_last_summary_row {
+#ppdsuknvqg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3806,7 +3804,7 @@ Random terms (all models):
   border-bottom-color: #D3D3D3;
 }
 
-#rkwujborfq .gt_grand_summary_row {
+#ppdsuknvqg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3816,7 +3814,7 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#rkwujborfq .gt_first_grand_summary_row {
+#ppdsuknvqg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3826,7 +3824,7 @@ Random terms (all models):
   border-top-color: #D3D3D3;
 }
 
-#rkwujborfq .gt_last_grand_summary_row_top {
+#ppdsuknvqg .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3836,11 +3834,11 @@ Random terms (all models):
   border-bottom-color: #D3D3D3;
 }
 
-#rkwujborfq .gt_striped {
+#ppdsuknvqg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#rkwujborfq .gt_table_body {
+#ppdsuknvqg .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3849,7 +3847,7 @@ Random terms (all models):
   border-bottom-color: #D3D3D3;
 }
 
-#rkwujborfq .gt_footnotes {
+#ppdsuknvqg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3863,7 +3861,7 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#rkwujborfq .gt_footnote {
+#ppdsuknvqg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3872,7 +3870,7 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#rkwujborfq .gt_sourcenotes {
+#ppdsuknvqg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3886,7 +3884,7 @@ Random terms (all models):
   border-right-color: #D3D3D3;
 }
 
-#rkwujborfq .gt_sourcenote {
+#ppdsuknvqg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3894,72 +3892,72 @@ Random terms (all models):
   padding-right: 5px;
 }
 
-#rkwujborfq .gt_left {
+#ppdsuknvqg .gt_left {
   text-align: left;
 }
 
-#rkwujborfq .gt_center {
+#ppdsuknvqg .gt_center {
   text-align: center;
 }
 
-#rkwujborfq .gt_right {
+#ppdsuknvqg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#rkwujborfq .gt_font_normal {
+#ppdsuknvqg .gt_font_normal {
   font-weight: normal;
 }
 
-#rkwujborfq .gt_font_bold {
+#ppdsuknvqg .gt_font_bold {
   font-weight: bold;
 }
 
-#rkwujborfq .gt_font_italic {
+#ppdsuknvqg .gt_font_italic {
   font-style: italic;
 }
 
-#rkwujborfq .gt_super {
+#ppdsuknvqg .gt_super {
   font-size: 65%;
 }
 
-#rkwujborfq .gt_footnote_marks {
+#ppdsuknvqg .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#rkwujborfq .gt_asterisk {
+#ppdsuknvqg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#rkwujborfq .gt_indent_1 {
+#ppdsuknvqg .gt_indent_1 {
   text-indent: 5px;
 }
 
-#rkwujborfq .gt_indent_2 {
+#ppdsuknvqg .gt_indent_2 {
   text-indent: 10px;
 }
 
-#rkwujborfq .gt_indent_3 {
+#ppdsuknvqg .gt_indent_3 {
   text-indent: 15px;
 }
 
-#rkwujborfq .gt_indent_4 {
+#ppdsuknvqg .gt_indent_4 {
   text-indent: 20px;
 }
 
-#rkwujborfq .gt_indent_5 {
+#ppdsuknvqg .gt_indent_5 {
   text-indent: 25px;
 }
 
-#rkwujborfq .katex-display {
+#ppdsuknvqg .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#rkwujborfq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ppdsuknvqg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4127,23 +4125,23 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <!-- Once I finalised the online tutorial, I will remove the `eval: false` option so that the models will be fitted and the results will be displayed in the online tutorial. For now, I will keep the `eval: false` option to avoid errors. -->
 <div class="cell">
 <div class="cell-output-display">
-<div id="zxjevheodl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#zxjevheodl table {
+<div id="fdcccdciyw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fdcccdciyw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#zxjevheodl thead, #zxjevheodl tbody, #zxjevheodl tfoot, #zxjevheodl tr, #zxjevheodl td, #zxjevheodl th {
+#fdcccdciyw thead, #fdcccdciyw tbody, #fdcccdciyw tfoot, #fdcccdciyw tr, #fdcccdciyw td, #fdcccdciyw th {
   border-style: none;
 }
 
-#zxjevheodl p {
+#fdcccdciyw p {
   margin: 0;
   padding: 0;
 }
 
-#zxjevheodl .gt_table {
+#fdcccdciyw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -4169,12 +4167,12 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#zxjevheodl .gt_caption {
+#fdcccdciyw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#zxjevheodl .gt_title {
+#fdcccdciyw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4186,7 +4184,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-width: 0;
 }
 
-#zxjevheodl .gt_subtitle {
+#fdcccdciyw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4198,7 +4196,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-width: 0;
 }
 
-#zxjevheodl .gt_heading {
+#fdcccdciyw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4210,13 +4208,13 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#zxjevheodl .gt_bottom_border {
+#fdcccdciyw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#zxjevheodl .gt_col_headings {
+#fdcccdciyw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4231,7 +4229,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#zxjevheodl .gt_col_heading {
+#fdcccdciyw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4251,7 +4249,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#zxjevheodl .gt_column_spanner_outer {
+#fdcccdciyw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4263,15 +4261,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 4px;
 }
 
-#zxjevheodl .gt_column_spanner_outer:first-child {
+#fdcccdciyw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#zxjevheodl .gt_column_spanner_outer:last-child {
+#fdcccdciyw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#zxjevheodl .gt_column_spanner {
+#fdcccdciyw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4283,11 +4281,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   width: 100%;
 }
 
-#zxjevheodl .gt_spanner_row {
+#fdcccdciyw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#zxjevheodl .gt_group_heading {
+#fdcccdciyw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4313,7 +4311,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   text-align: left;
 }
 
-#zxjevheodl .gt_empty_group_heading {
+#fdcccdciyw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4328,15 +4326,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: middle;
 }
 
-#zxjevheodl .gt_from_md > :first-child {
+#fdcccdciyw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#zxjevheodl .gt_from_md > :last-child {
+#fdcccdciyw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#zxjevheodl .gt_row {
+#fdcccdciyw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4355,7 +4353,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#zxjevheodl .gt_stub {
+#fdcccdciyw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4368,7 +4366,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#zxjevheodl .gt_stub_row_group {
+#fdcccdciyw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4382,15 +4380,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: top;
 }
 
-#zxjevheodl .gt_row_group_first td {
+#fdcccdciyw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#zxjevheodl .gt_row_group_first th {
+#fdcccdciyw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#zxjevheodl .gt_summary_row {
+#fdcccdciyw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4400,16 +4398,16 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#zxjevheodl .gt_first_summary_row {
+#fdcccdciyw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#zxjevheodl .gt_first_summary_row.thick {
+#fdcccdciyw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#zxjevheodl .gt_last_summary_row {
+#fdcccdciyw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4419,7 +4417,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#zxjevheodl .gt_grand_summary_row {
+#fdcccdciyw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4429,7 +4427,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#zxjevheodl .gt_first_grand_summary_row {
+#fdcccdciyw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4439,7 +4437,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#zxjevheodl .gt_last_grand_summary_row_top {
+#fdcccdciyw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4449,11 +4447,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#zxjevheodl .gt_striped {
+#fdcccdciyw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#zxjevheodl .gt_table_body {
+#fdcccdciyw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4462,7 +4460,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#zxjevheodl .gt_footnotes {
+#fdcccdciyw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4476,7 +4474,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#zxjevheodl .gt_footnote {
+#fdcccdciyw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4485,7 +4483,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#zxjevheodl .gt_sourcenotes {
+#fdcccdciyw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4499,7 +4497,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#zxjevheodl .gt_sourcenote {
+#fdcccdciyw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4507,72 +4505,72 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#zxjevheodl .gt_left {
+#fdcccdciyw .gt_left {
   text-align: left;
 }
 
-#zxjevheodl .gt_center {
+#fdcccdciyw .gt_center {
   text-align: center;
 }
 
-#zxjevheodl .gt_right {
+#fdcccdciyw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#zxjevheodl .gt_font_normal {
+#fdcccdciyw .gt_font_normal {
   font-weight: normal;
 }
 
-#zxjevheodl .gt_font_bold {
+#fdcccdciyw .gt_font_bold {
   font-weight: bold;
 }
 
-#zxjevheodl .gt_font_italic {
+#fdcccdciyw .gt_font_italic {
   font-style: italic;
 }
 
-#zxjevheodl .gt_super {
+#fdcccdciyw .gt_super {
   font-size: 65%;
 }
 
-#zxjevheodl .gt_footnote_marks {
+#fdcccdciyw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#zxjevheodl .gt_asterisk {
+#fdcccdciyw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#zxjevheodl .gt_indent_1 {
+#fdcccdciyw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#zxjevheodl .gt_indent_2 {
+#fdcccdciyw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#zxjevheodl .gt_indent_3 {
+#fdcccdciyw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#zxjevheodl .gt_indent_4 {
+#fdcccdciyw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#zxjevheodl .gt_indent_5 {
+#fdcccdciyw .gt_indent_5 {
   text-indent: 25px;
 }
 
-#zxjevheodl .katex-display {
+#fdcccdciyw .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#zxjevheodl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#fdcccdciyw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4639,23 +4637,23 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 <div class="cell-output-display">
-<div id="duvgzttezw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#duvgzttezw table {
+<div id="pagvgvvkir" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#pagvgvvkir table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#duvgzttezw thead, #duvgzttezw tbody, #duvgzttezw tfoot, #duvgzttezw tr, #duvgzttezw td, #duvgzttezw th {
+#pagvgvvkir thead, #pagvgvvkir tbody, #pagvgvvkir tfoot, #pagvgvvkir tr, #pagvgvvkir td, #pagvgvvkir th {
   border-style: none;
 }
 
-#duvgzttezw p {
+#pagvgvvkir p {
   margin: 0;
   padding: 0;
 }
 
-#duvgzttezw .gt_table {
+#pagvgvvkir .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -4681,12 +4679,12 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#duvgzttezw .gt_caption {
+#pagvgvvkir .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#duvgzttezw .gt_title {
+#pagvgvvkir .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4698,7 +4696,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-width: 0;
 }
 
-#duvgzttezw .gt_subtitle {
+#pagvgvvkir .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4710,7 +4708,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-width: 0;
 }
 
-#duvgzttezw .gt_heading {
+#pagvgvvkir .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4722,13 +4720,13 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#duvgzttezw .gt_bottom_border {
+#pagvgvvkir .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#duvgzttezw .gt_col_headings {
+#pagvgvvkir .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4743,7 +4741,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#duvgzttezw .gt_col_heading {
+#pagvgvvkir .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4763,7 +4761,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#duvgzttezw .gt_column_spanner_outer {
+#pagvgvvkir .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4775,15 +4773,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 4px;
 }
 
-#duvgzttezw .gt_column_spanner_outer:first-child {
+#pagvgvvkir .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#duvgzttezw .gt_column_spanner_outer:last-child {
+#pagvgvvkir .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#duvgzttezw .gt_column_spanner {
+#pagvgvvkir .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4795,11 +4793,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   width: 100%;
 }
 
-#duvgzttezw .gt_spanner_row {
+#pagvgvvkir .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#duvgzttezw .gt_group_heading {
+#pagvgvvkir .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4825,7 +4823,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   text-align: left;
 }
 
-#duvgzttezw .gt_empty_group_heading {
+#pagvgvvkir .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4840,15 +4838,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: middle;
 }
 
-#duvgzttezw .gt_from_md > :first-child {
+#pagvgvvkir .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#duvgzttezw .gt_from_md > :last-child {
+#pagvgvvkir .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#duvgzttezw .gt_row {
+#pagvgvvkir .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4867,7 +4865,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#duvgzttezw .gt_stub {
+#pagvgvvkir .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4880,7 +4878,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#duvgzttezw .gt_stub_row_group {
+#pagvgvvkir .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4894,15 +4892,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: top;
 }
 
-#duvgzttezw .gt_row_group_first td {
+#pagvgvvkir .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#duvgzttezw .gt_row_group_first th {
+#pagvgvvkir .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#duvgzttezw .gt_summary_row {
+#pagvgvvkir .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4912,16 +4910,16 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#duvgzttezw .gt_first_summary_row {
+#pagvgvvkir .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#duvgzttezw .gt_first_summary_row.thick {
+#pagvgvvkir .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#duvgzttezw .gt_last_summary_row {
+#pagvgvvkir .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4931,7 +4929,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#duvgzttezw .gt_grand_summary_row {
+#pagvgvvkir .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4941,7 +4939,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#duvgzttezw .gt_first_grand_summary_row {
+#pagvgvvkir .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4951,7 +4949,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#duvgzttezw .gt_last_grand_summary_row_top {
+#pagvgvvkir .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4961,11 +4959,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#duvgzttezw .gt_striped {
+#pagvgvvkir .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#duvgzttezw .gt_table_body {
+#pagvgvvkir .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4974,7 +4972,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#duvgzttezw .gt_footnotes {
+#pagvgvvkir .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4988,7 +4986,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#duvgzttezw .gt_footnote {
+#pagvgvvkir .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4997,7 +4995,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#duvgzttezw .gt_sourcenotes {
+#pagvgvvkir .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -5011,7 +5009,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#duvgzttezw .gt_sourcenote {
+#pagvgvvkir .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -5019,72 +5017,72 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#duvgzttezw .gt_left {
+#pagvgvvkir .gt_left {
   text-align: left;
 }
 
-#duvgzttezw .gt_center {
+#pagvgvvkir .gt_center {
   text-align: center;
 }
 
-#duvgzttezw .gt_right {
+#pagvgvvkir .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#duvgzttezw .gt_font_normal {
+#pagvgvvkir .gt_font_normal {
   font-weight: normal;
 }
 
-#duvgzttezw .gt_font_bold {
+#pagvgvvkir .gt_font_bold {
   font-weight: bold;
 }
 
-#duvgzttezw .gt_font_italic {
+#pagvgvvkir .gt_font_italic {
   font-style: italic;
 }
 
-#duvgzttezw .gt_super {
+#pagvgvvkir .gt_super {
   font-size: 65%;
 }
 
-#duvgzttezw .gt_footnote_marks {
+#pagvgvvkir .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#duvgzttezw .gt_asterisk {
+#pagvgvvkir .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#duvgzttezw .gt_indent_1 {
+#pagvgvvkir .gt_indent_1 {
   text-indent: 5px;
 }
 
-#duvgzttezw .gt_indent_2 {
+#pagvgvvkir .gt_indent_2 {
   text-indent: 10px;
 }
 
-#duvgzttezw .gt_indent_3 {
+#pagvgvvkir .gt_indent_3 {
   text-indent: 15px;
 }
 
-#duvgzttezw .gt_indent_4 {
+#pagvgvvkir .gt_indent_4 {
   text-indent: 20px;
 }
 
-#duvgzttezw .gt_indent_5 {
+#pagvgvvkir .gt_indent_5 {
   text-indent: 25px;
 }
 
-#duvgzttezw .katex-display {
+#pagvgvvkir .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#duvgzttezw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#pagvgvvkir div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -5179,11 +5177,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <li><p>There is also very little variation in the average body condition across different years (<span class="math inline">\(\sigma_{[\text{Year}]}^{(l)}\)</span> = 0.092, 95% CI [0.069, 0.124]),implying generally consistent average body conditions from year to year.</p></li>
 </ul></section></section><section id="conclusion-1" class="level2"><h2 class="anchored" data-anchor-id="conclusion-1">Conclusion</h2>
 <p><strong>Do first hatched chicks have a higher body mass than second-hatched chicks?</strong></p>
-<p>Answer: Answer: Yes, first-hatched chicks have a significantly higher Scaled Mass Index (SMI) than second-hatched chicks at fledging, with a mean difference of approximately 0.018 on the log scale.</p>
+<p>Answer: Answer: Yes, first-hatched chicks have a significantly higher Scaled Mass Index (SMI) than second-hatched chicks at fledgling, with a mean difference of approximately 0.018 on the log scale.</p>
 <p><strong>Does the variability in body mass differ between first and second-hatched chicks?</strong></p>
-<p>Answer: Yes, the variability in body mass (SMI) is significantly greater in second-hatched chicks compared to first-hatched chicks. This indicates that second-hatched chicks show more variation in their body condition at fledging.</p>
+<p>Answer: Yes, the variability in body mass (SMI) is significantly greater in second-hatched chicks compared to first-hatched chicks. This indicates that second-hatched chicks show more variation in their body condition at fledgling.</p>
 </section></section><section id="double-hierarchical-location-scale-model-model-3" class="level1"><h1>Double-hierarchical location-scale model (Model 3)</h1>
-<p>Following up on the previous example analyzing the scaled mass index (SMI) at fledging <a href="https://doi.org/10.1093/beheco/araf050">Drummond et al(2025)</a>, we now extend our approach by fitting a double-hierarchical Gaussian location-scale model. This extends Model 2 by introducing nest identity as a correlated random effect in both the location (mean) and scale (variance) components. This extension allows us to examine not only how average <code>log(SMI)</code> and its variability differ across nests, but also whether these two forms of nest-level variation are correlated. The main distinction between Model 2 and Model 3 lies in how they handle variation. Model 2 includes random effects only for the mean, assuming constant variance across groups. In contrast, Model 3 accounts for group-level variability by including random effects in both the mean and the variance components. This makes Model 3 particularly useful when:</p>
+<p>Following up on the previous example analyzing the scaled mass index (SMI) at fledgling <a href="https://doi.org/10.1093/beheco/araf050">Drummond et al(2025)</a>, we now extend our approach by fitting a double-hierarchical Gaussian location-scale model. This extends Model 2 by introducing nest identity as a correlated random effect in both the location (mean) and scale (variance) components. This extension allows us to examine not only how average <code>log(SMI)</code> and its variability differ across nests, but also whether these two forms of nest-level variation are correlated. The main distinction between Model 2 and Model 3 lies in how they handle variation. Model 2 includes random effects only for the mean, assuming constant variance across groups. In contrast, Model 3 accounts for group-level variability by including random effects in both the mean and the variance components. This makes Model 3 particularly useful when:</p>
 <ul>
 <li>Group-level variability (heteroscedasticity) is present</li>
 </ul>
@@ -7151,6 +7149,9 @@ Random terms (all models):
 <p>Random effects in all models consistently showed greater variance among species than among id within species. For example, in the location-scale CMP model, species-level variance was 0.246, while individual-level variance was 0.151.</p>
 <section id="comparing-negative-binomial-and-cmp-models" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="comparing-negative-binomial-and-cmp-models">Comparing Negative Binomial and CMP Models</h3>
 <p>Below, we compare the Negative Binomial (NB) and Conway-Maxwell-Poisson (CMP) models to assess which better fits the data. Model selection is based on AICc and residual diagnostics.</p>
+<div>
+
+</div>
 <div class="cell column-page quarto-layout-panel" data-layout-ncol="3">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
@@ -7258,7 +7259,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p><strong>Q2: Does the variability in gaze responses differ between conditions?</strong></p>
 <p>Answer: Yes. In the scale (dispersion) part of the model, the coefficient for the food-supplied condition is significantly negative. Since lower θ values imply greater dispersion, this result suggests that individual gaze responses were more variable when food was supplied. In other words, birds showed more consistent gaze responses when food was deprived, and more varied responses when food was available.</p>
 </section></section><section id="beyond-gaussian-2" class="level1"><h1>Beyond Gaussian 2</h1>
-<p>This dataset comes from <a href="https://doi.org/10.1111/1365-2656.13766">Lundgren et al.&nbsp;(2022)</a>, which examined the activity and impact of feral dunkeys (<em>Equus africanus asinus</em>) between wetlands with and without cougar (<em>Puma concolor</em>) predation.</p>
+<p>This dataset comes from <a href="https://doi.org/10.1111/1365-2656.13766">Lundgren et al.&nbsp;(2022)</a>, which examined the activity and impact of feral donkeys (<em>Equus africanus asinus</em>) between wetlands with and without cougar (<em>Puma concolor</em>) predation.</p>
 <p>For this example, we will focus on the effect of cougar predation on the percentage of ground trampled by feral donkeys.</p>
 <section id="questions-3" class="level2"><h2 class="anchored" data-anchor-id="questions-3">Questions</h2>
 <ol type="1">
@@ -7379,7 +7380,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<p><code>zoi ~ if_kill</code> (Zero-One Inflation): This part of the model estimates how if_kill (cougar kill presence) influences the probability that an observation is exactly 0% or exactly 100% trampled bare ground. If <code>if_kill</code> increases the zoi probability, it means that areas with burro kills are more likely to have either no trampled ground or completely trampled ground, compared to areas without burro kills.</p>
+<p><code>zoi ~ if_kill</code> (Zero-One Inflation; zoi): This part of the model estimates how if_kill (cougar kill presence) influences the probability that an observation is exactly 0% or exactly 100% trampled bare ground. If <code>if_kill</code> increases the <code>zoi</code> probability, it means that areas with burro kills are more likely to have either no trampled ground or completely trampled ground, compared to areas without burro kills.</p>
 <p><code>coi ~ if_kill</code> (Conditional One-Inflation): This is where we distinguish between the 0% and 100% boundaries. If an observation is exactly at a boundary (0% or 100% trampled bare ground), the <code>coi</code> part of the model estimates how <code>if_kill</code> influences the probability that this boundary observation is 100% (fully trampled) rather than 0% (no trampled ground). So, if <code>coi</code> increases with <code>if_kill</code>, it suggests that if a site has exact boundary values, the presence of burro kills makes it more likely for that site to be completely trampled (100%) rather than completely untrampled (0%).</p>
 </div>
 </div>
@@ -7579,7 +7580,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <li>
 <strong>Begin with a simpler model</strong> (e.g., a location-only model assuming homoscedasticity) to establish a baseline for interpretation.</li>
 <li>
-<strong>Check residual diagonostics</strong> to detect possible model misspecification, such as overdispersion or non-uniformity of residuals. If issues are detected, consider more complex models (e.g., location-scale models) that account for heterogeneity in variance.</li>
+<strong>Check residual diagnostics</strong> to detect possible model misspecification, such as overdispersion or non-uniformity of residuals. If issues are detected, consider more complex models (e.g., location-scale models) that account for heterogeneity in variance.</li>
 <li>
 <strong>Gradually increase model complexity</strong>: Introduce additional components, such as group-level effects on the scale (variance), and consider estimating correlations between random effects when theoretically or empirically justified—especially when supported by sufficient sample size.</li>
 <li>
@@ -7602,12 +7603,12 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 <section id="example-1" class="level2"><h2 class="anchored" data-anchor-id="example-1">Example 1</h2>
-<p>In our ongoing exploration of Blue-footed Booby chick development, we previously investigated whether a chick’s scaled mass index (SMI) at fledging was influenced by its hatching order (Model 2). Building upon that foundation, we now delve into the critical role of additional covariates, a common practice in ecological fieldwork where numerous factors are hypothesized to affect our response variable. While exhaustive inclusion of all potential covariates is often constrained by data availability, strategic model selection allows us to pinpoint those that provide significant explanatory power.</p>
-<p>One particularly relevant covariate in this study is the chick’s hatching date. In this specific booby population, earlier hatching dates are frequently associated with enhanced chick survival. Conversely, later hatching can coincide with periods of increased food scarcity as ocean temperatures rise and fish prey disperse. Given these environmental pressures, we hypothesize that under the stressful conditions of late-season hatching, the disparity in fledging mass between chicks might be more pronounced compared to those hatched earlier in the season. This suggests a potential interactive effect between hatching date and hatching order.</p>
+<p>In our ongoing exploration of Blue-footed Booby chick development, we previously investigated whether a chick’s scaled mass index (SMI) at fledgling was influenced by its hatching order (Model 2). Building upon that foundation, we now delve into the critical role of additional covariates, a common practice in ecological fieldwork where numerous factors are hypothesized to affect our response variable. While exhaustive inclusion of all potential covariates is often constrained by data availability, strategic model selection allows us to pinpoint those that provide significant explanatory power.</p>
+<p>One particularly relevant covariate in this study is the chick’s hatching date. In this specific booby population, earlier hatching dates are frequently associated with enhanced chick survival. Conversely, later hatching can coincide with periods of increased food scarcity as ocean temperatures rise and fish prey disperse. Given these environmental pressures, we hypothesize that under the stressful conditions of late-season hatching, the disparity in fledgling mass between chicks might be more pronounced compared to those hatched earlier in the season. This suggests a potential interactive effect between hatching date and hatching order.</p>
 <p>In the subsequent sections, we will systematically investigate this hypothesis by:</p>
 <p>Incorporating hatching date as a fixed effect into the location (mean) component of our model.</p>
 <p>Adding an interaction term between hatching date and hatching order to the location part of the model.</p>
-<p>Conducting model comparisons to assess whether accounting for hatching date, both as a main effect and in interaction with hatching order, significantly improves our model’s fit and provides novel insights into chick fledging success.</p>
+<p>Conducting model comparisons to assess whether accounting for hatching date, both as a main effect and in interaction with hatching order, significantly improves our model’s fit and provides novel insights into chick fledgling success.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Step 1</a></li>
@@ -7618,7 +7619,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
 <section id="identify-data-type-and-plot-raw-data" class="level4"><h4 class="anchored" data-anchor-id="identify-data-type-and-plot-raw-data">Identify data type and plot raw data</h4>
-<p>Our response variable, Scaled Mass Index (SMI), is a continuous variable. Therefore, a Gaussian distribution will be employed for our statistical modeling. The raw data, illustrating the SMI of chicks at fledging, categorized by their hatching order (1st or 2nd hatched), is visualized below.</p>
+<p>Our response variable, Scaled Mass Index (SMI), is a continuous variable. Therefore, a Gaussian distribution will be employed for our statistical modeling. The raw data, illustrating the SMI of chicks at fledgling, categorized by their hatching order (1st or 2nd hatched), is visualized below.</p>
 <div class="cell">
 <div class="sourceCode" id="cb74"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">read_csv</span><span class="op">(</span><span class="fu">here</span><span class="op">(</span><span class="st">"data"</span>,<span class="st">"SMI_Drummond_et_al_2025.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">REDUCTION</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
@@ -7778,7 +7779,7 @@ Random terms (all models):
   cond(1 | NEST), cond(1 | WORKYEAR)</code></pre>
 </div>
 </div>
-<p>Comparing the models, we find that the model incorporating the interaction between hatching date and hatching order (model2_3b) has a lower AICc value (AICc = -8257.7) compared to the model without it (model2_3a, AICc = -8215.4). This improvement in AICc indicates that the interaction model provides a superior fit, effectively capturing how the influence of hatching date on fledging mass varies between first- and second-hatched chicks.</p>
+<p>Comparing the models, we find that the model incorporating the interaction between hatching date and hatching order (model2_3b) has a lower AICc value (AICc = -8257.7) compared to the model without it (model2_3a, AICc = -8215.4). This improvement in AICc indicates that the interaction model provides a superior fit, effectively capturing how the influence of hatching date on fledgling mass varies between first- and second-hatched chicks.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code> Family: gaussian  ( identity )
@@ -8184,13 +8185,13 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <div class="cell">
 <div class="sourceCode" id="cb97"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>R version 4.4.2 (2024-10-31)
+<pre><code>R version 4.5.0 (2025-04-11)
 Platform: aarch64-apple-darwin20
 Running under: macOS Sequoia 15.5
 
 Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
-LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -8204,59 +8205,59 @@ attached base packages:
 
 other attached packages:
  [1] knitr_1.50          kableExtra_1.4.0    here_1.0.1         
- [4] gt_1.0.0            tidybayes_3.0.7     patchwork_1.3.1    
- [7] bayesplot_1.13.0    MuMIn_1.48.11       loo_2.8.0          
+ [4] gt_1.0.0            tidybayes_3.0.7     patchwork_1.3.0    
+ [7] bayesplot_1.12.0    MuMIn_1.48.11       loo_2.8.0          
 [10] DHARMa_0.4.7        TreeTools_1.14.0    rstan_2.32.7       
 [13] StanHeaders_2.32.10 phytools_2.4-4      maps_3.4.3         
-[16] glmmTMB_1.1.11      emmeans_1.11.1      cmdstanr_0.9.0.9000
-[19] brms_2.22.0         Rcpp_1.1.0          arm_1.14-4         
+[16] glmmTMB_1.1.11      emmeans_1.11.1      cmdstanr_0.9.0     
+[19] brms_2.22.0         Rcpp_1.0.14         arm_1.14-4         
 [22] lme4_1.1-37         Matrix_1.7-3        MASS_7.3-65        
 [25] ape_5.8-1           broom.mixed_0.2.9.6 broom_1.0.8        
 [28] lubridate_1.9.4     forcats_1.0.0       stringr_1.5.1      
 [31] purrr_1.0.4         readr_2.1.5         tidyr_1.3.1        
-[34] ggplot2_3.5.2       tidyverse_2.0.0     tibble_3.3.0       
+[34] ggplot2_3.5.2       tidyverse_2.0.0     tibble_3.2.1       
 [37] dplyr_1.1.4        
 
 loaded via a namespace (and not attached):
-  [1] svUnit_1.0.6            splines_4.4.2           bitops_1.0-9           
+  [1] svUnit_1.0.6            splines_4.5.0           bitops_1.0-9           
   [4] R.oo_1.27.1             lifecycle_1.0.4         Rdpack_2.6.4           
   [7] doParallel_1.0.17       rprojroot_2.0.4         vroom_1.6.5            
  [10] globals_0.18.0          processx_3.8.6          lattice_0.22-7         
  [13] ggdist_3.3.3            backports_1.5.0         magrittr_2.0.3         
  [16] sass_0.4.10             rmarkdown_2.29          yaml_2.3.10            
- [19] gap_1.6                 pkgbuild_1.4.8          minqa_1.2.8            
- [22] RColorBrewer_1.1-3      multcomp_1.4-28         abind_1.4-8            
- [25] expm_1.0-0              R.cache_0.17.0          quadprog_1.5-8         
- [28] R.utils_2.13.0          RCurl_1.98-1.17         TH.data_1.1-3          
- [31] tensorA_0.36.2.1        sandwich_3.1-1          inline_0.3.21          
- [34] listenv_0.9.1           bridgesampling_1.1-2    parallelly_1.45.0      
- [37] svglite_2.2.1           codetools_0.2-20        xml2_1.3.8             
- [40] tidyselect_1.2.1        farver_2.1.2            matrixStats_1.5.0      
- [43] stats4_4.4.2            jsonlite_2.0.0          survival_3.8-3         
- [46] iterators_1.0.14        systemfonts_1.2.3       foreach_1.5.2          
- [49] tools_4.4.2             glue_1.8.0              mnormt_2.1.1           
- [52] gridExtra_2.3           xfun_0.52               mgcv_1.9-3             
- [55] distributional_0.5.0    withr_3.0.2             numDeriv_2016.8-1.1    
- [58] combinat_0.0-8          fastmap_1.2.0           boot_1.3-31            
- [61] digest_0.6.37           timechange_0.3.0        R6_2.6.1               
- [64] estimability_1.5.1      textshaping_1.0.1       colorspace_2.1-1       
- [67] R.methodsS3_1.8.2       generics_0.1.4          clusterGeneration_1.3.8
- [70] htmlwidgets_1.6.4       scatterplot3d_0.3-44    pkgconfig_2.0.3        
- [73] gtable_0.3.6            furrr_0.3.1             htmltools_0.5.8.1      
- [76] TMB_1.9.17              scales_1.4.0            posterior_1.6.1        
- [79] reformulas_0.4.1        rstudioapi_0.17.1       tzdb_0.5.0             
- [82] reshape2_1.4.4          coda_0.19-4.1           checkmate_2.3.2        
- [85] nlme_3.1-168            curl_6.4.0              nloptr_2.2.1           
- [88] zoo_1.8-14              DEoptim_2.2-8           pillar_1.11.0          
- [91] grid_4.4.2              vctrs_0.6.5             PlotTools_0.3.1        
- [94] arrayhelpers_1.1-0      xtable_1.8-4            evaluate_1.0.4         
- [97] mvtnorm_1.3-3           cli_3.6.5               compiler_4.4.2         
-[100] crayon_1.5.3            rlang_1.1.6             rstantools_2.4.0       
-[103] labeling_0.4.3          ps_1.9.1                plyr_1.8.9             
-[106] gap.datasets_0.0.6      stringi_1.8.7           viridisLite_0.4.2      
-[109] QuickJSR_1.8.0          optimParallel_1.0-2     Brobdingnag_1.2-9      
+ [19] gap_1.6                 pkgbuild_1.4.7          minqa_1.2.8            
+ [22] multcomp_1.4-28         abind_1.4-8             expm_1.0-0             
+ [25] R.cache_0.17.0          quadprog_1.5-8          R.utils_2.13.0         
+ [28] RCurl_1.98-1.17         TH.data_1.1-3           tensorA_0.36.2.1       
+ [31] sandwich_3.1-1          inline_0.3.21           listenv_0.9.1          
+ [34] bridgesampling_1.1-2    parallelly_1.44.0       svglite_2.2.1          
+ [37] codetools_0.2-20        xml2_1.3.8              tidyselect_1.2.1       
+ [40] farver_2.1.2            matrixStats_1.5.0       stats4_4.5.0           
+ [43] jsonlite_2.0.0          survival_3.8-3          iterators_1.0.14       
+ [46] systemfonts_1.2.3       foreach_1.5.2           tools_4.5.0            
+ [49] glue_1.8.0              mnormt_2.1.1            gridExtra_2.3          
+ [52] xfun_0.52               mgcv_1.9-3              distributional_0.5.0   
+ [55] withr_3.0.2             numDeriv_2016.8-1.1     combinat_0.0-8         
+ [58] fastmap_1.2.0           boot_1.3-31             digest_0.6.37          
+ [61] timechange_0.3.0        R6_2.6.1                estimability_1.5.1     
+ [64] textshaping_1.0.1       colorspace_2.1-1        R.methodsS3_1.8.2      
+ [67] generics_0.1.4          clusterGeneration_1.3.8 htmlwidgets_1.6.4      
+ [70] scatterplot3d_0.3-44    pkgconfig_2.0.3         gtable_0.3.6           
+ [73] furrr_0.3.1             htmltools_0.5.8.1       TMB_1.9.17             
+ [76] scales_1.3.0            posterior_1.6.1         reformulas_0.4.1       
+ [79] rstudioapi_0.17.1       tzdb_0.5.0              reshape2_1.4.4         
+ [82] coda_0.19-4.1           checkmate_2.3.2         nlme_3.1-168           
+ [85] curl_6.2.2              nloptr_2.2.1            zoo_1.8-14             
+ [88] DEoptim_2.2-8           pillar_1.10.2           grid_4.5.0             
+ [91] vctrs_0.6.5             PlotTools_0.3.1         arrayhelpers_1.1-0     
+ [94] xtable_1.8-4            evaluate_1.0.3          mvtnorm_1.3-3          
+ [97] cli_3.6.4               compiler_4.5.0          crayon_1.5.3           
+[100] rlang_1.1.6             rstantools_2.4.0        labeling_0.4.3         
+[103] ps_1.9.1                plyr_1.8.9              gap.datasets_0.0.6     
+[106] stringi_1.8.7           viridisLite_0.4.2       QuickJSR_1.7.0         
+[109] munsell_0.5.1           optimParallel_1.0-2     Brobdingnag_1.2-9      
 [112] pacman_0.5.1            V8_6.0.4                hms_1.1.3              
-[115] bit64_4.6.0-1           future_1.58.0           rbibutils_2.3          
+[115] bit64_4.6.0-1           future_1.49.0           rbibutils_2.3          
 [118] igraph_2.1.4            RcppParallel_5.1.10     phangorn_2.12.1        
 [121] fastmatch_1.1-6         bit_4.6.0              </code></pre>
 </div>
@@ -8264,293 +8265,287 @@ loaded via a namespace (and not attached):
 <!-- -->
 
 </section></main><!-- /main column --><script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
-    const isCodeAnnotation = (el) => {
-      for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
-          return true;
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
       }
       return false;
     }
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
-    const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
-        }
-        return codeEl.innerText;
-    }
-    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-      text: getTextToCopy
-    });
-    clipboard.on('success', onCopySuccess);
-    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-        text: getTextToCopy,
-        container: window.document.getElementById('quarto-embedded-source-code-modal')
-      });
-      clipboardModal.on('success', onCopySuccess);
-    }
-    const viewSource = window.document.getElementById('quarto-view-source') ||
-                       window.document.getElementById('quarto-code-tools-source');
-    if (viewSource) {
-      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-      viewSource.addEventListener("click", function(e) {
-        if (sourceUrl) {
-          // rstudio viewer pane
-          if (/\bcapabilities=\b/.test(window.location)) {
-            window.open(sourceUrl);
-          } else {
-            window.location.href = sourceUrl;
-          }
-        } else {
-          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-          modal.show();
-        }
-        return false;
-      });
-    }
-    function toggleCodeHandler(show) {
-      return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
-          if (show) {
-            details.open = true;
-          } else {
-            details.removeAttribute("open");
-          }
-        }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-        const fromCls = show ? "hidden" : "unhidden";
-        const toCls = show ? "unhidden" : "hidden";
-        for (let i=0; i<cellCodeDivs.length; i++) {
-          const codeDiv = cellCodeDivs[i];
-          if (codeDiv.classList.contains(fromCls)) {
-            codeDiv.classList.remove(fromCls);
-            codeDiv.classList.add(toCls);
-          } 
-        }
-        return false;
-      }
-    }
-    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-    if (hideAllCode) {
-      hideAllCode.addEventListener("click", toggleCodeHandler(false));
-    }
-    const showAllCode = window.document.getElementById("quarto-show-all-code");
-    if (showAllCode) {
-      showAllCode.addEventListener("click", toggleCodeHandler(true));
-    }
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-      }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
         }
       }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'quarto',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config); 
     }
-    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-    for (var i=0; i<noterefs.length; i++) {
-      const ref = noterefs[i];
-      tippyHover(ref, function() {
-        // use id or data attribute instead here
-        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-        try { href = new URL(href).hash; } catch {}
-        const id = href.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note) {
-          return note.innerHTML;
-        } else {
-          return "";
-        }
-      });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
     }
-    const xrefs = window.document.querySelectorAll('a.quarto-xref');
-    const processXRef = (id, note) => {
-      // Strip column container classes
-      const stripColumnClz = (el) => {
-        el.classList.remove("page-full", "page-columns");
-        if (el.children) {
-          for (const child of el.children) {
-            stripColumnClz(child);
-          }
-        }
-      }
-      stripColumnClz(note)
-      if (id === null || id.startsWith('sec-')) {
-        // Special case sections, only their first couple elements
-        const container = document.createElement("div");
-        if (note.children && note.children.length > 2) {
-          container.appendChild(note.children[0].cloneNode(true));
-          for (let i = 1; i < note.children.length; i++) {
-            const child = note.children[i];
-            if (child.tagName === "P" && child.innerText === "") {
-              continue;
-            } else {
-              container.appendChild(child.cloneNode(true));
-              break;
-            }
-          }
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(container);
-          }
-          return container.innerHTML
-        } else {
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(note);
-          }
-          return note.innerHTML;
-        }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
       } else {
-        // Remove any anchor links if they are present
-        const anchorLink = note.querySelector('a.anchorjs-link');
-        if (anchorLink) {
-          anchorLink.remove();
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
         }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        if (note.classList.contains("callout")) {
-          return note.outerHTML;
-        } else {
-          return note.innerHTML;
-        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
       }
     }
-    for (var i=0; i<xrefs.length; i++) {
-      const xref = xrefs[i];
-      tippyHover(xref, undefined, function(instance) {
-        instance.disable();
-        let url = xref.getAttribute('href');
-        let hash = undefined; 
-        if (url.startsWith('#')) {
-          hash = url;
-        } else {
-          try { hash = new URL(url).hash; } catch {}
-        }
-        if (hash) {
-          const id = hash.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note !== null) {
-            try {
-              const html = processXRef(id, note.cloneNode(true));
-              instance.setContent(html);
-            } finally {
-              instance.enable();
-              instance.show();
-            }
-          } else {
-            // See if we can fetch this
-            fetch(url.split('#')[0])
-            .then(res => res.text())
-            .then(html => {
-              const parser = new DOMParser();
-              const htmlDoc = parser.parseFromString(html, "text/html");
-              const note = htmlDoc.getElementById(id);
-              if (note !== null) {
-                const html = processXRef(id, note);
-                instance.setContent(html);
-              } 
-            }).finally(() => {
-              instance.enable();
-              instance.show();
-            });
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
           }
         } else {
-          // See if we can fetch a full url (with no hash to target)
-          // This is a special case and we should probably do some content thinning / targeting
-          fetch(url)
+          // See if we can fetch this
+          fetch(url.split('#')[0])
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.querySelector('main.content');
+            const note = htmlDoc.getElementById(id);
             if (note !== null) {
-              // This should only happen for chapter cross references
-              // (since there is no id in the URL)
-              // remove the first header
-              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-                note.children[0].remove();
-              }
-              const html = processXRef(null, note);
+              const html = processXRef(id, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -8558,161 +8553,185 @@ loaded via a namespace (and not attached):
             instance.show();
           });
         }
-      }, function(instance) {
-      });
-    }
-        let selectedAnnoteEl;
-        const selectorForAnnotation = ( cell, annotation) => {
-          let cellAttr = 'data-code-cell="' + cell + '"';
-          let lineAttr = 'data-code-annotation="' +  annotation + '"';
-          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-          return selector;
-        }
-        const selectCodeLines = (annoteEl) => {
-          const doc = window.document;
-          const targetCell = annoteEl.getAttribute("data-target-cell");
-          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-          const lineIds = lines.map((line) => {
-            return targetCell + "-" + line;
-          })
-          let top = null;
-          let height = null;
-          let parent = null;
-          if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
-            }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
-            }
-            selectedAnnoteEl = annoteEl;
-          }
-        };
-        const unselectCodeLines = () => {
-          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-          elementsIds.forEach((elId) => {
-            const div = window.document.getElementById(elId);
-            if (div) {
-              div.remove();
-            }
-          });
-          selectedAnnoteEl = undefined;
-        };
-          // Handle positioning of the toggle
-      window.addEventListener(
-        "resize",
-        throttle(() => {
-          elRect = undefined;
-          if (selectedAnnoteEl) {
-            selectCodeLines(selectedAnnoteEl);
-          }
-        }, 10)
-      );
-      function throttle(fn, ms) {
-      let throttle = false;
-      let timer;
-        return (...args) => {
-          if(!throttle) { // first call gets through
-              fn.apply(this, args);
-              throttle = true;
-          } else { // all the others get throttled
-              if(timer) clearTimeout(timer); // cancel #2
-              timer = setTimeout(() => {
-                fn.apply(this, args);
-                timer = throttle = false;
-              }, ms);
-          }
-        };
-      }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
-            }
-          });
-        }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
       } else {
-        return undefined;
-      }
-    };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
             }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
         });
       }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
     }
-  });
-  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb99" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Location–scale models in ecology: handling heterogeneity in continuous, counts and proportions"</span></span>
 <span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "step by step online tutorial"</span></span>
@@ -8952,12 +8971,12 @@ loaded via a namespace (and not attached):
 <span id="cb99-249"><a href="#cb99-249" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-250"><a href="#cb99-250" aria-hidden="true" tabindex="-1"></a>Here's how the scale component is handled in <span class="in">`glmmTMB`</span> and <span class="in">`brms`</span>, along with common parameter names for various distributions:</span>
 <span id="cb99-251"><a href="#cb99-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-252"><a href="#cb99-252" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Distribution <span class="pp">|</span> Scale Parameter (Example) <span class="pp">|</span> <span class="in">`glmmTMB`</span> Specification <span class="pp">|</span> <span class="in">`brms`</span> Specification (Example) <span class="pp">|</span></span>
-<span id="cb99-253"><a href="#cb99-253" aria-hidden="true" tabindex="-1"></a><span class="pp">|:-----------------|:-----------------|:-----------------|:-----------------|</span></span>
-<span id="cb99-254"><a href="#cb99-254" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Gaussian <span class="pp">|</span> $\sigma$ <span class="pp">|</span> <span class="in">`dispformula = ~ ...`</span> <span class="pp">|</span> <span class="in">`bf(..., sigma ~ ...)`</span> <span class="pp">|</span></span>
-<span id="cb99-255"><a href="#cb99-255" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Negative Binomial <span class="pp">|</span> $\theta$ <span class="pp">|</span> <span class="in">`dispformula = ~ ...`</span> <span class="pp">|</span> <span class="in">`bf(..., shape ~ ...)`</span> <span class="pp">|</span></span>
-<span id="cb99-256"><a href="#cb99-256" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Conway-Maxwell-Poisson <span class="pp">|</span> $\nu$ <span class="pp">|</span> <span class="in">`dispformula = ~ ...`</span> <span class="pp">|</span> <span class="in">`bf(..., nu ~ ...)`</span> <span class="pp">|</span></span>
-<span id="cb99-257"><a href="#cb99-257" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Beta-Binomial <span class="pp">|</span> $\phi$ <span class="pp">|</span> <span class="in">`dispformula = ~ ...`</span> <span class="pp">|</span> <span class="in">`bf(..., phi ~ ...)`</span> <span class="pp">|</span></span>
+<span id="cb99-252"><a href="#cb99-252" aria-hidden="true" tabindex="-1"></a>| Distribution | Scale Parameter (Example) | <span class="in">`glmmTMB`</span> Specification | <span class="in">`brms`</span> Specification (Example) |</span>
+<span id="cb99-253"><a href="#cb99-253" aria-hidden="true" tabindex="-1"></a>|:-----------------|:-----------------|:-----------------|:-----------------|</span>
+<span id="cb99-254"><a href="#cb99-254" aria-hidden="true" tabindex="-1"></a>| Gaussian | $\sigma$ | <span class="in">`dispformula = ~ ...`</span> | <span class="in">`bf(..., sigma ~ ...)`</span> |</span>
+<span id="cb99-255"><a href="#cb99-255" aria-hidden="true" tabindex="-1"></a>| Negative Binomial | $\theta$ | <span class="in">`dispformula = ~ ...`</span> | <span class="in">`bf(..., shape ~ ...)`</span> |</span>
+<span id="cb99-256"><a href="#cb99-256" aria-hidden="true" tabindex="-1"></a>| Conway-Maxwell-Poisson | $\nu$ | <span class="in">`dispformula = ~ ...`</span> | <span class="in">`bf(..., nu ~ ...)`</span> |</span>
+<span id="cb99-257"><a href="#cb99-257" aria-hidden="true" tabindex="-1"></a>| Beta-Binomial | $\phi$ | <span class="in">`dispformula = ~ ...`</span> | <span class="in">`bf(..., phi ~ ...)`</span> |</span>
 <span id="cb99-258"><a href="#cb99-258" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-259"><a href="#cb99-259" aria-hidden="true" tabindex="-1"></a>*Note: In `glmmTMB`, `dispformula` is generally used to model the dispersion or scale parameter, regardless of its specific Greek letter notation, which varies by distribution.*</span>
 <span id="cb99-260"><a href="#cb99-260" aria-hidden="true" tabindex="-1"></a></span>
@@ -9330,7 +9349,7 @@ loaded via a namespace (and not attached):
 <span id="cb99-645"><a href="#cb99-645" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-646"><a href="#cb99-646" aria-hidden="true" tabindex="-1"></a>**Q2. Does early-life food supplementation lead to lower variation in adult tarsus length??**</span>
 <span id="cb99-647"><a href="#cb99-647" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-648"><a href="#cb99-648" aria-hidden="true" tabindex="-1"></a>Answer: Partically yes - especially in males. The location-scale model revealed a significant reduction in variance in the male treatment group (Fed) compared to the male control group. This was supported by a significant negative interaction between sex and treatment in the dispersion model. In contrast, females showed no significant difference in variance between treatment groups. This indicates that early-life food supplementation reduced size variation only in males, not across all individuals.</span>
+<span id="cb99-648"><a href="#cb99-648" aria-hidden="true" tabindex="-1"></a>Answer: Partially yes - especially in males. The location-scale model revealed a significant reduction in variance in the male treatment group (Fed) compared to the male control group. This was supported by a significant negative interaction between sex and treatment in the dispersion model. In contrast, females showed no significant difference in variance between treatment groups. This indicates that early-life food supplementation reduced size variation only in males, not across all individuals.</span>
 <span id="cb99-649"><a href="#cb99-649" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-650"><a href="#cb99-650" aria-hidden="true" tabindex="-1"></a>**Q3. Are there sex-specific effects of food supplementation? Do the effects on mean or variance differ between males and females?**</span>
 <span id="cb99-651"><a href="#cb99-651" aria-hidden="true" tabindex="-1"></a></span>
@@ -9356,7 +9375,7 @@ loaded via a namespace (and not attached):
 <span id="cb99-671"><a href="#cb99-671" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-672"><a href="#cb99-672" aria-hidden="true" tabindex="-1"></a>This dataset comes from <span class="co">[</span><span class="ot">Drummond et al (2025)</span><span class="co">](https://doi.org/10.1093/beheco/araf050)</span>, which examined the benefits of brood reduction in the blue-footed booby (*Sula nebouxii*).Focusing on two-chick broods, the research explored whether the death of one chick (brood reduction) primarily benefits the surviving sibling (via increased resource acquisition) or the parents (by lessening parental investment). In this species, older chicks establish a strong dominance hierarchy over their younger siblings. Under stressful environmental conditions, this often results in the death of the second-hatched chick, with parental intervention being extremely rare.</span>
 <span id="cb99-673"><a href="#cb99-673" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-674"><a href="#cb99-674" aria-hidden="true" tabindex="-1"></a>For this tutorial, we will specifically examine data from two-chick broods where both chicks survived to fledging. Our analysis will focus on how hatching order influences the body condition of chicks at fledging.</span>
+<span id="cb99-674"><a href="#cb99-674" aria-hidden="true" tabindex="-1"></a>For this tutorial, we will specifically examine data from two-chick broods where both chicks survived to fledgling. Our analysis will focus on how hatching order influences the body condition of chicks at fledgling.</span>
 <span id="cb99-675"><a href="#cb99-675" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-676"><a href="#cb99-676" aria-hidden="true" tabindex="-1"></a><span class="fu">### Questions</span></span>
 <span id="cb99-677"><a href="#cb99-677" aria-hidden="true" tabindex="-1"></a></span>
@@ -9870,15 +9889,15 @@ loaded via a namespace (and not attached):
 <span id="cb99-1215"><a href="#cb99-1215" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-1216"><a href="#cb99-1216" aria-hidden="true" tabindex="-1"></a>**Do first hatched chicks have a higher body mass than second-hatched chicks?**</span>
 <span id="cb99-1217"><a href="#cb99-1217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-1218"><a href="#cb99-1218" aria-hidden="true" tabindex="-1"></a>Answer: Answer: Yes, first-hatched chicks have a significantly higher Scaled Mass Index (SMI) than second-hatched chicks at fledging, with a mean difference of approximately 0.018 on the log scale.</span>
+<span id="cb99-1218"><a href="#cb99-1218" aria-hidden="true" tabindex="-1"></a>Answer: Answer: Yes, first-hatched chicks have a significantly higher Scaled Mass Index (SMI) than second-hatched chicks at fledgling, with a mean difference of approximately 0.018 on the log scale.</span>
 <span id="cb99-1219"><a href="#cb99-1219" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-1220"><a href="#cb99-1220" aria-hidden="true" tabindex="-1"></a>**Does the variability in body mass differ between first and second-hatched chicks?**</span>
 <span id="cb99-1221"><a href="#cb99-1221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-1222"><a href="#cb99-1222" aria-hidden="true" tabindex="-1"></a>Answer: Yes, the variability in body mass (SMI) is significantly greater in second-hatched chicks compared to first-hatched chicks. This indicates that second-hatched chicks show more variation in their body condition at fledging.</span>
+<span id="cb99-1222"><a href="#cb99-1222" aria-hidden="true" tabindex="-1"></a>Answer: Yes, the variability in body mass (SMI) is significantly greater in second-hatched chicks compared to first-hatched chicks. This indicates that second-hatched chicks show more variation in their body condition at fledgling.</span>
 <span id="cb99-1223"><a href="#cb99-1223" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-1224"><a href="#cb99-1224" aria-hidden="true" tabindex="-1"></a><span class="fu"># Double-hierarchical location-scale model (Model 3)</span></span>
 <span id="cb99-1225"><a href="#cb99-1225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-1226"><a href="#cb99-1226" aria-hidden="true" tabindex="-1"></a>Following up on the previous example analyzing the scaled mass index (SMI) at fledging <span class="co">[</span><span class="ot">Drummond et al(2025)</span><span class="co">](https://doi.org/10.1093/beheco/araf050)</span>, we now extend our approach by fitting a double-hierarchical Gaussian location-scale model. This extends Model 2 by introducing nest identity as a correlated random effect in both the location (mean) and scale (variance) components. This extension allows us to examine not only how average <span class="in">`log(SMI)`</span> and its variability differ across nests, but also whether these two forms of nest-level variation are correlated. The main distinction between Model 2 and Model 3 lies in how they handle variation. Model 2 includes random effects only for the mean, assuming constant variance across groups. In contrast, Model 3 accounts for group-level variability by including random effects in both the mean and the variance components. This makes Model 3 particularly useful when:</span>
+<span id="cb99-1226"><a href="#cb99-1226" aria-hidden="true" tabindex="-1"></a>Following up on the previous example analyzing the scaled mass index (SMI) at fledgling <span class="co">[</span><span class="ot">Drummond et al(2025)</span><span class="co">](https://doi.org/10.1093/beheco/araf050)</span>, we now extend our approach by fitting a double-hierarchical Gaussian location-scale model. This extends Model 2 by introducing nest identity as a correlated random effect in both the location (mean) and scale (variance) components. This extension allows us to examine not only how average <span class="in">`log(SMI)`</span> and its variability differ across nests, but also whether these two forms of nest-level variation are correlated. The main distinction between Model 2 and Model 3 lies in how they handle variation. Model 2 includes random effects only for the mean, assuming constant variance across groups. In contrast, Model 3 accounts for group-level variability by including random effects in both the mean and the variance components. This makes Model 3 particularly useful when:</span>
 <span id="cb99-1227"><a href="#cb99-1227" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-1228"><a href="#cb99-1228" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Group-level variability (heteroscedasticity) is present</span>
 <span id="cb99-1229"><a href="#cb99-1229" aria-hidden="true" tabindex="-1"></a></span>
@@ -10568,7 +10587,7 @@ loaded via a namespace (and not attached):
 <span id="cb99-1951"><a href="#cb99-1951" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-1952"><a href="#cb99-1952" aria-hidden="true" tabindex="-1"></a><span class="fu"># Beyond Gaussian 2</span></span>
 <span id="cb99-1953"><a href="#cb99-1953" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-1954"><a href="#cb99-1954" aria-hidden="true" tabindex="-1"></a>This dataset comes from <span class="co">[</span><span class="ot">Lundgren et al. (2022)</span><span class="co">](https://doi.org/10.1111/1365-2656.13766)</span>, which examined the activity and impact of feral dunkeys (*Equus africanus asinus*) between wetlands with and without cougar (*Puma concolor*) predation.</span>
+<span id="cb99-1954"><a href="#cb99-1954" aria-hidden="true" tabindex="-1"></a>This dataset comes from <span class="co">[</span><span class="ot">Lundgren et al. (2022)</span><span class="co">](https://doi.org/10.1111/1365-2656.13766)</span>, which examined the activity and impact of feral donkeys (*Equus africanus asinus*) between wetlands with and without cougar (*Puma concolor*) predation.</span>
 <span id="cb99-1955"><a href="#cb99-1955" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-1956"><a href="#cb99-1956" aria-hidden="true" tabindex="-1"></a>For this example, we will focus on the effect of cougar predation on the percentage of ground trampled by feral donkeys.</span>
 <span id="cb99-1957"><a href="#cb99-1957" aria-hidden="true" tabindex="-1"></a></span>
@@ -10670,7 +10689,7 @@ loaded via a namespace (and not attached):
 <span id="cb99-2055"><a href="#cb99-2055" aria-hidden="true" tabindex="-1"></a><span class="fu">## Location-only model</span></span>
 <span id="cb99-2056"><a href="#cb99-2056" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-2057"><a href="#cb99-2057" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple" icon="false"}</span>
-<span id="cb99-2058"><a href="#cb99-2058" aria-hidden="true" tabindex="-1"></a><span class="in">`zoi ~ if_kill`</span> (Zero-One Inflation): This part of the model estimates how if_kill (cougar kill presence) influences the probability that an observation is exactly 0% or exactly 100% trampled bare ground. If <span class="in">`if_kill`</span> increases the zoi probability, it means that areas with burro kills are more likely to have either no trampled ground or completely trampled ground, compared to areas without burro kills.</span>
+<span id="cb99-2058"><a href="#cb99-2058" aria-hidden="true" tabindex="-1"></a><span class="in">`zoi ~ if_kill`</span> (Zero-One Inflation; zoi): This part of the model estimates how if_kill (cougar kill presence) influences the probability that an observation is exactly 0% or exactly 100% trampled bare ground. If <span class="in">`if_kill`</span> increases the <span class="in">`zoi`</span> probability, it means that areas with burro kills are more likely to have either no trampled ground or completely trampled ground, compared to areas without burro kills.</span>
 <span id="cb99-2059"><a href="#cb99-2059" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-2060"><a href="#cb99-2060" aria-hidden="true" tabindex="-1"></a><span class="in">`coi ~ if_kill`</span> (Conditional One-Inflation): This is where we distinguish between the 0% and 100% boundaries. If an observation is exactly at a boundary (0% or 100% trampled bare ground), the <span class="in">`coi`</span> part of the model estimates how <span class="in">`if_kill`</span> influences the probability that this boundary observation is 100% (fully trampled) rather than 0% (no trampled ground). So, if <span class="in">`coi`</span> increases with <span class="in">`if_kill`</span>, it suggests that if a site has exact boundary values, the presence of burro kills makes it more likely for that site to be completely trampled (100%) rather than completely untrampled (0%).</span>
 <span id="cb99-2061"><a href="#cb99-2061" aria-hidden="true" tabindex="-1"></a>:::</span>
@@ -10816,7 +10835,7 @@ loaded via a namespace (and not attached):
 <span id="cb99-2211"><a href="#cb99-2211" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-2212"><a href="#cb99-2212" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Identify data type and plot raw data** to understand the distribution and structure of the response variable. This helps in selecting an appropriate model family (e.g., Gaussian, Poisson, Negative Binomial, Beta).</span>
 <span id="cb99-2213"><a href="#cb99-2213" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Begin with a simpler model** (e.g., a location-only model assuming homoscedasticity) to establish a baseline for interpretation.</span>
-<span id="cb99-2214"><a href="#cb99-2214" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Check residual diagonostics** to detect possible model misspecification, such as overdispersion or non-uniformity of residuals. If issues are detected, consider more complex models (e.g., location-scale models) that account for heterogeneity in variance.</span>
+<span id="cb99-2214"><a href="#cb99-2214" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Check residual diagnostics** to detect possible model misspecification, such as overdispersion or non-uniformity of residuals. If issues are detected, consider more complex models (e.g., location-scale models) that account for heterogeneity in variance.</span>
 <span id="cb99-2215"><a href="#cb99-2215" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Gradually increase model complexity**: Introduce additional components, such as group-level effects on the scale (variance), and consider estimating correlations between random effects when theoretically or empirically justified—especially when supported by sufficient sample size.</span>
 <span id="cb99-2216"><a href="#cb99-2216" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Compare models using information criteria**:</span>
 <span id="cb99-2217"><a href="#cb99-2217" aria-hidden="true" tabindex="-1"></a></span>
@@ -10832,9 +10851,9 @@ loaded via a namespace (and not attached):
 <span id="cb99-2227"><a href="#cb99-2227" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb99-2228"><a href="#cb99-2228" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-2229"><a href="#cb99-2229" aria-hidden="true" tabindex="-1"></a><span class="fu">## Example 1</span></span>
-<span id="cb99-2230"><a href="#cb99-2230" aria-hidden="true" tabindex="-1"></a>In our ongoing exploration of Blue-footed Booby chick development, we previously investigated whether a chick's scaled mass index (SMI) at fledging was influenced by its hatching order (Model 2). Building upon that foundation, we now delve into the critical role of additional covariates, a common practice in ecological fieldwork where numerous factors are hypothesized to affect our response variable. While exhaustive inclusion of all potential covariates is often constrained by data availability, strategic model selection allows us to pinpoint those that provide significant explanatory power.</span>
+<span id="cb99-2230"><a href="#cb99-2230" aria-hidden="true" tabindex="-1"></a>In our ongoing exploration of Blue-footed Booby chick development, we previously investigated whether a chick's scaled mass index (SMI) at fledgling was influenced by its hatching order (Model 2). Building upon that foundation, we now delve into the critical role of additional covariates, a common practice in ecological fieldwork where numerous factors are hypothesized to affect our response variable. While exhaustive inclusion of all potential covariates is often constrained by data availability, strategic model selection allows us to pinpoint those that provide significant explanatory power.</span>
 <span id="cb99-2231"><a href="#cb99-2231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-2232"><a href="#cb99-2232" aria-hidden="true" tabindex="-1"></a>One particularly relevant covariate in this study is the chick's hatching date. In this specific booby population, earlier hatching dates are frequently associated with enhanced chick survival. Conversely, later hatching can coincide with periods of increased food scarcity as ocean temperatures rise and fish prey disperse. Given these environmental pressures, we hypothesize that under the stressful conditions of late-season hatching, the disparity in fledging mass between chicks might be more pronounced compared to those hatched earlier in the season. This suggests a potential interactive effect between hatching date and hatching order.</span>
+<span id="cb99-2232"><a href="#cb99-2232" aria-hidden="true" tabindex="-1"></a>One particularly relevant covariate in this study is the chick's hatching date. In this specific booby population, earlier hatching dates are frequently associated with enhanced chick survival. Conversely, later hatching can coincide with periods of increased food scarcity as ocean temperatures rise and fish prey disperse. Given these environmental pressures, we hypothesize that under the stressful conditions of late-season hatching, the disparity in fledgling mass between chicks might be more pronounced compared to those hatched earlier in the season. This suggests a potential interactive effect between hatching date and hatching order.</span>
 <span id="cb99-2233"><a href="#cb99-2233" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-2234"><a href="#cb99-2234" aria-hidden="true" tabindex="-1"></a>In the subsequent sections, we will systematically investigate this hypothesis by:</span>
 <span id="cb99-2235"><a href="#cb99-2235" aria-hidden="true" tabindex="-1"></a></span>
@@ -10842,7 +10861,7 @@ loaded via a namespace (and not attached):
 <span id="cb99-2237"><a href="#cb99-2237" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-2238"><a href="#cb99-2238" aria-hidden="true" tabindex="-1"></a>Adding an interaction term between hatching date and hatching order to the location part of the model.</span>
 <span id="cb99-2239"><a href="#cb99-2239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-2240"><a href="#cb99-2240" aria-hidden="true" tabindex="-1"></a>Conducting model comparisons to assess whether accounting for hatching date, both as a main effect and in interaction with hatching order, significantly improves our model's fit and provides novel insights into chick fledging success.</span>
+<span id="cb99-2240"><a href="#cb99-2240" aria-hidden="true" tabindex="-1"></a>Conducting model comparisons to assess whether accounting for hatching date, both as a main effect and in interaction with hatching order, significantly improves our model's fit and provides novel insights into chick fledgling success.</span>
 <span id="cb99-2241"><a href="#cb99-2241" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-2242"><a href="#cb99-2242" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
 <span id="cb99-2243"><a href="#cb99-2243" aria-hidden="true" tabindex="-1"></a></span>
@@ -10851,7 +10870,7 @@ loaded via a namespace (and not attached):
 <span id="cb99-2246"><a href="#cb99-2246" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-2247"><a href="#cb99-2247" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Identify data type and plot raw data</span></span>
 <span id="cb99-2248"><a href="#cb99-2248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-2249"><a href="#cb99-2249" aria-hidden="true" tabindex="-1"></a>Our response variable, Scaled Mass Index (SMI), is a continuous variable. Therefore, a Gaussian distribution will be employed for our statistical modeling. The raw data, illustrating the SMI of chicks at fledging, categorized by their hatching order (1st or 2nd hatched), is visualized below.</span>
+<span id="cb99-2249"><a href="#cb99-2249" aria-hidden="true" tabindex="-1"></a>Our response variable, Scaled Mass Index (SMI), is a continuous variable. Therefore, a Gaussian distribution will be employed for our statistical modeling. The raw data, illustrating the SMI of chicks at fledgling, categorized by their hatching order (1st or 2nd hatched), is visualized below.</span>
 <span id="cb99-2250"><a href="#cb99-2250" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-2253"><a href="#cb99-2253" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb99-2254"><a href="#cb99-2254" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: show_data -model2 -eg1</span></span>
@@ -11025,7 +11044,7 @@ loaded via a namespace (and not attached):
 <span id="cb99-2436"><a href="#cb99-2436" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-2437"><a href="#cb99-2437" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb99-2438"><a href="#cb99-2438" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-2439"><a href="#cb99-2439" aria-hidden="true" tabindex="-1"></a>Comparing the models, we find that the model incorporating the interaction between hatching date and hatching order (model2_3b) has a lower AICc value (AICc = -8257.7) compared to the model without it (model2_3a, AICc = -8215.4). This improvement in AICc indicates that the interaction model provides a superior fit, effectively capturing how the influence of hatching date on fledging mass varies between first- and second-hatched chicks.</span>
+<span id="cb99-2439"><a href="#cb99-2439" aria-hidden="true" tabindex="-1"></a>Comparing the models, we find that the model incorporating the interaction between hatching date and hatching order (model2_3b) has a lower AICc value (AICc = -8257.7) compared to the model without it (model2_3a, AICc = -8215.4). This improvement in AICc indicates that the interaction model provides a superior fit, effectively capturing how the influence of hatching date on fledgling mass varies between first- and second-hatched chicks.</span>
 <span id="cb99-2440"><a href="#cb99-2440" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-2443"><a href="#cb99-2443" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb99-2444"><a href="#cb99-2444" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
