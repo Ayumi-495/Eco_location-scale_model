@@ -615,7 +615,7 @@ Answer: No clear evidence. In both the location-only and location-scale models, 
 
 **Q2. Does early-life food supplementation lead to lower variation in adult tarsus length??**
 
-Answer: Partically yes - especially in males. The location-scale model revealed a significant reduction in variance in the male treatment group (Fed) compared to the male control group. This was supported by a significant negative interaction between sex and treatment in the dispersion model. In contrast, females showed no significant difference in variance between treatment groups. This indicates that early-life food supplementation reduced size variation only in males, not across all individuals.
+Answer: Partially yes - especially in males. The location-scale model revealed a significant reduction in variance in the male treatment group (Fed) compared to the male control group. This was supported by a significant negative interaction between sex and treatment in the dispersion model. In contrast, females showed no significant difference in variance between treatment groups. This indicates that early-life food supplementation reduced size variation only in males, not across all individuals.
 
 **Q3. Are there sex-specific effects of food supplementation? Do the effects on mean or variance differ between males and females?**
 
@@ -641,7 +641,7 @@ Model 2 is a location-scale model with random effects in the location part only.
 
 This dataset comes from [Drummond et al (2025)](https://doi.org/10.1093/beheco/araf050), which examined the benefits of brood reduction in the blue-footed booby (*Sula nebouxii*).Focusing on two-chick broods, the research explored whether the death of one chick (brood reduction) primarily benefits the surviving sibling (via increased resource acquisition) or the parents (by lessening parental investment). In this species, older chicks establish a strong dominance hierarchy over their younger siblings. Under stressful environmental conditions, this often results in the death of the second-hatched chick, with parental intervention being extremely rare.
 
-For this tutorial, we will specifically examine data from two-chick broods where both chicks survived to fledging. Our analysis will focus on how hatching order influences the body condition of chicks at fledging.
+For this tutorial, we will specifically examine data from two-chick broods where both chicks survived to fledgling. Our analysis will focus on how hatching order influences the body condition of chicks at fledgling.
 
 ### Questions
 
@@ -1155,15 +1155,15 @@ The location-scale model (Model 2) was the most-supported model based on AICc va
 
 **Do first hatched chicks have a higher body mass than second-hatched chicks?**
 
-Answer: Answer: Yes, first-hatched chicks have a significantly higher Scaled Mass Index (SMI) than second-hatched chicks at fledging, with a mean difference of approximately 0.018 on the log scale.
+Answer: Answer: Yes, first-hatched chicks have a significantly higher Scaled Mass Index (SMI) than second-hatched chicks at fledgling, with a mean difference of approximately 0.018 on the log scale.
 
 **Does the variability in body mass differ between first and second-hatched chicks?**
 
-Answer: Yes, the variability in body mass (SMI) is significantly greater in second-hatched chicks compared to first-hatched chicks. This indicates that second-hatched chicks show more variation in their body condition at fledging.
+Answer: Yes, the variability in body mass (SMI) is significantly greater in second-hatched chicks compared to first-hatched chicks. This indicates that second-hatched chicks show more variation in their body condition at fledgling.
 
 # Double-hierarchical location-scale model (Model 3)
 
-Following up on the previous example analyzing the scaled mass index (SMI) at fledging [Drummond et al(2025)](https://doi.org/10.1093/beheco/araf050), we now extend our approach by fitting a double-hierarchical Gaussian location-scale model. This extends Model 2 by introducing nest identity as a correlated random effect in both the location (mean) and scale (variance) components. This extension allows us to examine not only how average `log(SMI)` and its variability differ across nests, but also whether these two forms of nest-level variation are correlated. The main distinction between Model 2 and Model 3 lies in how they handle variation. Model 2 includes random effects only for the mean, assuming constant variance across groups. In contrast, Model 3 accounts for group-level variability by including random effects in both the mean and the variance components. This makes Model 3 particularly useful when:
+Following up on the previous example analyzing the scaled mass index (SMI) at fledgling [Drummond et al(2025)](https://doi.org/10.1093/beheco/araf050), we now extend our approach by fitting a double-hierarchical Gaussian location-scale model. This extends Model 2 by introducing nest identity as a correlated random effect in both the location (mean) and scale (variance) components. This extension allows us to examine not only how average `log(SMI)` and its variability differ across nests, but also whether these two forms of nest-level variation are correlated. The main distinction between Model 2 and Model 3 lies in how they handle variation. Model 2 includes random effects only for the mean, assuming constant variance across groups. In contrast, Model 3 accounts for group-level variability by including random effects in both the mean and the variance components. This makes Model 3 particularly useful when:
 
 -   Group-level variability (heteroscedasticity) is present
 
@@ -1853,7 +1853,7 @@ Answer: Yes. In the scale (dispersion) part of the model, the coefficient for th
 
 # Beyond Gaussian 2
 
-This dataset comes from [Lundgren et al. (2022)](https://doi.org/10.1111/1365-2656.13766), which examined the activity and impact of feral dunkeys (*Equus africanus asinus*) between wetlands with and without cougar (*Puma concolor*) predation.
+This dataset comes from [Lundgren et al. (2022)](https://doi.org/10.1111/1365-2656.13766), which examined the activity and impact of feral donkeys (*Equus africanus asinus*) between wetlands with and without cougar (*Puma concolor*) predation.
 
 For this example, we will focus on the effect of cougar predation on the percentage of ground trampled by feral donkeys.
 
@@ -1955,7 +1955,7 @@ b.  Location-Scale Model: This more comprehensive model will estimate both the a
 ## Location-only model
 
 ::: {.callout-tip appearance="simple" icon="false"}
-`zoi ~ if_kill` (Zero-One Inflation): This part of the model estimates how if_kill (cougar kill presence) influences the probability that an observation is exactly 0% or exactly 100% trampled bare ground. If `if_kill` increases the zoi probability, it means that areas with burro kills are more likely to have either no trampled ground or completely trampled ground, compared to areas without burro kills.
+`zoi ~ if_kill` (Zero-One Inflation; zoi): This part of the model estimates how if_kill (cougar kill presence) influences the probability that an observation is exactly 0% or exactly 100% trampled bare ground. If `if_kill` increases the `zoi` probability, it means that areas with burro kills are more likely to have either no trampled ground or completely trampled ground, compared to areas without burro kills.
 
 `coi ~ if_kill` (Conditional One-Inflation): This is where we distinguish between the 0% and 100% boundaries. If an observation is exactly at a boundary (0% or 100% trampled bare ground), the `coi` part of the model estimates how `if_kill` influences the probability that this boundary observation is 100% (fully trampled) rather than 0% (no trampled ground). So, if `coi` increases with `if_kill`, it suggests that if a site has exact boundary values, the presence of burro kills makes it more likely for that site to be completely trampled (100%) rather than completely untrampled (0%).
 :::
@@ -2101,7 +2101,7 @@ This section outlines general guidelines for model selection and refinement, bas
 
 1.  **Identify data type and plot raw data** to understand the distribution and structure of the response variable. This helps in selecting an appropriate model family (e.g., Gaussian, Poisson, Negative Binomial, Beta).
 2.  **Begin with a simpler model** (e.g., a location-only model assuming homoscedasticity) to establish a baseline for interpretation.
-3.  **Check residual diagonostics** to detect possible model misspecification, such as overdispersion or non-uniformity of residuals. If issues are detected, consider more complex models (e.g., location-scale models) that account for heterogeneity in variance.
+3.  **Check residual diagnostics** to detect possible model misspecification, such as overdispersion or non-uniformity of residuals. If issues are detected, consider more complex models (e.g., location-scale models) that account for heterogeneity in variance.
 4.  **Gradually increase model complexity**: Introduce additional components, such as group-level effects on the scale (variance), and consider estimating correlations between random effects when theoretically or empirically justified—especially when supported by sufficient sample size.
 5.  **Compare models using information criteria**:
 
@@ -2117,9 +2117,9 @@ One important thing to keep in mind is that `DHARMa` does not work with models f
 :::
 
 ## Example 1
-In our ongoing exploration of Blue-footed Booby chick development, we previously investigated whether a chick's scaled mass index (SMI) at fledging was influenced by its hatching order (Model 2). Building upon that foundation, we now delve into the critical role of additional covariates, a common practice in ecological fieldwork where numerous factors are hypothesized to affect our response variable. While exhaustive inclusion of all potential covariates is often constrained by data availability, strategic model selection allows us to pinpoint those that provide significant explanatory power.
+In our ongoing exploration of Blue-footed Booby chick development, we previously investigated whether a chick's scaled mass index (SMI) at fledgling was influenced by its hatching order (Model 2). Building upon that foundation, we now delve into the critical role of additional covariates, a common practice in ecological fieldwork where numerous factors are hypothesized to affect our response variable. While exhaustive inclusion of all potential covariates is often constrained by data availability, strategic model selection allows us to pinpoint those that provide significant explanatory power.
 
-One particularly relevant covariate in this study is the chick's hatching date. In this specific booby population, earlier hatching dates are frequently associated with enhanced chick survival. Conversely, later hatching can coincide with periods of increased food scarcity as ocean temperatures rise and fish prey disperse. Given these environmental pressures, we hypothesize that under the stressful conditions of late-season hatching, the disparity in fledging mass between chicks might be more pronounced compared to those hatched earlier in the season. This suggests a potential interactive effect between hatching date and hatching order.
+One particularly relevant covariate in this study is the chick's hatching date. In this specific booby population, earlier hatching dates are frequently associated with enhanced chick survival. Conversely, later hatching can coincide with periods of increased food scarcity as ocean temperatures rise and fish prey disperse. Given these environmental pressures, we hypothesize that under the stressful conditions of late-season hatching, the disparity in fledgling mass between chicks might be more pronounced compared to those hatched earlier in the season. This suggests a potential interactive effect between hatching date and hatching order.
 
 In the subsequent sections, we will systematically investigate this hypothesis by:
 
@@ -2127,7 +2127,7 @@ Incorporating hatching date as a fixed effect into the location (mean) component
 
 Adding an interaction term between hatching date and hatching order to the location part of the model.
 
-Conducting model comparisons to assess whether accounting for hatching date, both as a main effect and in interaction with hatching order, significantly improves our model's fit and provides novel insights into chick fledging success.
+Conducting model comparisons to assess whether accounting for hatching date, both as a main effect and in interaction with hatching order, significantly improves our model's fit and provides novel insights into chick fledgling success.
 
 ::: panel-tabset
 
@@ -2136,7 +2136,7 @@ Conducting model comparisons to assess whether accounting for hatching date, bot
 
 #### Identify data type and plot raw data
 
-Our response variable, Scaled Mass Index (SMI), is a continuous variable. Therefore, a Gaussian distribution will be employed for our statistical modeling. The raw data, illustrating the SMI of chicks at fledging, categorized by their hatching order (1st or 2nd hatched), is visualized below.
+Our response variable, Scaled Mass Index (SMI), is a continuous variable. Therefore, a Gaussian distribution will be employed for our statistical modeling. The raw data, illustrating the SMI of chicks at fledgling, categorized by their hatching order (1st or 2nd hatched), is visualized below.
 
 ```{r}
 #| label: show_data -model2 -eg1
@@ -2310,7 +2310,7 @@ model.sel(model2_3a, model2_3b)
 
 ```
 
-Comparing the models, we find that the model incorporating the interaction between hatching date and hatching order (model2_3b) has a lower AICc value (AICc = -8257.7) compared to the model without it (model2_3a, AICc = -8215.4). This improvement in AICc indicates that the interaction model provides a superior fit, effectively capturing how the influence of hatching date on fledging mass varies between first- and second-hatched chicks.
+Comparing the models, we find that the model incorporating the interaction between hatching date and hatching order (model2_3b) has a lower AICc value (AICc = -8257.7) compared to the model without it (model2_3a, AICc = -8215.4). This improvement in AICc indicates that the interaction model provides a superior fit, effectively capturing how the influence of hatching date on fledgling mass varies between first- and second-hatched chicks.
 
 ```{r}
 #| echo: false
