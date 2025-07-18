@@ -1836,7 +1836,9 @@ summary(model_nb_brms)
 
 -   Species-level ($sd_{[\text{species}]}$ = 0.55, 95% CI \[0.31, 0.99\]\$): Indicates some variation in mean gaze frequency among species.
 
-**Location (dispersion) random effects:** - Individual-level ($sd_{[\text{species}]}$ = 0.34, 95% CI \[0.17, 0.68\]): Suggests variation among individuals within species, but this is smaller than the variation across species.
+**Location (dispersion) random effects:** 
+
+-   Individual-level ($sd_{[\text{species}]}$ = 0.34, 95% CI \[0.17, 0.68\]): Suggests variation among individuals within species, but this is smaller than the variation across species.
 
 ## Conclusion
 
@@ -2114,8 +2116,6 @@ One important thing to keep in mind is that `DHARMa` does not work with models f
 :::
 
 ## Example 1
-
-::: panel-tabset
 In our ongoing exploration of Blue-footed Booby chick development, we previously investigated whether a chick's scaled mass index (SMI) at fledging was influenced by its hatching order (Model 2). Building upon that foundation, we now delve into the critical role of additional covariates, a common practice in ecological fieldwork where numerous factors are hypothesized to affect our response variable. While exhaustive inclusion of all potential covariates is often constrained by data availability, strategic model selection allows us to pinpoint those that provide significant explanatory power.
 
 One particularly relevant covariate in this study is the chick's hatching date. In this specific booby population, earlier hatching dates are frequently associated with enhanced chick survival. Conversely, later hatching can coincide with periods of increased food scarcity as ocean temperatures rise and fish prey disperse. Given these environmental pressures, we hypothesize that under the stressful conditions of late-season hatching, the disparity in fledging mass between chicks might be more pronounced compared to those hatched earlier in the season. This suggests a potential interactive effect between hatching date and hatching order.
@@ -2128,6 +2128,9 @@ Adding an interaction term between hatching date and hatching order to the locat
 
 Conducting model comparisons to assess whether accounting for hatching date, both as a main effect and in interaction with hatching order, significantly improves our model's fit and provides novel insights into chick fledging success.
 
+::: panel-tabset
+
+
 ### Step 1
 
 #### Identify data type and plot raw data
@@ -2135,9 +2138,19 @@ Conducting model comparisons to assess whether accounting for hatching date, bot
 Our response variable, Scaled Mass Index (SMI), is a continuous variable. Therefore, a Gaussian distribution will be employed for our statistical modeling. The raw data, illustrating the SMI of chicks at fledging, categorized by their hatching order (1st or 2nd hatched), is visualized below.
 
 ```{r}
-#| label: show_data - model2
+#| label: show_data -model2 -eg1
 #| fig-width: 8
 #| fig-height: 6
+
+dat <- read_csv(here("data","SMI_Drummond_et_al_2025.csv")) %>%subset(REDUCTION == 0)
+
+dat<- dat%>%
+  dplyr::select(-TIME, -HATCHING_DATE,-REDUCTION,-RING) %>%
+  mutate(SMI = as.numeric(SMI), # Scaled mass index
+         NEST = as.factor(NEST), 
+         WORKYEAR = as.factor(WORKYEAR),
+         RANK = factor(RANK, levels = c("1", "2")))
+
 
 ggplot(dat, aes(x = RANK, y = SMI, fill = RANK, color = RANK)) +
  geom_violin(aes(fill = RANK),
@@ -2188,7 +2201,7 @@ ggplot(dat, aes(x = RANK, y = SMI, fill = RANK, color = RANK)) +
 Having established our initial modeling framework, we now move to a critical phase: assessing the model's assumptions through residual analysis. We will begin with a foundational model that includes only hatching order as a fixed effect. To facilitate this, we'll leverage the `DHARMa` package, which simulates scaled residuals and provides automated diagnostic plots. This step is indispensable for verifying key model assumptions, particularly the normality and homoscedasticity of the residuals, ensuring the reliability of our inferences.
 
 ```{r}
-#| label: model_fitting2-model1
+#| label: model_fitting2-model1-eg1
 
 model2_1<-glmmTMB(log(SMI) ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
               family = gaussian(),data=dat)
@@ -2226,7 +2239,7 @@ By centering ST_DATE, we set the stage for a more robust and interpretable analy
 
 
 ```{r}
-#| label: call new covariable
+#| label: call new covariable  - eg1
 dat<- dat%>%
   dplyr::mutate(ST_DATE=scale(ST_DATE,center=T,scale = F))
 
@@ -2234,7 +2247,7 @@ dat<- dat%>%
 
 
 ```{r}
-#| label: model_fitting2 - model2 - glmmtmb
+#| label: model_fitting2 - model2 - glmmtmb  - eg1
 
 model2_2 <- glmmTMB(
     log(SMI) ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
@@ -2249,7 +2262,7 @@ model2_2 <- glmmTMB(
 First, we  build a location-scale model with `ST_DATE` (centered) as a fixed effect in the location (mean) part of the model.
 
 ```{r}
-#| label: model_fitting2 add new covariable
+#| label: model_fitting2 add new covariable  - eg1
 model2_3a <- glmmTMB(
     log(SMI) ~ 1 + RANK + ST_DATE + (1|NEST)+(1|WORKYEAR),
     dispformula = ~ 1 + RANK,     
@@ -2260,7 +2273,7 @@ model2_3a <- glmmTMB(
 
 Following the previous model, we now increase complexity further by including a two-way interaction.
 ```{r}
-#| label: model_fitting2 interaction
+#| label: model_fitting2 interaction  - eg1
 model2_3b<- glmmTMB(
     log(SMI) ~ 1 + RANK + ST_DATE + RANK*ST_DATE +(1|NEST)+(1|WORKYEAR),
     dispformula = ~ 1 + RANK,     
@@ -2279,7 +2292,7 @@ To  evaluate whether our model's fit is significantly improved by the inclusion 
 Our first comparison will be between the model that includes hatching date as a fixed effect in the location part and the simpler model that omits this covariate. This will allow us to assess the individual contribution of `ST_DATE` to explaining the variation in `log(SMI)`.
 
 ```{r}
-#| label: model_comparison no interactions
+#| label: model_comparison no interactions  - eg1
 
 model.sel(model2_2, model2_3a)
 
@@ -2290,7 +2303,7 @@ Our first comparison shows a clear improvement: the model including hatching dat
 Next, we will compare model2_3a (hatching date as a fixed effect) with the model that includes an interaction between hatching date and hatching order in the location part.
 
 ```{r}
-#| label: model_comparison interaction
+#| label: model_comparison interaction  - eg1
 
 model.sel(model2_3a, model2_3b)
 
@@ -2311,7 +2324,6 @@ The results from this more complex model show that both ST_DATE and the RANK:ST_
 
 ## Example 2
 
-::: panel-tabset
 We revisit the dataset on Estrildid finches to examine how food supplementation affects gaze frequency toward dot patterns (as introduced in Beyond Gaussian 1).
 
 To avoid repeating the structure of the previous example, we now take a more realistic modeling approach by incorporating phylogenetic non-independence as a random effect. The response variable, frequency, is a count variable, which supports the use of Poisson or Negative Binomial distributions. However, as visualised in the plots below, there is substantial between-species variation—both in mean gaze frequency and in the degree of within-species variability.
@@ -2324,15 +2336,23 @@ In the following sections, we will:
 
 -   Compare models with and without phylogenetic structure to evaluate whether accounting for evolutionary history improves model fit.
 
+::: panel-tabset
+
 ### Step 1
 
 #### Identify data type and plot raw data
 
 <!-- This is the same figures as in the previous example - should O skip?? -->
 
-The violin plot by condition and sex shows that gaze frequency is generally higher in the food-deprived condition, with some individuals—especially females—showing very high values (over 500). The faceted line plot by species shows: - Consistent directional trends (e.g., reduced gazing in the supplied condition) - Species-specific differences in variance, suggesting possible heteroscedasticity
+The violin plot by condition and sex shows that gaze frequency is generally higher in the food-deprived condition, with some individuals—especially females—showing very high values (over 500). The faceted line plot by species shows: 
 
-These patterns raise two important considerations: 1. Overdispersion is likely present, particularly in the deprived condition, where the spread of counts is large. 2. A phylogenetic effect may be at play, since species vary not only in their average gaze frequencies but also in how consistent individuals are within each species - possibly due to traits shaped by common ancestry.
+-   Consistent directional trends (e.g., reduced gazing in the supplied condition)
+-   Species-specific differences in variance, suggesting possible heteroscedasticity
+
+These patterns raise two important considerations: 
+
+1. Overdispersion is likely present, particularly in the deprived condition, where the spread of counts is large. 
+2. A phylogenetic effect may be at play, since species vary not only in their average gaze frequencies but also in how consistent individuals are within each species - possibly due to traits shaped by common ancestry.
 
 ```{r}
 #| label: identify_data_type - eg2
