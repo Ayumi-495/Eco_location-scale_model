@@ -668,7 +668,7 @@ The plot displays the distribution of body condition, measured as Scaled Mass In
 dat <- read_csv(here("data","SMI_Drummond_et_al_2025.csv")) %>%subset(REDUCTION == 0)
 
 dat<- dat%>%
-  dplyr::select(-TIME, -ST_DATE, -HATCHING_DATE,-REDUCTION,-RING) %>%
+  dplyr::select(-TIME, -HATCHING_DATE,-REDUCTION,-RING) %>%
   mutate(SMI = as.numeric(SMI), # Scaled mass index
          NEST = as.factor(NEST), 
          WORKYEAR = as.factor(WORKYEAR),
@@ -719,7 +719,7 @@ ggplot(dat, aes(x = RANK, y = SMI, fill = RANK, color = RANK)) +
 
 ## Run models and interpret results
 
-We will fit three progressively complex Bayesian models to the data using the `brms` package. All models incorporate `NEST_ID` and `YEAR` random effects to account for non-independence of chicks within the same nest and observations within the same year.
+All models incorporate `NEST_ID` and `YEAR` random effects to account for non-independence of chicks within the same nest and observations within the same year.
 
 The models are as follows:
 
@@ -790,15 +790,34 @@ The results of the location-only model (Model 0) and the location-scale model (M
 #| echo: false
 #| label: model2_1_results - glmmtmb
 
-## Ask Erick for a simpler way of making tables
-#' [ ERICK HERE. I don't know that way of making them pretty. But there is a helper function..]
-# Problem is, you still need to extract the malarkey from confint(m) and align it
-# which is super annoying. 
-# I have written custom functions to do that in the past but I don't have time right now :(
-model2_2.tidy <- model2_2 %>%
-  tidy()
+coefs_0 <- summary(model2_1)$coefficients$cond
+conf_0 <- confint(model2_1)
+rownames(conf_0) <- gsub("^cond\\.", "", rownames(conf_0))
+conf_0 <- conf_0[rownames(conf_0) %in% rownames(coefs_0), ]
+match_0 <- match(rownames(coefs_0), rownames(conf_0))
 
-model2_2.tidy
+results_0 <- data.frame(
+  Term = rownames(coefs_0),
+  Estimate = coefs_0[, "Estimate"],
+  StdError = coefs_0[, "Std. Error"],
+  `2.5%` = conf_0[match_0, "2.5 %"],
+  `97.5%` = conf_0[match_0, "97.5 %"]
+)
+
+colnames(results_0)[which(names(results_0) == "X2.5.")] <- "CI_low"
+colnames(results_0)[which(names(results_0) == "X97.5.")] <- "CI_high"
+
+gt(results_0) %>%
+  tab_header(title = "Location-only model") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
 
 ```
 
@@ -806,12 +825,76 @@ model2_2.tidy
 #| echo: false
 #| label: model2_2_results - glmmtmb
 
+# Location-scale model (Model 1) ----
+summary_1 <- summary(model2_2)
+conf_1 <- confint(model2_2)
 
+## location part ----
+coefs_1_loc <- summary_1$coefficients$cond
+conf_1_loc <- conf_1[grep("^cond", rownames(conf_1)), ]
+rownames(conf_1_loc) <- gsub("^cond\\.", "", rownames(conf_1_loc))
+conf_1_loc <- conf_1_loc[rownames(conf_1_loc) %in% rownames(coefs_1_loc), ]
+match_loc <- match(rownames(coefs_1_loc), rownames(conf_1_loc))
+
+results_1_loc <- data.frame(
+  Term = rownames(coefs_1_loc),
+  Estimate = coefs_1_loc[, "Estimate"],
+  StdError = coefs_1_loc[, "Std. Error"],
+  CI_low = conf_1_loc[match_loc, "2.5 %"],
+  CI_high = conf_1_loc[match_loc, "97.5 %"]
+)
+
+colnames(results_1_loc)[which(names(results_1_loc) == "X2.5.")] <- "CI_low"
+colnames(results_1_loc)[which(names(results_1_loc) == "X97.5.")] <- "CI_high"
+
+
+## dispersion part ----
+coefs_1_disp <- summary_1$coefficients$disp
+conf_1_disp <- conf_1[grep("^disp", rownames(conf_1)), ]
+rownames(conf_1_disp) <- gsub("^disp\\.", "", rownames(conf_1_disp))
+conf_1_disp <- conf_1_disp[rownames(conf_1_disp) %in% rownames(coefs_1_disp), ]
+match_disp <- match(rownames(coefs_1_disp), rownames(conf_1_disp))
+
+results_1_disp <- data.frame(
+  Term = rownames(coefs_1_disp),
+  Estimate = coefs_1_disp[, "Estimate"],
+  StdError = coefs_1_disp[, "Std. Error"],
+  CI_low = conf_1_disp[match_disp, "2.5 %"],
+  CI_high = conf_1_disp[match_disp, "97.5 %"]
+)
+
+colnames(results_1_loc)[which(names(results_1_disp) == "X2.5.")] <- "CI_low"
+colnames(results_1_loc)[which(names(results_1_disp) == "X97.5.")] <- "CI_high"
+
+# display results ----
+gt(results_1_loc) %>%
+  tab_header(title = "Location-scale model (location part)") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
+
+gt(results_1_disp) %>%
+  tab_header(title = "Location-scale model (dispersion part)") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
 ```
 
 ## Bonus
 
-Here is how to fit the same location-scale model using the `brms` package for comparison.
+Here is how to fit the same location-scale models using the `brms` package for comparison.
 
 ### Location-only model
 
@@ -841,7 +924,6 @@ fit1 <- brm(
   refresh = 500    # Less frequent progress updates (reduces overhead)
 )
 
-summary(fit1)
 ```
 
 ```{r}
@@ -904,11 +986,14 @@ f2loo <- loo::loo(fit2)
 #Model comparison 
 fc <- loo::loo_compare(f1loo, f2loo)
 fc
-#' [EJL: Would be good to explain how to interpret the LOO results]
+
 #     elpd_diff se_diff
 # fit2   0.0       0.0  
 # fit1 -10.3       7.6  
 ```
+
+
+LOO (Leave-One-Out) model comparison helps us estimate which Bayesian model will best predict new data. The `elpd_diff` (Estimated Log Predictive Density difference) tells us the difference in predictive accuracy, with a more positive number indicating better performance. The `se_diff` (Standard Error of the Difference) provides the uncertainty around this difference. In our results, `fit2` (the location-scale model) has an  `elpd_diff` of 0.0, meaning it's the reference or best-performing model. `fit1` (the location-only model) has an `elpd_diff` of -10.3 with an `se_diff` of 7.6, indicating that `fit2` is estimated to be substantially better at predicting new data than `fit1`, although there is some uncertainty in that difference. As a rule of thumb, if the absolute value of the `elpd_diff` is more than twice the `se_diff`, we can consider the difference as meaningful ($|elpd\_diff| > 2 * se\_diff$).
 
 ### Summary of brms model results
 
@@ -1785,7 +1870,7 @@ For this example, we will focus on the effect of cougar predation on the percent
 
 ## Visualise the dataset
 
-iolin plots illustrate the overall density distribution of percentage of trampled Bare Ground for both areas with (Yes) and without (No) donkey kills Each individual empty circle represents the trampled bare ground cover of a single observation. The plot visually highlights individual variability and allows for the comparison of both central tendency (indicated by the black solid line, representing the mean) and spread of trampled bare ground cover between areas where burro kills are absent versus present.
+Violin plots illustrate the overall density distribution of percentage of trampled Bare Ground for both areas with (Yes) and without (No) donkey kills Each individual empty circle represents the trampled bare ground cover of a single observation. The plot visually highlights individual variability and allows for the comparison of both central tendency (indicated by the black solid line, representing the mean) and spread of trampled bare ground cover between areas where burro kills are absent versus present.
 
 ```{r}
 #| label: show_data - beyond_gaussian2
@@ -1869,7 +1954,7 @@ b.  Location-Scale Model: This more comprehensive model will estimate both the a
 ::: {.callout-tip appearance="simple" icon="false"}
 `zoi ~ if_kill` (Zero-One Inflation): This part of the model estimates how if_kill (cougar kill presence) influences the probability that an observation is exactly 0% or exactly 100% trampled bare ground. If `if_kill` increases the zoi probability, it means that areas with burro kills are more likely to have either no trampled ground or completely trampled ground, compared to areas without burro kills.
 
-`coi ~ if_kill` (Conditional on Inflation): This is where we distinguish between the 0% and 100% boundaries. If an observation is exactly at a boundary (0% or 100% trampled bare ground), the coi part of the model estimates how `if_kill` influences the probability that this boundary observation is 100% (fully trampled) rather than 0% (no trampled ground). So, if `coi` increases with `if_kill`, it suggests that if a site has exact boundary values, the presence of burro kills makes it more likely for that site to be completely trampled (100%) rather than completely untrampled (0%).
+`coi ~ if_kill` (Conditional One-Inflation): This is where we distinguish between the 0% and 100% boundaries. If an observation is exactly at a boundary (0% or 100% trampled bare ground), the `coi` part of the model estimates how `if_kill` influences the probability that this boundary observation is 100% (fully trampled) rather than 0% (no trampled ground). So, if `coi` increases with `if_kill`, it suggests that if a site has exact boundary values, the presence of burro kills makes it more likely for that site to be completely trampled (100%) rather than completely untrampled (0%).
 :::
 
 ```{r}
@@ -1989,13 +2074,13 @@ Our analysis of the model comparison results shows that the location-scale model
 
 **Location (mean) part:**
 
-On average, the log-odds of the mean percentage of trampled bare ground are lower when burro kills are present compared to when they are absent (estimate = -1.22, 95% CI \[-2.27, -0.18\]). This suggests that the presence of burro kills is associated with a lower average percentage of trampled bare ground.
+On average, the log-odds of the mean percentage of trampled bare ground are lower when burro kills are present compared to when they are absent ($\beta_{[\text{No-Yes}]}^{(l)}$ = -1.22, 95% CI \[-2.27, -0.18\]). This suggests that the presence of burro kills is associated with a lower average percentage of trampled bare ground.
 
-**Scale (dispersion/phi) part:** The log-precision (phi) is lower when burro kills are present, compared to when they are absent (estimate = -1.07, 95% CI \[-2.01, -0.04\]). Suggesting that the percentage of trampled bare ground exhibits more variation or less consistency in areas where burro kills are present.
+**Scale (dispersion/phi) part:** The log-precision (phi) is lower when burro kills are present, compared to when they are absent ($\beta_{[\text{No-Yes}]}^{(s)}$ = -1.07, 95% CI \[-2.01, -0.04\]). Suggesting that the percentage of trampled bare ground exhibits more variation or less consistency in areas where burro kills are present.
 
-**Zero-One Inflation (zoi) part:** The log-odds of observing exactly 0% or 100% trampled bare ground are lower when burro kills are present (estimate = -1.71, 95% CI \[-2.55, -0.89\]). In other words, areas with burro kills are less likely to be at the extreme boundaries of either no trampled ground or entirely trampled ground.
+**Zero-One Inflation (zoi) part:** The log-odds of observing exactly 0% or 100% trampled bare ground are lower when burro kills are present ($\beta_{[\text{No-Yes}]}^{(l)}$ = -1.71, 95% CI \[-2.55, -0.89\]). In other words, areas with burro kills are less likely to be at the extreme boundaries of either no trampled ground or entirely trampled ground.
 
-**Conditional on Inflation (coi) part:** The log-odds of a boundary observation being 100% rather than 0% are lower when burro kills are present (estimate = -4.20, 95% CI \[-12.07, -0.08\]). This implies that if a boundary value is encountered with burro kills, it is less likely to be 100% (and potentially more likely to be 0%) compared to the "burro kills absent" scenario.
+**Conditional on Inflation (coi) part:** The log-odds of a boundary observation being 100% rather than 0% are lower when burro kills are present ($\beta_{[\text{No-Yes}]}^{(l)}$ = -4.20, 95% CI \[-12.07, -0.08\]). This implies that if a boundary value is encountered with burro kills, it is less likely to be 100% (and potentially more likely to be 0%) compared to the "burro kills absent" scenario.
 
 ## Conclusion
 
@@ -2028,13 +2113,201 @@ We demonstrate these steps using the previous examples, where we started with a 
 One important thing to keep in mind is that `DHARMa` does not work with models fitted using `brms`. This means that you cannot check residual diagnostics for the location-only double-hierarchical model (model 3) if it was fitted with brms. If you want to use `DHARMa` for residual diagnostics, you need to run model 2.5 instead - in other words, you cannot include the correlation part.
 :::
 
-```{=html}
-<!-- ## Example 1
-Santi's data
+## Example 1
 
-### Step 1: Identify data type and plot raw data
- -->
+::: panel-tabset
+In our ongoing exploration of Blue-footed Booby chick development, we previously investigated whether a chick's scaled mass index (SMI) at fledging was influenced by its hatching order (Model 2). Building upon that foundation, we now delve into the critical role of additional covariates, a common practice in ecological fieldwork where numerous factors are hypothesized to affect our response variable. While exhaustive inclusion of all potential covariates is often constrained by data availability, strategic model selection allows us to pinpoint those that provide significant explanatory power.
+
+One particularly relevant covariate in this study is the chick's hatching date. In this specific booby population, earlier hatching dates are frequently associated with enhanced chick survival. Conversely, later hatching can coincide with periods of increased food scarcity as ocean temperatures rise and fish prey disperse. Given these environmental pressures, we hypothesize that under the stressful conditions of late-season hatching, the disparity in fledging mass between chicks might be more pronounced compared to those hatched earlier in the season. This suggests a potential interactive effect between hatching date and hatching order.
+
+In the subsequent sections, we will systematically investigate this hypothesis by:
+
+Incorporating hatching date as a fixed effect into the location (mean) component of our model.
+
+Adding an interaction term between hatching date and hatching order to the location part of the model.
+
+Conducting model comparisons to assess whether accounting for hatching date, both as a main effect and in interaction with hatching order, significantly improves our model's fit and provides novel insights into chick fledging success.
+
+### Step 1
+
+#### Identify data type and plot raw data
+
+Our response variable, Scaled Mass Index (SMI), is a continuous variable. Therefore, a Gaussian distribution will be employed for our statistical modeling. The raw data, illustrating the SMI of chicks at fledging, categorized by their hatching order (1st or 2nd hatched), is visualized below.
+
+```{r}
+#| label: show_data - model2
+#| fig-width: 8
+#| fig-height: 6
+
+ggplot(dat, aes(x = RANK, y = SMI, fill = RANK, color = RANK)) +
+ geom_violin(aes(fill = RANK),
+              color = "#8B8B83",
+              width = 0.8, 
+              alpha = 0.3,
+              position = position_dodge(width = 0.7)) +
+  geom_jitter(aes(color = RANK),
+              size = 3,
+              alpha = 0.4,
+              shape = 1,
+              position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.15)) + 
+  stat_summary(fun = mean,              
+               geom = "crossbar",       
+               width = 0.1,             
+               color = "black",         
+               linewidth = 0.5,         
+               position = position_dodge(width = 0.7))+
+  labs(
+    title = "Body Condition (SMI) by Hatching Order",
+    x = "Hatching Order",
+    y = "Scaled Mass Index (g)"
+  ) +
+  scale_fill_manual(
+    values = c("1" = "#1F78B4", "2" = "#E31A1C") # 
+  ) +
+  scale_color_manual(
+    values = c("1" = "#1F78B4", "2" = "#E31A1C") # 
+  ) +
+  scale_x_discrete(
+    labels = c("1" = "First-Hatched", "2" = "Second-Hatched"),
+    expand = expansion(add = 0.5)
+  ) +
+  theme_classic(base_size = 16) +
+  theme(
+    axis.text = element_text(color = "#6E7B8B", size = 14),
+    axis.title = element_text(color = "#6E7B8B", size = 14),
+    legend.position = "none",
+    axis.text.x = element_text(angle = 0, hjust = 0.5)
+  )
+
 ```
+
+### Steps 2 and 3
+
+#### Begin with a simpler model and check residual diagnostics
+
+Having established our initial modeling framework, we now move to a critical phase: assessing the model's assumptions through residual analysis. We will begin with a foundational model that includes only hatching order as a fixed effect. To facilitate this, we'll leverage the `DHARMa` package, which simulates scaled residuals and provides automated diagnostic plots. This step is indispensable for verifying key model assumptions, particularly the normality and homoscedasticity of the residuals, ensuring the reliability of our inferences.
+
+```{r}
+#| label: model_fitting2-model1
+
+model2_1<-glmmTMB(log(SMI) ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
+              family = gaussian(),data=dat)
+
+
+
+# | label: model_diagnostics - model0
+simulationOutput <- simulateResiduals(fittedModel = model2_1, plot = F)
+plot(simulationOutput)
+
+```
+
+Our initial residual diagnostics, specifically the QQ plot and Kolmogorov-Smirnov (KS) test, clearly indicate that the model's residuals are not uniformly distributed. This non-uniformity signals potential issues with our chosen statistical distribution or the fundamental structure of the current model.
+
+Furthermore, despite no significant concerns regarding overdispersion or outliers, a closer look at the boxplots and the Levene test revealed a lack of consistency within residual groups and non-homogeneous variances. These collective findings strongly suggest that our current model is not fully capturing the inherent complexity and variability within the data.
+
+To effectively address this non-uniformity and varying dispersion, we will now proceed with fitting a location-scale model. For simplicity and to focus on the effects of our new covariate, we will specifically structure this model to include `RANK` as a fixed effect only in the scale (variance) component. The new covariate, and its interaction with `RANK`, will be added solely to the location (mean) part of the model. This approach allows us to investigate the impact of the new covariate on the average SMI while simultaneously accounting for the varying dispersion observed across `RANK` levels.
+
+### Step 4
+
+#### Gradually increase model complexity
+
+Our next step involves enhancing the model by incorporating additional covariates. We begin by preparing our new covariate, `ST_DATE`, which represents the standardized hatching date (with November 3rd designated as day 1).
+
+Crucially, we will center ST_DATE before including it in the model. Centering involves subtracting the mean of the variable from each observation, resulting in a new variable with a mean of zero. 
+
+
+This practice is particularly beneficial because it:
+
+Facilitates Interpretation of Main Effects: When interaction terms are present in a model, the uncentered main effects can be difficult to interpret, as they represent the effect of that variable when all other interacting variables are at zero (which might be outside the observed range of the data). Centering ensures that the main effect of a predictor is interpreted at the average value of the other interacting predictors, making its meaning more intuitive and relevant within the context of our data.
+
+Reduces Multicollinearity: While less critical for simple interactions, centering can sometimes help reduce multicollinearity between main effects and their interaction terms, which can improve model stability and estimation.
+
+By centering ST_DATE, we set the stage for a more robust and interpretable analysis as we gradually build out our model.
+
+
+```{r}
+#| label: call new covariable
+dat<- dat%>%
+  dplyr::mutate(ST_DATE=scale(ST_DATE,center=T,scale = F))
+
+```
+
+
+```{r}
+#| label: model_fitting2 - model2 - glmmtmb
+
+model2_2 <- glmmTMB(
+    log(SMI) ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
+    dispformula = ~ 1 + RANK,     
+    data = dat, 
+    family = gaussian
+    )
+
+```
+
+
+First, we  build a location-scale model with `ST_DATE` (centered) as a fixed effect in the location (mean) part of the model.
+
+```{r}
+#| label: model_fitting2 add new covariable
+model2_3a <- glmmTMB(
+    log(SMI) ~ 1 + RANK + ST_DATE + (1|NEST)+(1|WORKYEAR),
+    dispformula = ~ 1 + RANK,     
+    data = dat, 
+    family = gaussian
+    )
+```
+
+Following the previous model, we now increase complexity further by including a two-way interaction.
+```{r}
+#| label: model_fitting2 interaction
+model2_3b<- glmmTMB(
+    log(SMI) ~ 1 + RANK + ST_DATE + RANK*ST_DATE +(1|NEST)+(1|WORKYEAR),
+    dispformula = ~ 1 + RANK,     
+    data = dat, 
+    family = gaussian
+    )
+```
+
+
+### Step 5
+
+#### Compare models using information criteria
+
+To  evaluate whether our model's fit is significantly improved by the inclusion of additional covariates and interaction terms, we will now employ information criteria, specifically the Akaike Information Criterion corrected for small sample sizes (AICc). AICc provides a balance between model fit and model complexity, penalizing models with more parameters to help identify the most parsimonious yet well-fitting model.
+
+Our first comparison will be between the model that includes hatching date as a fixed effect in the location part and the simpler model that omits this covariate. This will allow us to assess the individual contribution of `ST_DATE` to explaining the variation in `log(SMI)`.
+
+```{r}
+#| label: model_comparison no interactions
+
+model.sel(model2_2, model2_3a)
+
+```
+
+Our first comparison shows a clear improvement: the model including hatching date (model2_3a) has a lower AICc value (AICc = -8215.4) compared to the model without it (model2_2, AICc = -8070.8). This confirms that hatching date significantly improves model fit.
+
+Next, we will compare model2_3a (hatching date as a fixed effect) with the model that includes an interaction between hatching date and hatching order in the location part.
+
+```{r}
+#| label: model_comparison interaction
+
+model.sel(model2_3a, model2_3b)
+
+```
+
+Comparing the models, we find that the model incorporating the interaction between hatching date and hatching order (model2_3b) has a lower AICc value (AICc = -8257.7) compared to the model without it (model2_3a, AICc = -8215.4). This improvement in AICc indicates that the interaction model provides a superior fit, effectively capturing how the influence of hatching date on fledging mass varies between first- and second-hatched chicks.
+
+```{r}
+#| echo: false
+
+summary(model2_3b)
+```
+
+By systematically comparing models and gradually increasing their complexity, we can gain deeper insights into the underlying data generating process. In this analysis, we expanded our model by incorporating `ST_DATE` as a covariate and, importantly, its interaction with `RANK`.
+The results from this more complex model show that both ST_DATE and the RANK:ST_DATE interaction term are statistically significant predictors of log(SMI). This suggests that the relationship between SMI and RANK changes over time, and/or the effect of ST_DATE on SMI depends on RANK. While these terms demonstrably improve the model's fit, it's worth noting that their estimated slopes are quite shallow (e.g., -0.0008479 for ST_DATE and -0.00007263 for the interaction). This implies that, despite their statistical significance, the practical impact of ST_DATE and its interaction on log(SMI) might be relatively small. Therefore, depending on the specific goals of the analysis and the desired level of model parsimony, a simpler model without these terms might perform nearly as well in terms of predictive power, while being easier to interpret
+:::
+
 
 ## Example 2
 
@@ -2106,7 +2379,7 @@ ggplot(dat_pref, aes(x = condition, y = frequency)) +
 
 ### Steps 2 and 3
 
-#### Begin with a simpler model and heck residual diagnostics
+#### Begin with a simpler model and check residual diagnostics
 
 From the previous analysis, we already know that a location-only model without phylogenetic effects does not adequately capture the structure of the data. However, here we re-examine this model before moving on.
 
