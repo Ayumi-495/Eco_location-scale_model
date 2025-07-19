@@ -172,6 +172,7 @@ formula1 <- bf(
   y ~ 1 + x,  # location part
   sigma = ~ 1 + x # scale part - specified by sigma
 )
+#ASK Shinichi if this is correct
 #' [EJL: Unlike in frequentist models, such as with glmmTMB, here we explicitly write the intercept term as '1']
 # I do not think that is accurate. brms automatically includes the intercept - just like most R modeling frameworks. Writing `1 + x` is equivalent to `x` here... but may be I should ask Shinichi?
 
@@ -2639,6 +2640,85 @@ summary(model_eg2.3)
 
 Accounting for phylogeny captures much of the between-species structure, it highlights evolutionary constraints or shared ecological traits. The remaining species-specific variance suggests additional factors (e.g., experimental nuances) not captured by the tree alone.
 :::
+
+# Extra!
+Here, we examine how sample size (N) affects estimates of the sample mean and sample standard deviation (SD).
+For each N = 2 to 50, draw 100 samples from the standard normal distribution $\mathcal{N}(0, 1)$. Then, compute mean and SD for each sample. After that, calculate the average of these estimates to see how close they are to the true values (mean = 0, SD = 1).
+
+```{r}
+
+# 1. simulation settings
+set.seed(2025)
+n_reps <- 100        # replicates per N
+Ns     <- 2:50       # N = 2, 3, 4, …, 50
+
+# 2. simulate draws and compute sample mean & SD
+results <- expand.grid(
+  N      = Ns,
+  replic = seq_len(n_reps)
+) %>%
+  arrange(N, replic) %>%
+  mutate(
+    samp_mean = NA_real_,
+    samp_sd   = NA_real_
+  )
+
+# loop through each N and compute sample mean and SD
+for (i in seq_len(nrow(results))) {
+  N <- results$N[i]
+  x <- rnorm(N, mean = 0, sd = 1)
+  results$samp_mean[i] <- mean(x)
+  results$samp_sd[i]   <- sd(x)
+}
+
+# 3. compute average of the n_rep estimates for each N
+summary2 <- results %>%
+  group_by(N) %>%
+  summarize(
+    avg_mean = mean(samp_mean),
+    avg_sd   = mean(samp_sd)
+  ) %>%
+  ungroup()
+
+# 4. plot A: Average Sample Mean vs. N
+p_avg_mean <- ggplot(summary2, aes(x = N, y = avg_mean)) +
+  geom_point(color = "#1f77b4", size = 2) +
+  geom_line(color = "#1f77b4", size = 1) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  labs(
+    title    = "Average Sample Mean vs. Sample Size (N = 2…50)",
+    subtitle = "True mean = 0 (dashed line)",
+    x        = "Sample size (N)",
+    y        = "Average of 100 sample means"
+  ) +
+  theme_classic(base_size = 13) +
+  theme(
+    panel.grid.minor = element_blank()
+  )
+
+# 5. plot B: Average Sample SD vs. N
+p_avg_sd <- ggplot(summary2, aes(x = N, y = avg_sd)) +
+  geom_point(color = "#ff7f0e", size = 2) +
+  geom_line(color = "#ff7f0e", size = 1) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
+  labs(
+    title    = "Average Sample SD vs. Sample Size (N = 2…50)",
+    subtitle = "True SD = 1 (dashed line)",
+    x        = "Sample size (N)",
+    y        = "Average of 100 sample SDs"
+  ) +
+  theme_classic(base_size = 13) +
+  theme(
+    panel.grid.minor = element_blank()
+  )
+
+# 6. display the two plots
+p_avg_mean / p_avg_sd
+
+```
+
+For small sample sizes, sample variance and standard deviation tend to be biased, as shown in the bottom plot, the average sample SD is clearly lower than 1 when N is small.
+Once N exceeds approximately 20, the average sample SD (and variance) gets much closer to 1, and the bias becomes negligible.
 
 # References
 
