@@ -2012,9 +2012,9 @@ summary(fit0)
 #| label: model_fitting2 - beyond_gaussian2
 #| eval: false
 m1<-bf(cover ~ if_kill + (1|Pool),
-       zoi~  if_kill, 
-       coi~  if_kill,
-       phi~if_kill) 
+       zoi ~ if_kill, 
+       coi ~ if_kill,
+       phi ~ if_kill) 
 prior2<-default_prior(m1, family=zero_one_inflated_beta(), data=dat)
 
 rerun <- F
@@ -2644,88 +2644,83 @@ Here, we examine how sample size (N) affects estimates of the sample mean and sa
 For each N = 2 to 50, draw 10000 samples from the standard normal distribution $\mathcal{N}(0, 1)$. Then, compute mean and SD for each sample. After that, calculate the average of these estimates to see how close they are to the true values (mean = 0, SD = 1).
 
 ```{r}
-
-# 1. simulation settings
-set.seed(2025)
-n_reps <- 10000        # replicates per N
-Ns     <- 2:50       # N = 2, 3, 4, …, 50
-
-# 2. simulate draws and compute sample mean & SD for each combination of N and replicate
-## create a data frame with all combinations of N and replication number
-## in this case, for N = 2 to 50 and 10000 replicates per N, this create 49*1000 = 49000 rows
-results <- expand.grid(
-  N      = Ns,
-  replic = seq_len(n_reps) # replicate number from 1 to 1000
-) %>%
-  arrange(N, replic) %>% # sort by N and replicate number
-  mutate(
-    samp_mean = NA_real_, # placeholder for sample mean
-    samp_sd   = NA_real_  # placeholder for sample SD
-  )
-
-# loop through each N and compute sample mean and SD
-for (i in seq_len(nrow(results))) {
-  N <- results$N[i] # extract the sample size for this row
-  x <- rnorm(N, mean = 0, sd = 1) # simulate N random values from N(0,1)
-  results$samp_mean[i] <- mean(x) # compute and store the sample mean
-  results$samp_sd[i]   <- sd(x)   # compute and store the sample SD
-}
-
-# 3. for each sample size N, compute the average sample mean and average sample SD across all replicates
-summary2 <- results %>%
-  group_by(N) %>%
-  summarize(
-    avg_mean = mean(samp_mean),
-    avg_sd = mean(samp_sd)
-  ) %>%
-  ungroup()
-
-```
-
-```{r}
-
-# 4. plot A: Average Sample Mean vs. N
-p_avg_mean <- ggplot(summary2, aes(x = N, y = avg_mean)) +
-  geom_point(color = "#1f77b4", size = 2) +
-  geom_line(color = "#1f77b4", size = 1) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
-  labs(
-    title  = "Average Sample Mean vs. Sample Size (N = 2…50)",
-    subtitle = "True mean = 0 (dashed line)",
-    x = "Sample size (N)",
-    y = "Average of 1000 sample means"
-  ) +
-  theme_classic(base_size = 13) +
-  theme(
-    panel.grid.minor = element_blank()
-  )
-
-# 5. plot B: Average Sample SD vs. N
-p_avg_sd <- ggplot(summary2, aes(x = N, y = avg_sd)) +
-  geom_point(color = "#ff7f0e", size = 2) +
-  geom_line(color = "#ff7f0e", size = 1) +
-  geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
-  labs(
-    title = "Average Sample SD vs. Sample Size (N = 2…50)",
-    subtitle = "True SD = 1 (dashed line)",
-    x = "Sample size (N)",
-    y = "Average of 1000 sample SDs"
-  ) +
-  theme_classic(base_size = 13) +
-  theme(
-    panel.grid.minor = element_blank()
-  )
-
-# 6. display the two plots
-p_avg_mean
-p_avg_sd
-
-```
-
-<!-- Much quicker than the previous example! -->
-```{r}
-#| eval: false
 #| echo: false
+#| eval: false
+#
+# 1. simulation settings
+# set.seed(2025)
+# n_reps <- 10000        # replicates per N
+# Ns     <- 2:50       # N = 2, 3, 4, …, 50
+
+# # 2. simulate draws and compute sample mean & SD for each combination of N and replicate
+# ## create a data frame with all combinations of N and replication number
+# ## in this case, for N = 2 to 50 and 10000 replicates per N, this create 49*1000 = 49000 rows
+# results <- expand.grid(
+#   N      = Ns,
+#   replic = seq_len(n_reps) # replicate number from 1 to 1000
+# ) %>%
+#   arrange(N, replic) %>% # sort by N and replicate number
+#   mutate(
+#     samp_mean = NA_real_, # placeholder for sample mean
+#     samp_sd   = NA_real_  # placeholder for sample SD
+#   )
+
+# # loop through each N and compute sample mean and SD
+# for (i in seq_len(nrow(results))) {
+#   N <- results$N[i] # extract the sample size for this row
+#   x <- rnorm(N, mean = 0, sd = 1) # simulate N random values from N(0,1)
+#   results$samp_mean[i] <- mean(x) # compute and store the sample mean
+#   results$samp_sd[i]   <- sd(x)   # compute and store the sample SD
+# }
+
+# # 3. for each sample size N, compute the average sample mean and average sample SD across all replicates
+# summary2 <- results %>%
+#   group_by(N) %>%
+#   summarize(
+#     avg_mean = mean(samp_mean),
+#     avg_sd = mean(samp_sd)
+#   ) %>%
+#   ungroup()
+
+# # 4. plot A: Average Sample Mean vs. N
+# p_avg_mean <- ggplot(summary2, aes(x = N, y = avg_mean)) +
+#   geom_point(color = "#1f77b4", size = 2) +
+#   geom_line(color = "#1f77b4", size = 1) +
+#   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+#   labs(
+#     title  = "Average Sample Mean vs. Sample Size (N = 2…50)",
+#     subtitle = "True mean = 0 (dashed line)",
+#     x = "Sample size (N)",
+#     y = "Average of 10000 sample means"
+#   ) +
+#   theme_classic(base_size = 13) +
+#   theme(
+#     panel.grid.minor = element_blank()
+#   )
+
+# # 5. plot B: Average Sample SD vs. N
+# p_avg_sd <- ggplot(summary2, aes(x = N, y = avg_sd)) +
+#   geom_point(color = "#ff7f0e", size = 2) +
+#   geom_line(color = "#ff7f0e", size = 1) +
+#   geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
+#   labs(
+#     title = "Average Sample SD vs. Sample Size (N = 2…50)",
+#     subtitle = "True SD = 1 (dashed line)",
+#     x = "Sample size (N)",
+#     y = "Average of 10000 sample SDs"
+#   ) +
+#   theme_classic(base_size = 13) +
+#   theme(
+#     panel.grid.minor = element_blank()
+#   )
+
+# # 6. display the two plots
+# p_avg_mean
+# p_avg_sd
+```
+
+
+```{r}
 
 set.seed(2025)
 
@@ -2744,7 +2739,7 @@ results <- expand.grid(
 n_total <- nrow(results)
 Ns_vec <- results$N
 
-system.time({
+# system.time({
 # generate all random samples in one go (total number of draws = sum of all Ns)
 samples_all <- rnorm(sum(Ns_vec), mean = 0, sd = 1)
 
@@ -2757,7 +2752,7 @@ split_samples <- split(samples_all, row_id)
 # compute sample mean and SD for each group
 means <- sapply(split_samples, mean)
 sds   <- sapply(split_samples, sd)
-})
+# })
 
 # add results into the data frame
 results$samp_mean <- means
@@ -2772,7 +2767,7 @@ summary2 <- results %>%
     .groups = "drop"
   )
 
-# 4. plot A: Average Sample Mean vs. N
+# plot A: Average Sample Mean vs. N
 p_avg_mean <- ggplot(summary2, aes(x = N, y = avg_mean)) +
   geom_point(color = "#1f77b4", size = 2) +
   geom_line(color = "#1f77b4", size = 1) +
@@ -2781,14 +2776,15 @@ p_avg_mean <- ggplot(summary2, aes(x = N, y = avg_mean)) +
     title = "Average Sample Mean vs. Sample Size (N = 2…50)",
     subtitle = "True mean = 0 (dashed line)",
     x = "Sample size (N)",
-    y = "Average of 1000 sample means"
+    y = "Average of 10000 sample means"
   ) +
+  coord_cartesian(ylim = c(-0.4, 0.4)) +
   theme_classic(base_size = 13) +
   theme(
     panel.grid.minor = element_blank()
   )
 
-# 5. plot B: Average Sample SD vs. N
+# plot B: Average Sample SD vs. N
 p_avg_sd <- ggplot(summary2, aes(x = N, y = avg_sd)) +
   geom_point(color = "#ff7f0e", size = 2) +
   geom_line(color = "#ff7f0e", size = 1) +
@@ -2797,15 +2793,17 @@ p_avg_sd <- ggplot(summary2, aes(x = N, y = avg_sd)) +
     title = "Average Sample SD vs. Sample Size (N = 2…50)",
     subtitle = "True SD = 1 (dashed line)",
     x = "Sample size (N)",
-    y = "Average of 1000 sample SDs"
+    y = "Average of 10000 sample SDs"
   ) +
+  # coord_cartesian(ylim = c(-1.0, 1.0)) +
   theme_classic(base_size = 13) +
   theme(
     panel.grid.minor = element_blank()
   )
 
-# 6. display the two plots
-p_avg_mean / p_avg_sd
+# display the two plots
+p_avg_mean
+p_avg_sd
 ```
 
 For small sample sizes, sample variance and standard deviation tend to be biased, as shown in the bottom plot, the average sample SD is clearly lower than 1 when N is small.
