@@ -103,7 +103,7 @@ After a brief introduction to both modeling frameworks, we present worked exampl
 
 Our tutorial uses `R` statistical software and existing `R` packages, which you will first need to download and install.
 
-This tutorial makes use of several R packages for data manipulation, model fitting, diagnostics, visualisation, and reporting:
+This tutorial makes use of several `R` packages for data manipulation, model fitting, diagnostics, visualisation, and reporting:
 
 -   `dplyr`, `tibble`, `tidyverse` - for efficient and tidy data manipulation.
 
@@ -563,9 +563,9 @@ summary(brms_g1)
 
 ```
 
-First, you need to check the effective sample size (`**_ESS`) and `Rhat` values. ESS should be greater than **400** ([Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221)), and R-hat should be close to **1.0** (ideally \< 1.01). If these conditions are not met, you may need to increase the number of iterations or adjust the model specification.
+First, you need to check the effective sample size (`**_ESS`) and `Rhat` values. ESS should be greater than **400** ([Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221)), and $\hat{R}$ should be close to **1.0** (ideally \< 1.01). If these conditions are not met, you may need to increase the number of iterations or adjust the model specification.
 
-Then, we can check the output - it is divided into two parts: **Location (mean) part** (how the average changes) and **Scale (dispersion) part** (how the variability changes - in Gaussian data, the scale part is $\sigma$)
+Then, we can check the output. It is divided into two parts: **Location (mean) part** (how the average changes) and **Scale (dispersion) part** (how the variability changes). In Gaussian data, the scale part is $\sigma$
 
 Here is the explanation of the output table:
 
@@ -629,10 +629,6 @@ Although the model comparison did not show a strong difference in overall fit be
 *Early-life food supplementation significantly reduced trait variance in males, but not in females.*
 
 This result would have been missed in a traditional location-only analysis that focuses solely on mean differences. By modeling both the mean and the dispersion, we were able to detect a sex-specific canalisation effect, highlighting the value of using location-scale models when investigating trait variability and developmental plasticity.
-
-<!-- need to fix the Santi's sections - add glmmTMB?? -->
-
-<!-- for now, I downloaded all RDS files in my computer -->
 
 # Adding random effects in the location part only (model 2)
 
@@ -737,7 +733,7 @@ Following the previous section, we first fit a location-only model as our baseli
 #| label: model_fitting2-model1
 
 model2_1<-glmmTMB(log(SMI) ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
-              family = gaussian(),data=dat)
+              family = gaussian(), data=dat)
 
 
 summary(model2_1)
@@ -1714,7 +1710,7 @@ The `Conway-Maxwell-Poisson (CMP)` model is a flexible count data model that can
 
 # CMP model ----
 
-model_2 <-  glmmTMB(
+model_2 <- glmmTMB(
   frequency ~ 1 + condition + sex + (1 | species) + (1 | id),
   dispformula = ~ condition + sex, 
   data = dat_pref,
@@ -2114,7 +2110,7 @@ Ultimately, the goal is not only to improve statistical fit but also to gain bio
 We demonstrate these steps using the previous examples, where we started with a location-only model and then moved to a location-scale model to account for heterogeneity in variance. We also compared models using AICc and LOO criteria to select the best-fitting model. Although parts of the examples below may repeat content from earlier sections, we present them again here in sequence to illustrate a typical approach to model selection and refinement.
 
 ::: {.callout-tip appearance="simple" icon="false"}
-One important thing to keep in mind is that `DHARMa` does not work with models fitted using `brms`. This means that you cannot check residual diagnostics for the location-only double-hierarchical model (model 3) if it was fitted with brms. If you want to use `DHARMa` for residual diagnostics, you need to run model 2.5 instead - in other words, you cannot include the correlation part.
+One important thing to keep in mind is that `DHARMa` does not work with models fitted using `brms`. This means that you cannot check residual diagnostics for the location-only double-hierarchical model (model 3) if it was fitted with `brms`. If you want to use `DHARMa` for residual diagnostics, you need to run model 2.5 instead - in other words, you cannot include the correlation part.
 :::
 
 ## Example 1
@@ -2326,7 +2322,7 @@ The results from this more complex model show that both ST_DATE and the RANK:ST_
 
 ## Example 2
 
-We revisit the dataset on Estrildid finches to examine how food supplementation affects gaze frequency toward dot patterns (as introduced in Beyond Gaussian 1).
+We revisit the dataset on Estrildid finches to examine how food supplementation affects gaze frequency toward dot patterns (as introduced in `Beyond Gaussian 1` section).
 
 To avoid repeating the structure of the previous example, we now take a more realistic modeling approach by incorporating phylogenetic non-independence as a random effect. The response variable, frequency, is a count variable, which supports the use of Poisson or Negative Binomial distributions. However, as visualised in the plots below, there is substantial between-species variation—both in mean gaze frequency and in the degree of within-species variability.
 
@@ -2343,8 +2339,6 @@ In the following sections, we will:
 ### Step 1
 
 #### Identify data type and plot raw data
-
-<!-- This is the same figures as in the previous example - should O skip?? -->
 
 The violin plot by condition and sex shows that gaze frequency is generally higher in the food-deprived condition, with some individuals—especially females—showing very high values (over 500). The faceted line plot by species shows: 
 
@@ -2416,7 +2410,7 @@ model_0 <- glmmTMB(
 
 ```
 
-To evaluate model adequacy, we use the DHARMa package to simulate and visualize residuals. The plots allow us to assess residual uniformity, potential over- or underdispersion, outliers, and leverage.
+To evaluate model adequacy, we use the `DHARMa` package to simulate and visualise residuals. The plots allow us to assess residual uniformity, potential over- or underdispersion, outliers, and leverage.
 
 ```{r}
 #| label: residual_diagnostics - eg2
@@ -2428,7 +2422,7 @@ model0_res <- simulateResiduals(model_0, plot = TRUE, seed = 42)
 testDispersion(model0_res) 
 ```
 
-Although the dispersion test (p = 0.456) suggests no clear evidence of overdispersion based on the mean–variance relationship, the KS test indicates that the residuals deviate from a uniform distribution. These two tests assess different aspects of model adequacy: the dispersion test evaluates whether the variance is correctly specified as a function of the mean, while the KS test can detect broader misfits, such as unmodeled structure, zero inflation, or group-specific heteroscedasticity. Thus, even in the absence of overdispersion, the presence of non-uniform residuals supports the need for a more flexible model.
+Although the dispersion test (`p = 0.456`) suggests no clear evidence of overdispersion based on the mean–variance relationship, the KS test indicates that the residuals deviate from a uniform distribution. These two tests assess different aspects of model adequacy: the dispersion test evaluates whether the variance is correctly specified as a function of the mean, while the KS test can detect broader misfits, such as unmodeled structure, zero inflation, or group-specific heteroscedasticity. Thus, even in the absence of overdispersion, the presence of non-uniform residuals supports the need for a more flexible model.
 
 Since we have found the limitations of the model without phylogenetic effects, we now proceed to fit the same model using the `brms` package, this time including the phylogenetic effect as a random effect to account for the non-independence among species. Including both species and phylogeny as random effects allows us to distinguish between two sources of variation: the phylogenetic effect captures correlations arising from shared evolutionary history, whereas the species-level random intercept absorbs residual species-specific variation not accounted for by the tree—such as ecological or methodological factors. Including both terms helps avoid underestimating heterogeneity at the species level and provides a more accurate partitioning of variance.
 
@@ -2628,7 +2622,11 @@ summary(model_eg2.3)
 
 Model eg2.3, which includes both phylogenetic and species-level effects on the location and scale parts, performs best (highest elpd).
 
-ELPD stands for Expected Log Predictive Density. It is a measure of out-of-sample predictive accuracy—that is, how well a model is expected to predict new, unseen data. - It is used in Bayesian model comparison, especially when using LOO-CV (Leave-One-Out Cross-Validation). - Higher ELPD means better predictive performance. - It is calculated by taking the log-likelihood of each observation, averaged over posterior draws, and then summed over all observations. - It rewards models that fit the data well without overfitting.
+ELPD stands for Expected Log Predictive Density. It is a measure of out-of-sample predictive accuracy—that is, how well a model is expected to predict new, unseen data. 
+-  It is used in Bayesian model comparison, especially when using LOO-CV (Leave-One-Out Cross-Validation). 
+-  Higher ELPD means better predictive performance. 
+-  It is calculated by taking the log-likelihood of each observation, averaged over posterior draws, and then summed over all observations. 
+-  It rewards models that fit the data well without overfitting.
 
 ```{r}
 #| echo: false
@@ -2641,44 +2639,50 @@ summary(model_eg2.3)
 Accounting for phylogeny captures much of the between-species structure, it highlights evolutionary constraints or shared ecological traits. The remaining species-specific variance suggests additional factors (e.g., experimental nuances) not captured by the tree alone.
 :::
 
-# Extra!
+# Extra
 Here, we examine how sample size (N) affects estimates of the sample mean and sample standard deviation (SD).
-For each N = 2 to 50, draw 100 samples from the standard normal distribution $\mathcal{N}(0, 1)$. Then, compute mean and SD for each sample. After that, calculate the average of these estimates to see how close they are to the true values (mean = 0, SD = 1).
+For each N = 2 to 50, draw 10000 samples from the standard normal distribution $\mathcal{N}(0, 1)$. Then, compute mean and SD for each sample. After that, calculate the average of these estimates to see how close they are to the true values (mean = 0, SD = 1).
 
 ```{r}
 
 # 1. simulation settings
 set.seed(2025)
-n_reps <- 100        # replicates per N
+n_reps <- 1000        # replicates per N
 Ns     <- 2:50       # N = 2, 3, 4, …, 50
 
-# 2. simulate draws and compute sample mean & SD
+# 2. simulate draws and compute sample mean & SD for each combination of N and replicate
+## create a data frame with all combinations of N and replication number
+## in this case, for N = 2 to 50 and 10000 replicates per N, this create 49*1000 = 49000 rows
 results <- expand.grid(
   N      = Ns,
-  replic = seq_len(n_reps)
+  replic = seq_len(n_reps) # replicate number from 1 to 1000
 ) %>%
-  arrange(N, replic) %>%
+  arrange(N, replic) %>% # sort by N and replicate number
   mutate(
-    samp_mean = NA_real_,
-    samp_sd   = NA_real_
+    samp_mean = NA_real_, # placeholder for sample mean
+    samp_sd   = NA_real_  # placeholder for sample SD
   )
 
 # loop through each N and compute sample mean and SD
 for (i in seq_len(nrow(results))) {
-  N <- results$N[i]
-  x <- rnorm(N, mean = 0, sd = 1)
-  results$samp_mean[i] <- mean(x)
-  results$samp_sd[i]   <- sd(x)
+  N <- results$N[i] # extract the sample size for this row
+  x <- rnorm(N, mean = 0, sd = 1) # simulate N random values from N(0,1)
+  results$samp_mean[i] <- mean(x) # compute and store the sample mean
+  results$samp_sd[i]   <- sd(x)   # compute and store the sample SD
 }
 
-# 3. compute average of the n_rep estimates for each N
+# 3. for each sample size N, compute the average sample mean and average sample SD across all replicates
 summary2 <- results %>%
   group_by(N) %>%
   summarize(
     avg_mean = mean(samp_mean),
-    avg_sd   = mean(samp_sd)
+    avg_sd = mean(samp_sd)
   ) %>%
   ungroup()
+
+```
+
+```{r}
 
 # 4. plot A: Average Sample Mean vs. N
 p_avg_mean <- ggplot(summary2, aes(x = N, y = avg_mean)) +
@@ -2686,10 +2690,10 @@ p_avg_mean <- ggplot(summary2, aes(x = N, y = avg_mean)) +
   geom_line(color = "#1f77b4", size = 1) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
   labs(
-    title    = "Average Sample Mean vs. Sample Size (N = 2…50)",
+    title  = "Average Sample Mean vs. Sample Size (N = 2…50)",
     subtitle = "True mean = 0 (dashed line)",
-    x        = "Sample size (N)",
-    y        = "Average of 100 sample means"
+    x = "Sample size (N)",
+    y = "Average of 1000 sample means"
   ) +
   theme_classic(base_size = 13) +
   theme(
@@ -2702,10 +2706,98 @@ p_avg_sd <- ggplot(summary2, aes(x = N, y = avg_sd)) +
   geom_line(color = "#ff7f0e", size = 1) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
   labs(
-    title    = "Average Sample SD vs. Sample Size (N = 2…50)",
+    title = "Average Sample SD vs. Sample Size (N = 2…50)",
     subtitle = "True SD = 1 (dashed line)",
-    x        = "Sample size (N)",
-    y        = "Average of 100 sample SDs"
+    x = "Sample size (N)",
+    y = "Average of 1000 sample SDs"
+  ) +
+  theme_classic(base_size = 13) +
+  theme(
+    panel.grid.minor = element_blank()
+  )
+
+# 6. display the two plots
+p_avg_mean
+p_avg_sd
+
+```
+
+<!-- Much quicker than the previous example! -->
+```{r}
+#| eval: false
+#| echo: false
+
+set.seed(2025)
+
+n_reps <- 1000        
+Ns     <- 2:50       
+
+# generate all combinations of sample size (N) and replicate number
+results <- expand.grid(
+  N      = Ns,
+  replic = seq_len(n_reps)
+) %>%
+  arrange(N, replic)
+
+# pre-calculate how many total simulations to run and 
+# generate a vector of sample sizes for all rows
+n_total <- nrow(results)
+Ns_vec <- results$N
+
+system.time({
+# generate all random samples in one go (total number of draws = sum of all Ns)
+samples_all <- rnorm(sum(Ns_vec), mean = 0, sd = 1)
+
+# assign an ID to each sample, to keep track of which row (i.e., which N) it belongs to
+row_id <- rep(seq_along(Ns_vec), times = Ns_vec)
+
+# split the generated samples by row
+split_samples <- split(samples_all, row_id)
+
+# compute sample mean and SD for each group
+means <- sapply(split_samples, mean)
+sds   <- sapply(split_samples, sd)
+})
+
+# add results into the data frame
+results$samp_mean <- means
+results$samp_sd <- sds
+
+# summarise the average sample mean and SD per sample size (N)
+summary2 <- results %>%
+  group_by(N) %>%
+  summarize(
+    avg_mean = mean(samp_mean),
+    avg_sd = mean(samp_sd),
+    .groups = "drop"
+  )
+
+# 4. plot A: Average Sample Mean vs. N
+p_avg_mean <- ggplot(summary2, aes(x = N, y = avg_mean)) +
+  geom_point(color = "#1f77b4", size = 2) +
+  geom_line(color = "#1f77b4", size = 1) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  labs(
+    title = "Average Sample Mean vs. Sample Size (N = 2…50)",
+    subtitle = "True mean = 0 (dashed line)",
+    x = "Sample size (N)",
+    y = "Average of 1000 sample means"
+  ) +
+  theme_classic(base_size = 13) +
+  theme(
+    panel.grid.minor = element_blank()
+  )
+
+# 5. plot B: Average Sample SD vs. N
+p_avg_sd <- ggplot(summary2, aes(x = N, y = avg_sd)) +
+  geom_point(color = "#ff7f0e", size = 2) +
+  geom_line(color = "#ff7f0e", size = 1) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
+  labs(
+    title = "Average Sample SD vs. Sample Size (N = 2…50)",
+    subtitle = "True SD = 1 (dashed line)",
+    x = "Sample size (N)",
+    y = "Average of 1000 sample SDs"
   ) +
   theme_classic(base_size = 13) +
   theme(
@@ -2714,7 +2806,6 @@ p_avg_sd <- ggplot(summary2, aes(x = N, y = avg_sd)) +
 
 # 6. display the two plots
 p_avg_mean / p_avg_sd
-
 ```
 
 For small sample sizes, sample variance and standard deviation tend to be biased, as shown in the bottom plot, the average sample SD is clearly lower than 1 when N is small.
@@ -2728,9 +2819,9 @@ Once N exceeds approximately 20, the average sample SD (and variance) gets much 
 -   Lundgren EJ, Ramp D, Middleton OS, Wooster EI, Kusch E, Balisi M, Ripple WJ, Hasselerharm CD, Sanchez JN, Mills M, Wallach AD. (2022) A novel trophic cascade between cougars and feral donkeys shapes desert wetlands. *Journal of Animal Ecology*. 91:2348-57. doi: 10.1111/1365-2656.13766
 -   Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, Paul-Christian Bürkner (2021). Rank-Normalization, Folding, and Localization: An Improved Rhat for Assessing Convergence of MCMC (with Discussion). *Bayesian Analysis*. 16:667-718. doi: 10.1214/20-BA1221
 
-# Information about R session
+# Information about `R` session
 
-This section shows the current R session information, including R version, platform, and loaded packages.
+This section shows the current `R` session information, including `R` version, platform, and loaded packages.
 
 ```{r}
 sessionInfo()
