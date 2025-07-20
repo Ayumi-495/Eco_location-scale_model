@@ -2647,7 +2647,7 @@ For each N = 2 to 50, draw 10000 samples from the standard normal distribution $
 
 # 1. simulation settings
 set.seed(2025)
-n_reps <- 1000        # replicates per N
+n_reps <- 10000        # replicates per N
 Ns     <- 2:50       # N = 2, 3, 4, …, 50
 
 # 2. simulate draws and compute sample mean & SD for each combination of N and replicate
@@ -2729,8 +2729,8 @@ p_avg_sd
 
 set.seed(2025)
 
-n_reps <- 1000        
-Ns     <- 2:50       
+n_reps <- 10000
+Ns     <- 2:50
 
 # generate all combinations of sample size (N) and replicate number
 results <- expand.grid(
