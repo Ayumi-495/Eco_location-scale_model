@@ -1,5 +1,5 @@
 ---
-title: "Location–scale models in ecology: handling heterogeneity in continuous, counts and proportions"
+title: "Location–scale models in ecology: handling heterogeneity in continuous, count and proportion data"
 subtitle: "step by step online tutorial"
 date: "`r Sys.Date()`"
 author: 
