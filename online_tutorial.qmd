@@ -160,7 +160,7 @@ If you get stuck or are unsure about something, it might be helpful to check the
 
 -   <https://discourse.mc-stan.org/>
 
-This example shows how to fit a simple location-scale model, where both the mean ($\mu$) and the variability ($\sigma$) of a continuous outcome variable $y$ are modeled as functions of a predictor $x$.
+This example shows how to fit a simple location-scale model, where both the mean ($\mu$) and the variability ($\sigma$) of a continuous outcome variable $y$ are modeled as functions of a predictor $x$. Note that, throughout this tutorial, we explicitly write `y ~ 1 + x` to indicate that the model includes an intercept. However, `y ~ x` also includes an intercept by default, so both formulations are equivalent.
 
 ```{r}
 #| eval: false
@@ -172,9 +172,6 @@ formula1 <- bf(
   y ~ 1 + x,  # location part
   sigma = ~ 1 + x # scale part - specified by sigma
 )
-#ASK Shinichi if this is correct
-#' [EJL: Unlike in frequentist models, such as with glmmTMB, here we explicitly write the intercept term as '1']
-# I do not think that is accurate. brms automatically includes the intercept - just like most R modeling frameworks. Writing `1 + x` is equivalent to `x` here... but may be I should ask Shinichi?
 
 # generate default priors based on the formula and data
 default_priors <- default_prior(
