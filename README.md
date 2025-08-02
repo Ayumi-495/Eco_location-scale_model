@@ -1,7 +1,6 @@
 This repository was created for the paper:
 
-Nakagawa et al. (2025) "**Location-scale models in ecology: heteroscedasticity in continuous, count and proportion data**"
-<insert the preprint link here>
+"**Location-scale models in ecology: heteroscedasticity in continuous, count and proportion data**"
 
 
 The online tutorial is available here: https://ayumi-495.github.io/Eco_location-scale_model/
@@ -16,5 +15,3 @@ Google Drive link: https://drive.google.com/drive/folders/1CvshmYMowXSB9MdbCprP1
 
 Please save the RDS files in a folder named `Rdata` inside the same directory that contains `online_tutorial.qmd` and the `data` folder.
 If everything is placed correctly, the `.qmd` file should run without any issues :)
-
-If you have any questions or find any issues, feel free to let me know (ayumi.mizuno5@gmail.com) - I would really appreciate your feedback!
