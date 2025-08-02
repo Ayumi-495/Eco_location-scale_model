@@ -2,14 +2,7 @@
 title: "Location–scale models in ecology: handling heterogeneity in continuous, count and proportion data"
 subtitle: "step by step online tutorial"
 date: "`r Sys.Date()`"
-author: 
- - name: Shinichi Nakagawa
- - name: Santiago Ortega 
- - name: Elena Gazzea
- - name: Malgorzata Lagisz
- - name: Anna Lenz
- - name: Erick Lundgren
- - name: Ayumi Mizuno*
+
 format: 
   html:
     toc: true
@@ -51,7 +44,6 @@ execute:
   # cache: true
 ---
 
-If you have any questions, errors or bug reports, please feel free to contact Ayumi Mizuno (amizuno\@ualberta.ca / ayumi.mizuno5\@gmail.com).
 
 Some of the models in this tutorial take a long time to run. To make the tutorial faster and easier to follow, we have precomputed selected models and saved them as .rds files.
 
