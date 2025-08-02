@@ -3,7 +3,7 @@ This repository was created for the paper:
 "**Location-scale models in ecology: heteroscedasticity in continuous, count and proportion data**"
 
 
-The online tutorial is available here: https://ayumi-495.github.io/Eco_location-scale_model/
+The online tutorial is available here: https://anonymous.4open.science/w/Eco_location-scale_model-29BE/
 
 
 To fully reproduce the `R` code shown in the tutorial, you will need to download the following:
