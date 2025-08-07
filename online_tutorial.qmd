@@ -45,7 +45,7 @@ execute:
 ---
 
 
-Some of the models in this tutorial take a long time to run. To make the tutorial faster and easier to follow, we have precomputed selected models and saved them as .rds files.
+Some of the models in this tutorial take a long time to run. To make the tutorial faster and easier to follow, we have precomputed selected models and saved them as `.rds` files.
 
 If you would like to re-run the code yourself and reproduce the results shown in the tutorial, please make sure to do the following:
 
@@ -55,7 +55,7 @@ If you would like to re-run the code yourself and reproduce the results shown in
 
     -   All datasets in the data folder
 
-    -   The precomputed .rds files from Google Drive Google Drive link: <https://drive.google.com/drive/folders/1CvshmYMowXSB9MdbCprP1LP7llZNxIbe?usp=drive_link>
+    -   The precomputed `.rds` files from Google Drive Google Drive link: <https://drive.google.com/drive/folders/1CvshmYMowXSB9MdbCprP1LP7llZNxIbe?usp=drive_link>
 
 2.  Create a folder structure like this on your machine:
 
