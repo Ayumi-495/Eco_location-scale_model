@@ -1,0 +1,271 @@
+---
+title: "04_BeyondGaussian2"
+---
+
+```{r}
+#| label: load_packages
+#| echo: false
+
+# Load required packages
+
+pacman::p_load(
+  ## data manipulation
+  dplyr, tibble, tidyverse, broom, broom.mixed,
+  
+  ## model fitting
+  ape, arm, brms, broom.mixed, cmdstanr, emmeans, glmmTMB, MASS, phytools, rstan, TreeTools,
+  
+  ## model checking and evaluation
+  DHARMa, loo, MuMIn, parallel,
+  
+  ## visualisation
+  bayesplot, ggplot2, patchwork, tidybayes,
+  
+  ## reporting and utilities
+  gt, here, kableExtra, knitr
+)
+```
+
+# Beyond Gaussian 2
+
+This dataset comes from [Lundgren et al. (2022)](https://doi.org/10.1111/1365-2656.13766), which examined the activity and impact of feral donkeys (*Equus africanus asinus*) between wetlands with and without cougar (*Puma concolor*) predation.
+
+For this example, we will focus on the effect of cougar predation on the percentage of ground trampled by feral donkeys.
+
+## Questions
+
+1.  **Does cougar predation affect the percentage of ground trampled by feral donkeys?**
+2.  **Does cougar predation affect the variability in the percentage of ground trampled by feral donkeys?**
+
+### Variables included
+
+::: {.callout-note appearance="simple" icon="false"}
+-   `cover`: Percentage of ground trampled by feral donkeys
+-   `Site`: Name of the site where the data was collected
+-   `Access_point`: Access point to the sites
+-   `if_kill`: Whether a cougar kill (dead donkey) was found at the site (1 = yes, 0 = no)
+:::
+
+## Visualise the dataset
+
+Violin plots illustrate the overall density distribution of percentage of trampled Bare Ground for both areas with (Yes) and without (No) donkey kills Each individual empty circle represents the trampled bare ground cover of a single observation. The plot visually highlights individual variability and allows for the comparison of both central tendency (indicated by the black solid line, representing the mean) and spread of trampled bare ground cover between areas where burro kills are absent versus present.
+
+```{r}
+#| label: show_data - beyond_gaussian2
+#| fig-width: 8
+#| fig-height: 6
+
+dat <- read.csv(here("data","Lundgren_Cougar_Burro_Trophic_Cascade_Trampled_BareGround.csv"))
+
+dat <- dat %>%
+  dplyr::select(Site, Pool, if_kill, cover) %>%
+  mutate(Site=as.factor(Site),
+         if_kill=as.factor(if_kill),
+         cover=as.numeric(cover)
+  )
+
+str(dat)
+
+
+ggplot(dat, aes(x = if_kill, y = cover, fill = if_kill)) +
+  geom_violin(
+    aes(fill = if_kill), # Fill violins based on 'if_kill'
+    color = "#8B8B83", # Outline color for violins
+    width = 0.8,
+    alpha = 0.3,
+    position = position_dodge(width = 0.7)
+  ) +
+  geom_jitter(
+    aes(color = if_kill), # Color jittered points based on 'if_kill'
+    size = 3,
+    alpha = 0.4,
+    shape = 1, # Open circles for jittered points
+    position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.15)
+  ) +
+  stat_summary(
+    fun = mean,
+    geom = "crossbar",
+    width = 0.1,
+    color = "black", # Black crossbar for mean
+    linewidth = 0.5,
+    position = position_dodge(width = 0.7)
+  ) +
+  labs(
+    title = "Donkey Trampling by Cougar Kill Presence",
+    x = "Cougar Kill Presence",
+    y = "Proportion Trampled Bare Ground"
+  ) +
+  scale_fill_manual(
+    values = c("burro kills absent" = "cornflowerblue", "burro kills present" = "firebrick")
+  ) +
+  scale_color_manual( # Add scale_color_manual for jitter points
+    values = c("burro kills absent" = "cornflowerblue", "burro kills present" = "firebrick")
+  ) +
+  scale_x_discrete(
+    labels = c("burro kills absent" = "No", "burro kills present" = "Yes"),
+    expand = expansion(add = 0.5)
+  ) +
+  theme_classic(base_size = 16) +
+  theme(
+    axis.text = element_text(color = "#6E7B8B", size = 14),
+    axis.title = element_text(color = "#6E7B8B", size = 14),
+    legend.position = "none",
+    axis.text.x = element_text(angle = 0, hjust = 0.5)
+  )
+
+```
+
+## Run models and interpret results
+
+We will fit two zero-one inflated beta regression models to the data using the `brms` package. We'll use the `brms` package because the `glmmTMB` (frequentist) approach does not allow for values of '1', while the `brms` package allows us to fit zero-one inflation models to account for these boundary values. All models incorporate `Pool` as a random effect to account for non-independence of observations collected at the same wetland access point
+
+The models are as follows:
+
+a.  Location-Only Model: This model will estimate the average difference in the percentage of trampled bare ground between areas where "burro kills are absent" and where "burro kills are present."
+b.  Location-Scale Model: This more comprehensive model will estimate both the average difference (location) and any differences in the variability (scale) of the percentage of trampled bare ground between areas with and without burro kills.
+
+### Model fitting
+
+::::: panel-tabset
+## Location-only model
+
+::: {.callout-tip appearance="simple" icon="false"}
+`zoi ~ if_kill` (Zero-One Inflation; zoi): This part of the model estimates how if_kill (cougar kill presence) influences the probability that an observation is exactly 0% or exactly 100% trampled bare ground. If `if_kill` increases the `zoi` probability, it means that areas with burro kills are more likely to have either no trampled ground or completely trampled ground, compared to areas without burro kills.
+
+`coi ~ if_kill` (Conditional One-Inflation): This is where we distinguish between the 0% and 100% boundaries. If an observation is exactly at a boundary (0% or 100% trampled bare ground), the `coi` part of the model estimates how `if_kill` influences the probability that this boundary observation is 100% (fully trampled) rather than 0% (no trampled ground). So, if `coi` increases with `if_kill`, it suggests that if a site has exact boundary values, the presence of burro kills makes it more likely for that site to be completely trampled (100%) rather than completely untrampled (0%).
+:::
+
+```{r}
+#| label: model_fitting1 - beyond_gaussian2
+#| eval: false
+
+m0<-bf(cover ~ if_kill + (1|Pool),
+       zoi~  if_kill, 
+       coi~  if_kill) 
+prior1<-default_prior(m0, family=zero_one_inflated_beta(), data=dat)
+
+# Since this model is time-consuming, reload without running it:
+rerun <- F
+if(rerun){
+  
+  fit0 <- brm(
+   m0,
+   data = dat,
+   family = zero_one_inflated_beta(),
+   prior = prior1,
+   iter = 6000,
+   warmup = 1000,
+   chains = 2,  cores=2,
+   control = list(
+     adapt_delta = 0.99,
+     max_treedepth = 15
+   ),
+   seed = 123,
+   refresh = 500
+  )
+  saveRDS(fit0, file = here("Rdata", "fit0_BETA_Burros.rds"))
+  
+}else{
+  fit0 <- readRDS(here("Rdata", "fit0_BETA_Burros.rds"))
+}
+
+summary(fit0)
+```
+
+```{r}
+#| label: model_fitting1_results - beyond_gaussian2
+#| echo: false
+
+fit0 <- readRDS(here("Rdata", "fit0_BETA_Burros.rds"))
+summary(fit0)
+```
+
+## Location-scale model
+
+::: {.callout-tip appearance="simple" icon="false"}
+`phi` (Precision/Scale Parameter): This part of the model estimates how `if_kill` (cougar kill presence) influences the variability of the percentage of trampled bare ground for observations that fall between 0% and 100% (i.e., not exactly at the boundaries). A higher `phi` value indicates lower variability (data points are more tightly clustered around the mean). A lower `phi` value indicates higher variability (data points are more spread out).
+:::
+
+```{r}
+#| label: model_fitting2 - beyond_gaussian2
+#| eval: false
+m1<-bf(cover ~ if_kill + (1|Pool),
+       zoi ~ if_kill, 
+       coi ~ if_kill,
+       phi ~ if_kill) 
+prior2<-default_prior(m1, family=zero_one_inflated_beta(), data=dat)
+
+rerun <- F
+if(rerun){
+  fit1 <- brm(
+   m1,
+   data = dat,
+   family = zero_one_inflated_beta(),
+   prior = prior2,
+   iter = 6000,
+   warmup = 1000,
+   chains = 2,  cores=2,
+   control = list(
+     adapt_delta = 0.99,
+     max_treedepth = 15
+   ),
+   seed = 123,      #
+   refresh = 500    #
+  )
+  saveRDS(fit1, file = here("Rdata", "fit1_BETA_Burros.rds"))
+}else{
+  fit1 <- readRDS(here("Rdata", "fit1_BETA_Burros.rds"))
+}
+
+summary(fit1)
+```
+
+```{r}
+#| label: model_fitting2_results - beyond_gaussian2
+#| echo: false
+
+fit1 <- readRDS(here("Rdata", "fit1_BETA_Burros.rds"))
+summary(fit1)
+```
+
+## Model Comparison
+
+```{r}
+#| label: model_comparison - beyond_gaussian2
+#| eval: false
+f0loo <- loo::loo(fit0)
+f1loo <- loo::loo(fit1)
+
+fc<-loo::loo_compare(f0loo, f1loo)
+fc
+#      elpd_diff se_diff
+# fit1  0.0       0.0   
+# fit0 -2.7       1.6   
+```
+:::::
+
+### Model Comparison Results
+
+Our analysis of the model comparison results shows that the location-scale model is the most supported by the data. This is indicated by its lowest LOO (Leave-One-Out Cross-Validation) information criterion value.
+
+### Model Interpretation
+
+**Location (mean) part:**
+
+On average, the log-odds of the mean percentage of trampled bare ground are lower when burro kills are present compared to when they are absent ($\beta_{[\text{No-Yes}]}^{(l)}$ = -1.22, 95% CI \[-2.27, -0.18\]). This suggests that the presence of burro kills is associated with a lower average percentage of trampled bare ground.
+
+**Scale (dispersion/phi) part:** The log-precision (phi) is lower when burro kills are present, compared to when they are absent ($\beta_{[\text{No-Yes}]}^{(s)}$ = -1.07, 95% CI \[-2.01, -0.04\]). Suggesting that the percentage of trampled bare ground exhibits more variation or less consistency in areas where burro kills are present.
+
+**Zero-One Inflation (zoi) part:** The log-odds of observing exactly 0% or 100% trampled bare ground are lower when burro kills are present ($\beta_{[\text{No-Yes}]}^{(l)}$ = -1.71, 95% CI \[-2.55, -0.89\]). In other words, areas with burro kills are less likely to be at the extreme boundaries of either no trampled ground or entirely trampled ground.
+
+**Conditional on Inflation (coi) part:** The log-odds of a boundary observation being 100% rather than 0% are lower when burro kills are present ($\beta_{[\text{No-Yes}]}^{(l)}$ = -4.20, 95% CI \[-12.07, -0.08\]). This implies that if a boundary value is encountered with burro kills, it is less likely to be 100% (and potentially more likely to be 0%) compared to the "burro kills absent" scenario.
+
+## Conclusion
+
+**Does cougar predation affect the percentage of ground trampled by feral donkeys?**
+
+Answer: Yes, cougar predation, affects the average percentage of ground trampled by feral donkeys.
+
+**Does cougar predation affect the variability in the percentage of ground trampled by feral donkeys?**
+
+Answer: The model provides evidence that cougar predation affects the variability in the percentage of ground trampled by feral donkeys.

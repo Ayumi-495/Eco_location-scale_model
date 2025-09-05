@@ -1,0 +1,53 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Location–scale models in ecology: handling heterogeneity in continuous, count and proportion data"
+  subtitle: "step by step online tutorial"
+  date: "`r Sys.Date()`"
+  chapters:
+    - 00_Introduction.qmd
+    - 01_Model1.qmd
+    - 02_Models2and3.qmd
+    - 03_BeyondGaussian1.qmd
+    - 04_BeyondGaussian2.qmd
+    - 05_ModelSelection.qmd
+    - 06_ModelSelection1.qmd    
+    - 07_ModelSelection2.qmd   
+    - 08_Simulation.qmd
+  
+  sidebar:
+    style: "floating"    
+    search: true
+  page-navigation: true
+  downloads: [pdf]       
+
+format:
+  html:
+    theme: cosmo
+    toc: true            
+    toc-depth: 6
+    toc-title: "**CONTENTS**"
+    code-link: true
+    code-tools: true
+    df-print: paged
+    fontsize: "12"
+    mainfont: "Source Sans Pro"
+    monofont: "Fira Code"
+    code-overflow: wrap
+    code-line-numbers: false
+    grid:
+      margin-width: 120px
+#  number-sections: false   
+
+editor_options:
+  chunk_output_type: console
+
+execute:
+  warning: false
+  message: false
+  tidy: true
+
+# bibliography: bib/ref.bib   
+# embed-resources: true      

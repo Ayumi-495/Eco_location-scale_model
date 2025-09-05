@@ -1,0 +1,410 @@
+---
+title: "01_Model1"
+---
+
+```{r}
+#| label: load_packages
+#| echo: false
+
+# Load required packages
+
+pacman::p_load(
+  ## data manipulation
+  dplyr, tibble, tidyverse, broom, broom.mixed,
+  
+  ## model fitting
+  ape, arm, brms, broom.mixed, cmdstanr, emmeans, glmmTMB, MASS, phytools, rstan, TreeTools,
+  
+  ## model checking and evaluation
+  DHARMa, loo, MuMIn, parallel,
+  
+  ## visualisation
+  bayesplot, ggplot2, patchwork, tidybayes,
+  
+  ## reporting and utilities
+  gt, here, kableExtra, knitr
+)
+```
+
+# Fixed-effects location–scale model (model 1)
+
+Model 1 is a fixed-effects location-scale model, which allows us to model both the mean (location) and variance (scale) of a response variable simultaneously. This is particularly useful when we suspect that the variance of the response variable may differ across groups or treatments.
+
+## Dataset overview
+
+This dataset comes from a study by [Cleasby et al. (2011)](https://doi.org/10.1186/1756-0500-4-431), which investigated the effects of early-life food supplementation on adult morphology in a wild population of house sparrows (*Passer domesticus*). In particular, we focus on adult tarsus length as a measure of skeletal size. The dataset includes adult birds that either received supplemental food as chicks or not, and compares their tarsus length by treatment and sex.
+
+### Questions
+
+1.  **Does early-life food supplementation increase adult size? Specifically, does it increase the average tarsus length in adulthood?**
+2.  **Does early-life food supplementation lead to lower variation in adult tarsus length?**
+3.  **Are there sex-specific effects of food supplementation? Do the effects on mean or variance differ between males and females?**
+
+**Variables included**
+
+The dataset includes adult birds that either received supplemental food as chicks or not, and compares their tarsus length by treatment and sex. We use the following variables:
+
+::: {.callout-note appearance="simple" icon="false"}
+-   `Sex`: Biological sex of the bird (“Male” or “Female”)
+-   `AdTarsus`: Adult tarsus length (mm)
+-   `Treatment`: Whether the bird received food supplementation as a chick (`Fed`) or not (`Control`)
+:::
+
+## Visualise the datasets
+
+The plot shows how adult tarsus length varies by treatment (early-life food supplementation) and sex. Boxplots summarise the central tendency and spread, while the jitter points reveal the distribution of individual values. As shown in the plot, there is a clear tendency for reduced variability in the **male treatment group** (`Fed`), suggesting that early-life food supplementation may lead to more canalised development in males.
+
+It should be noted that we applied a log-transformation to `AdTarsus` to reduce skewness and stabilise residual variance. Continuous variables are often log-transformed and mean-centred, but in location-scale models, we do not standardise the predictors, as doing so would be remove interpretable variation in the scale part of the model.
+
+
+```{r}
+#| label: show_data - model1
+#| fig-width: 8
+#| fig-height: 6
+
+# load the datasets　----
+
+dat_tarsus <- read.csv(here("data", "SparrowTarsusData.csv"), header = TRUE)
+
+
+ggplot(dat_tarsus, aes(x = Treatment, y = AdTarsus, fill = Sex)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.5, position = position_dodge(width = 0.8)) +
+  geom_jitter(
+    aes(color = Sex),
+    size = 2, alpha = 0.7,
+    position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.8)
+  ) +
+  scale_fill_manual(values = c("Male" = "#1f78b4", "Female" = "#e31a1c")) + 
+  scale_color_manual(values = c("Male" = "#1f78b4", "Female" = "#e31a1c")) +
+  labs(title = "Adult tarsus length by treatment and sex",
+       x = "Treatment", y = "Log-transformed tarsus length") +
+  theme_classic() +
+  theme(legend.position = "right")
+
+```
+
+## Run models and interpret results
+
+We fit and compare two types of models to understand the structure of adult tarsus length:
+
+-   Location-only model: Estimates the mean of adult tarsus length as a function of sex and early-life food supplementation (treatment).
+
+-   Location-scale model: Estimates both the mean and the variability (residual dispersion) of adult tarsus length, allowing us to examine whether treatment and sex influence not only the average trait value but also its individual variation.
+
+This approach enables us to detect subtle patterns, such as sex-specific canalisation, that may not be captured when modeling the mean alone.
+
+### Model fitting
+
+::: panel-tabset
+## Location model
+
+First, we fit a location-only model as the baseline model.
+
+```{r}
+#| label: model_fitting1 - gaussian model1
+
+# location-only model ----
+
+model_0 <- glmmTMB(
+    log(AdTarsus) ~ 1 + Sex + Treatment + Sex:Treatment,
+    data = dat_tarsus, 
+    family = gaussian)
+
+summary(model_0)
+
+## to quantify the uncertainty in parameter estimates, we computed 95% confidence intervals using the confint() function.
+## this function returns the lower and upper bounds for each fixed/random effect parameters. If a confidence interval does not include zero, it suggests that the corresponding predictor has a statistically significant effect (at approximately the 0.05 level).
+
+confint(model_0) # check 95%CI
+```
+
+## Residual diagnostics
+
+We can check the residuals of the model to assess the model fit and assumptions. The Q-Q plot should show points falling along a straight line.
+
+```{r}
+# | label: model0_diagnostics - model1
+
+# plot a q-q plot of residuals to visually assess the normality assumption
+# the data points should fail approximately along the reference line
+res <- residuals(model_0)
+
+qqnorm(res) # visual check for normality of residuals
+qqline(res) # reference line for normal distribution
+```
+
+The residuals mostly follow a straight line in the Q-Q plot, but there are some deviations, particularly at the lower and upper ends. This suggests that the model may not fully capture the distribution of the data, indicating some potential issues with normality or heteroscedasticity.
+
+## Location-scale model
+
+Then, we fit a location-scale model.
+
+```{r}
+#| label: model_fitting2 - model1
+
+# location-scale model ---- 
+
+model_1 <- glmmTMB(
+    log(AdTarsus) ~ 1 + Sex + Treatment + Sex:Treatment, # location part
+    dispformula = ~ 1 + Sex + Treatment + Sex:Treatment, # scale part
+    data = dat_tarsus, 
+    family = gaussian
+    )
+summary(model_1)
+
+confint(model_1) 
+```
+
+## Model comparison
+
+Now we can compare the two models to see if the location-scale model provides a better fit to the data than the location-only model. We can use the `anova()` function to compare the two models based on their AIC values. Alternatively, we can use the `model.sel()` function from the `MuMIn` package to compare AICc values, which is more appropriate for small sample sizes.
+
+```{r}
+#| label: model_comparison - model1
+
+# compare models ----
+## we can use the anova() function to compare the two models of AIC 
+anova(model_0, model_1)
+
+## model.sel() from the MuMIn package can be used to compare AICc values.
+model.sel(model_0, model_1)
+```
+
+## Summary of model results
+
+The results of the location-only model (Model 0) and the location-scale model (Model 1) are summarised below.
+
+```{r}
+#| echo: false
+#| label: model0_results
+
+# Location-only model (Model 0) ----
+
+## extract fixed effect estimates/95CIs from the model
+coefs_0 <- summary(model_0)$coefficients$cond
+conf_0 <- confint(model_0)
+
+## remove the "cond." prefix from row names to match with coefficient names, 
+## keep only the rows that match the location model term, and match the row order between coefficients and confidence intervals
+rownames(conf_0) <- gsub("^cond\\.", "", rownames(conf_0))
+conf_0 <- conf_0[rownames(conf_0) %in% rownames(coefs_0), ]
+match_0 <- match(rownames(coefs_0), rownames(conf_0))
+
+## create a data frame 
+results_0 <- data.frame(
+  Term = rownames(coefs_0),
+  Estimate = coefs_0[, "Estimate"],
+  StdError = coefs_0[, "Std. Error"],
+  `2.5%` = conf_0[match_0, "2.5 %"],
+  `97.5%` = conf_0[match_0, "97.5 %"]
+)
+
+## rename 95%CI columns to avoid issues with special characters in column names 
+colnames(results_0)[which(names(results_0) == "X2.5.")] <- "CI_low"
+colnames(results_0)[which(names(results_0) == "X97.5.")] <- "CI_high"
+
+## display results ----
+gt(results_0) %>%
+  tab_header(title = "Location-only model") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
+```
+
+```{r}
+#| label: model1_results
+#| echo: false
+
+# Location-scale model (Model 1) ----
+
+## extract fixed effect estimates/95%CIs from the model
+summary_1 <- summary(model_1)
+conf_1 <- confint(model_1)
+
+# location part ----
+
+coefs_1_loc <- summary_1$coefficients$cond
+conf_1_loc <- conf_1[grep("^cond", rownames(conf_1)), ]
+
+rownames(conf_1_loc) <- gsub("^cond\\.", "", rownames(conf_1_loc))
+conf_1_loc <- conf_1_loc[rownames(conf_1_loc) %in% rownames(coefs_1_loc), ]
+match_loc <- match(rownames(coefs_1_loc), rownames(conf_1_loc))
+
+results_1_loc <- data.frame(
+  Term = rownames(coefs_1_loc),
+  Estimate = coefs_1_loc[, "Estimate"],
+  StdError = coefs_1_loc[, "Std. Error"],
+  CI_low = conf_1_loc[match_loc, "2.5 %"],
+  CI_high = conf_1_loc[match_loc, "97.5 %"]
+)
+
+colnames(results_1_loc)[which(names(results_1_loc) == "X2.5.")] <- "CI_low"
+colnames(results_1_loc)[which(names(results_1_loc) == "X97.5.")] <- "CI_high"
+
+
+# dispersion part ----
+
+coefs_1_disp <- summary_1$coefficients$disp
+conf_1_disp <- conf_1[grep("^disp", rownames(conf_1)), ]
+
+rownames(conf_1_disp) <- gsub("^disp\\.", "", rownames(conf_1_disp))
+conf_1_disp <- conf_1_disp[rownames(conf_1_disp) %in% rownames(coefs_1_disp), ]
+match_disp <- match(rownames(coefs_1_disp), rownames(conf_1_disp))
+
+results_1_disp <- data.frame(
+  Term = rownames(coefs_1_disp),
+  Estimate = coefs_1_disp[, "Estimate"],
+  StdError = coefs_1_disp[, "Std. Error"],
+  CI_low = conf_1_disp[match_disp, "2.5 %"],
+  CI_high = conf_1_disp[match_disp, "97.5 %"]
+)
+
+colnames(results_1_loc)[which(names(results_1_disp) == "X2.5.")] <- "CI_low"
+colnames(results_1_loc)[which(names(results_1_disp) == "X97.5.")] <- "CI_high"
+
+
+# display results ----
+gt(results_1_loc) %>%
+  tab_header(title = "Location-scale model (location part)") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
+
+gt(results_1_disp) %>%
+  tab_header(title = "Location-scale model (dispersion part)") %>%
+  fmt_number(columns = everything(), decimals = 3) %>%
+  cols_label(
+    Term = "Term",
+    Estimate = "Estimate",
+    StdError = "Std. Error",
+    CI_low = "95% CI (low)",
+    CI_high = "95% CI (high)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
+```
+
+## bonus - `brms`
+
+Of course, we can also fit the location–scale model using the `brms`! Here we show how to fit the same model as above using `brms`. The results should be similar to those obtained with `glmmTMB`.
+
+```{r}
+#| label: model_fitting3 - brms model1
+#| eval: false
+
+# specify the model using bf()
+formula1 <- bf(
+  log(AdTarsus) ~  1 + Sex + Treatment + Sex:Treatment, 
+  sigma = ~ 1 + Sex + Treatment + Sex:Treatment
+)
+
+# generate default priors based on the formula and data
+default_priors <- default_prior(
+                        formula1,
+                        data = dat_tarsus,                             
+                        family = gaussian() # default link function for gaussian family                                 
+                          )
+
+# fit the model - you can change N of iter, warmup, thin, and also chains.
+# adapt_delta = 0.95 helps to reduce divergent transitions
+system.time(
+  brms_g1 <- brm(formula1,
+                  data = dat_tarsus,           
+                  family = gaussian(),                   
+                  prior = default_priors,                
+                  iter = 2000,                          
+                  warmup = 1000, 
+                  thin = 1,                              
+                  chains = 2,                            
+                  control = list(adapt_delta = 0.95) 
+             )
+)
+
+summary(brms_g1)
+
+```
+
+```{r}
+#| label: model_result - brms model1 (SN)
+#| echo: false
+
+brms_g1 <- readRDS(here("Rdata", "brms_SN1.rds"))
+summary(brms_g1)
+
+```
+
+First, you need to check the effective sample size (`**_ESS`) and `Rhat` values. ESS should be greater than **400** ([Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221)), and $\hat{R}$ should be close to **1.0** (ideally \< 1.01). If these conditions are not met, you may need to increase the number of iterations or adjust the model specification.
+
+Then, we can check the output. It is divided into two parts: **Location (mean) part** (how the average changes) and **Scale (dispersion) part** (how the variability changes). In Gaussian data, the scale part is $\sigma$
+
+Here is the explanation of the output table:
+
+------------------------------------------------------------------------
+
+`Estimate`: posterior mean
+
+`Est.Err`: standard error of posterior mean
+
+`l-95% CI` and `u-95% CI`: Lower and upper bounds of the 95% **credible interval** (range where the true value lies with 95% probability, given the model and data)
+
+`Rhat`: Convergence diagnostic. Should be close to 1.00. If \>1.01, convergence may be poor.
+
+`Bulk_ESS` and `Tail_ESS`: Effective sample sizes for bulk and tail distributions. Should be \>400 for reliable estimates (larger is better).
+
+------------------------------------------------------------------------
+
+Now, you can find the results from `glmmTMB` and `brms` are very close to each other, but there are some differences in the estimates and standard errors. This came from the different estimation methods used by the two packages. `glmmTMB` uses maximum likelihood estimation, while `brms` uses Bayesian estimation with Markov Chain Monte Carlo (MCMC) sampling.
+:::
+
+### Comparison of location-only model and location-scale model
+
+There was no significant difference in the fit of the two models. location-scale model (model 1) had a lower AICc (-221.0) than location-only model (model 0: -220.0), with an AIC weight of 0.662 vs. 0.338 (see `Model comparison` tab).　
+
+::: {.callout-note appearance="simple" icon="false"}
+## Note on `AIC` vs `AICc`:
+
+While both `AIC` (Akaike Information Criterion) and `AICc` (AIC with correction) assess model fit by balancing goodness of fit and model complexity, AICc includes an additional correction for small sample sizes. When the sample size is limited relative to the number of estimated parameters, AICc is generally preferred because it reduces the risk of overfitting. As a result, AIC and AICc values may differ slightly, and model rankings based on them may also vary.
+:::
+
+### Interpretation of location-scale model :
+
+**Location (mean) part:**
+
+-   Average adult tarsus length was around 18 mm in the control females (back-transformed: `SexFemale`; $\beta_{[\text{intercept}]}^{(l)}$ = -3.28). Neither food supplementation nor sex produced more than ~2-4% differences in mean length: males were estimated to be −1.6% to +3.7% longer than females, supplemented birds were −2.0% to +4.2% longer than controls, and supplemented males were −2.3% to +5.2% longer than control males. These small and uncertain differences indicate that food supplementation did not meaningfully alter average adult tarsus length.
+
+**Scale (dispersion) part:**
+
+-   There are a significant negative interaction between sex and treatment (`SexMale:TreatmentFed`; $\beta_{[\text{interaction}]}^{(s)}$ = -0.95, 95% CI = \[-1.66, -0.24\]). Back-transformation shows that residual variance among supplemented males was only ~19–79% of that observed in control males (point estimate: 39%). In other words, food supplementation led to markedly more uniform growth among males, reducing variation in adult tarsus length. Neither treatment nor sex alone significantly affected variance; the reduction was specific to supplemented males.
+
+## Conclusion
+
+**Q1. Does early-life food supplementation increase adult size? Specifically, does it increase the average tarsus length in adulthood?**
+
+Answer: No clear evidence. In both the location-only and location-scale models, the effect of feeding (treatment) on the mean adult tarsus length was small and not statistically significant. This suggests that food supplementation did not lead to a measurable increase in average tarsus length.
+
+**Q2. Does early-life food supplementation lead to lower variation in adult tarsus length??**
+
+Answer: Partially yes - especially in males. The location-scale model revealed a significant reduction in variance in the male treatment group (Fed) compared to the male control group. This was supported by a significant negative interaction between sex and treatment in the dispersion model. In contrast, females showed no significant difference in variance between treatment groups. This indicates that early-life food supplementation reduced size variation only in males, not across all individuals.
+
+**Q3. Are there sex-specific effects of food supplementation? Do the effects on mean or variance differ between males and females?**
+
+Answer: Yes. The male treatment group (`Fed`) showed significantly reduced variance in adult tarsus length compared to the control group `(Control)`, while females did not show a significant difference in variance between treatment groups. There were no significant differences in mean tarsus length between sexes or treatments. This pattern suggests that early-life food supplementation may canalise trait development in males, leading to more uniform adult morphology under favourable nutritional conditions.
+
+------------------------------------------------------------------------
+
+Although the model comparison did not show a strong difference in overall fit between the location-only and location-scale models ($\Delta AICc = 1.3$), the location-scale model revealed an important and previously overlooked pattern:
+
+*Early-life food supplementation significantly reduced trait variance in males, but not in females.*
+
+This result would have been missed in a traditional location-only analysis that focuses solely on mean differences. By modeling both the mean and the dispersion, we were able to detect a sex-specific canalisation effect, highlighting the value of using location-scale models when investigating trait variability and developmental plasticity.
