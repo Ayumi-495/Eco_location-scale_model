@@ -360,7 +360,7 @@ Model comparison based on AICc strongly favored the location-scale CMP model (mo
 
 In all three models, food-supplied birds showed significantly lower gaze frequencies toward dot stimuli. There was no evidence of sex differences in the location part in any model.
 
-Regarding the dispersion parameter, in the location-scale `NB` model (model_1), the dispersion part revealed a significant change in residual variance in the food-supplied condition ($\beta_{[\text{conditionSupplied}]}^{(l)}$ = –0.662). Given the parameterization of the Negative Binomial distribution (where a smaller dispersion parameter $\theta$ indicates greater overdispersion), this suggests an increase in overdispersion when food was supplied, implying less consistent behavior across individuals. However, this effect was not statistically significant in the location-scale `CMP` model (model_2), where the corresponding estimate was 1.20 (p = 0.12). In the `CMP` model, a positive estimate for the dispersion parameter $\nu$ would imply a decrease in overdispersion (i.e., more consistent behavior) if it were significant.
+Regarding the dispersion parameter, in the location-scale `NB` model (model_1), the dispersion part revealed a significant change in residual variance in the food-supplied condition ($\beta_{[\text{conditionSupplied}]}^{(l)}$ = –0.662). Given the parameterization of the Negative Binomial distribution (where a smaller dispersion parameter $\theta$ indicates greater overdispersion), this suggests an increase in overdispersion when food was supplied, implying less consistent behaviour across individuals. However, this effect was not statistically significant in the location-scale `CMP` model (model_2), where the corresponding estimate was 1.20 (p = 0.12). In the `CMP` model, a positive estimate for the dispersion parameter $\nu$ would imply a decrease in overdispersion (i.e., more consistent behavior) if it were significant.
 
 Random effects in all models consistently showed greater variance among species than among id within species. For example, in the location-scale CMP model, species-level variance was 0.246, while individual-level variance was 0.151.
 
@@ -425,7 +425,7 @@ summary(model_nb_brms)
 
 model_nb_brms <- readRDS(here("Rdata", "model_nb_AM.rds"))
 summary(model_nb_brms)
-
+pp_check(model_nb_brms)
 ```
 :::
 
@@ -439,22 +439,22 @@ summary(model_nb_brms)
 
 **Location (mean) part:**
 
--   The supplied condition significantly lowers gaze frequency ($\beta_{[\text{conditionSupplied}]}^{(l)}$ = -0.845, 95% CI \[-1.08, -0.61\]\$).
+-   Birds gazed significantly less at dots when food was supplied ($\beta^{(l)}_{\text{deprived–supplied}}=-0.85$, 95% CI -1.08, -0.61), corresponding to a rate ratio of $\exp(\beta^{(l)})=0.43$ (i.e., mean frequency reduced by 57.3%; CI −66.0% to −45.7%).
 -   There is no significant sex difference in mean gaze frequency ($\beta_{[\text{sex-male}]}^{(l)}$ = -0.104, 95% CI \[-0.37, 0.16\]\$).
 
 **Scale (dispersion) part:**
 
--   The supplied condition significantly increases residual variance ($\beta_{[\text{deprived–supplied}]}^{(s)}$ = -0.662, 95% CI \[1.15, -0.18\]\$). This suggests more varied gaze behaviour across individuals under the supplied condition.
+-   The supplied condition significantly reduced the precision parameter ($\beta^{(s)}_{\text{deprived–supplied}}=-0.66$, 95% CI -1.15, -0.18), giving a $\theta$-ratio of $\exp(\beta^{(s)})=0.52$ (i.e., 48.3% lower precision; CI −68.3% to −16.5%). Because lower $\theta$ implies more scatter than the Poisson expectation, this means individual gaze behaviour was more variable when food was supplied.
 
--   There is no significant sex difference in the variability of gaze frequency ($\beta_{[\text{sex-male}]}^{(s)}$ = 0.132, 95% CI \[-0.36, 0.62\]\$).
+-   There was no significant sex difference in the variability of gaze frequency ($\beta^{(s)}_{\text{sex-male}}=0.13$, 95% CI -0.36, 0.62).
 
 **Location (mean) random effects:**
 
--   Species-level ($sd_{[\text{species}]}$ = 0.55, 95% CI \[0.31, 0.99\]\$): Indicates some variation in mean gaze frequency among species.
+-   Species-level variation ($sd^{(l)}_{\text{species}}=0.55$, 95% CI 0.31, 0.99) exceeded within-species individual variation.
 
 **Location (dispersion) random effects:** 
 
--   Individual-level ($sd_{[\text{species}]}$ = 0.34, 95% CI \[0.17, 0.68\]): Suggests variation among individuals within species, but this is smaller than the variation across species.
+-   Individual-level variation ($sd^{(l)}_{\text{id}}=0.34$, 95% CI 0.17, 0.68) was present but smaller than species-level differences.
 
 ## Conclusion
 

@@ -16,7 +16,7 @@ pacman::p_load(
   ape, arm, brms, broom.mixed, cmdstanr, emmeans, glmmTMB, MASS, phytools, rstan, TreeTools,
   
   ## model checking and evaluation
-  DHARMa, loo, MuMIn, parallel,
+  DHARMa, loo, MuMIn, parallel, ggeffects,
   
   ## visualisation
   bayesplot, ggplot2, patchwork, tidybayes,
@@ -66,8 +66,8 @@ It should be noted that we applied a log-transformation to `AdTarsus` to reduce 
 
 dat_tarsus <- read.csv(here("data", "SparrowTarsusData.csv"), header = TRUE)
 
-
-ggplot(dat_tarsus, aes(x = Treatment, y = AdTarsus, fill = Sex)) +
+#'*Added*
+ggplot(dat_tarsus, aes(x = Treatment, y = log(AdTarsus), fill = Sex)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.5, position = position_dodge(width = 0.8)) +
   geom_jitter(
     aes(color = Sex),
@@ -153,6 +153,11 @@ model_1 <- glmmTMB(
 summary(model_1)
 
 confint(model_1) 
+```
+
+```{r}
+
+
 ```
 
 ## Model comparison
@@ -385,7 +390,7 @@ While both `AIC` (Akaike Information Criterion) and `AICc` (AIC with correction)
 
 **Scale (dispersion) part:**
 
--   There are a significant negative interaction between sex and treatment (`SexMale:TreatmentFed`; $\beta_{[\text{interaction}]}^{(s)}$ = -0.95, 95% CI = \[-1.66, -0.24\]). Back-transformation shows that residual variance among supplemented males was only ~19–79% of that observed in control males (point estimate: 39%). In other words, food supplementation led to markedly more uniform growth among males, reducing variation in adult tarsus length. Neither treatment nor sex alone significantly affected variance; the reduction was specific to supplemented males.
+-   There was a significant negative interaction between sex and treatment (`SexMale:TreatmentFed`; $\beta_{[\text{interaction}]}^{(s)} = -0.95$, 95% CI = -1.66, -0.24). Back-transformation indicated that the residual standard deviation in supplemented males was 61.3% lower than that in control males (95% CI: -81.0% to -21.3%). Thus, early-life food supplementation substantially reduced variation in adult tarsus length among males, resulting in more uniform growth. Neither sex nor treatment alone had a significant effect on variance; the reduction was specific to supplemented males.
 
 ## Conclusion
 
