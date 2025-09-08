@@ -426,7 +426,7 @@ p_sigma_link <- ggplot(df_sigma_link, aes(x = Sex, y = log_sigma, color = Treatm
     x = "Sex",
     y = "log(sigma)"
   ) +
-  scale_y_continuous(limits = c(-4.5, -2.5), breaks = seq(-4.5, -2.5, by = 0.1) ) + 
+  scale_y_continuous(limits = c(-4.5, -2.5), breaks = seq(-4.5, -2.5, by = 0.5) ) + 
   theme_classic()
 
 # scale_data <- log(sqrt(residuals(model_1)^2)) # this is the residual  - we can add the figure, but it does not come from the model
@@ -434,55 +434,48 @@ p_sigma_link <- ggplot(df_sigma_link, aes(x = Sex, y = log_sigma, color = Treatm
 p_glmmTMB_m1 <- p_mean_link + p_sigma_link
 
 # brms ----
-nd <- dat_tarsus %>%
+d <- dat_tarsus %>%
   distinct(Sex, Treatment) %>%
   arrange(Sex, Treatment)
 
-draws_mu <- epred_draws(brms_g1, newdata = nd, re_formula = NA) %>%
-  median_qi(.epred, .width = 0.95)
+draws_link <- tidybayes::linpred_draws(
+  brms_g1, newdata = nd, re_formula = NA, dpar = TRUE, transform = FALSE
+) %>%
+  transmute(
+    Sex, Treatment, .draw,
+    mu = .linpred,  # Location on link scale
+    log_sigma = sigma  # Scale on link scale (already log(sigma))
+  ) %>%
+  tidyr::pivot_longer(mu:log_sigma, names_to = "param", values_to = "value")
 
-draws_sig <- epred_draws(brms_g1, newdata = nd, re_formula = NA, dpar = TRUE) %>%
-  transmute(Sex, Treatment, log_sigma = log(sigma)) %>%
-  median_qi(log_sigma, .width = 0.95)
+# Location ----
+p_loc <- draws_link %>%
+  filter(param == "mu") %>%
+  ggplot(aes(x = Sex, y = value, fill = Treatment)) +
+  geom_violin(width = 0.85, trim = FALSE, alpha = 0.6,
+              color = NA, position = position_dodge(0.6)) +
+  stat_pointinterval(aes(color = Treatment),
+                                position = position_dodge(width = 0.6),
+                                .width = 0.95, size = 0.8) +
+  scale_y_continuous(limits = c(2.8, 3.0), breaks = seq(2.8,3.0, by = 0.1) ) + 
+  labs(title = "Location", x = "Sex", y = "log(AdTarsus)") +
+  theme_classic() +
+  theme(legend.position = "right")
 
-dat_points_loc <- dat_tarsus %>%
-  mutate(y_log = log(AdTarsus))
-
-lp_sigma <- posterior_linpred(
-  brms_g1, newdata = dat_tarsus, re_formula = NA,
-  dpar = "sigma", transform = FALSE
-)
-dat_points_scl <- dat_tarsus %>%
-  mutate(log_sigma_hat = apply(lp_sigma, 2, median))
-
-pos <- position_dodge(width = 0.5)
-
-p_loc <- ggplot(draws_mu, aes(x = Sex, y = .epred, color = Treatment)) +
-  geom_point(position = pos, size = 3) +
-  geom_errorbar(aes(ymin = .lower, ymax = .upper), position = pos, width = 0.15) +
-  labs(title = "Location",
-       x = "Sex", y = "log(AdTarsus)"
-       ) +
-  scale_y_continuous(limits = c(2.8, 3.0), breaks = seq(2.8, 3.0, by = 0.1) ) +
-  theme_classic()
-
-p_scl <- ggplot(draws_sig, aes(x = Sex, y = log_sigma, color = Treatment)) +
-  geom_point(position = pos, size = 3) +
-  geom_errorbar(aes(ymin = .lower, ymax = .upper), position = pos, width = 0.15) +
-  geom_point(
-    data = dat_points_scl,
-    aes(x = Sex, y = log_sigma_hat, color = Treatment),
-    position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.08),
-    size = 1.6, alpha = 0.35, inherit.aes = FALSE
-  ) +
-  labs(title = "Scale",
-       x = "Sex", y = "log(sigma)"
-       ) +
-  scale_y_continuous(limits = c(-4.5, -2.5), breaks = seq(-4.5, -2.5, by = 0.1) ) + 
-  theme_classic()
+# Scale ----
+p_scl <- draws_link %>%
+  filter(param == "log_sigma") %>%
+  ggplot(aes(x = Sex, y = value, fill = Treatment)) +
+  geom_violin(width = 0.85, trim = FALSE, alpha = 0.6,
+              color = NA, position = position_dodge(0.6)) +
+  tidybayes::stat_pointinterval(aes(color = Treatment),
+                                position = position_dodge(width = 0.6),
+                                .width = 0.95, size = 0.8) +
+  labs(title = "Scale", x = "Sex", y = "log(sigma)") +
+  theme_classic() +
+  theme(legend.position = "right")
 
 p_brms_m1 <- p_loc + p_scl
-
 # combine ----
 (p_glmmTMB_m1 / p_brms_m1) +
   plot_annotation(title = "top: glmmTMB / bottom: brms")
