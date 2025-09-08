@@ -155,11 +155,6 @@ summary(model_1)
 confint(model_1) 
 ```
 
-```{r}
-
-
-```
-
 ## Model comparison
 
 Now we can compare the two models to see if the location-scale model provides a better fit to the data than the location-only model. We can use the `anova()` function to compare the two models based on their AIC values. Alternatively, we can use the `model.sel()` function from the `MuMIn` package to compare AICc values, which is more appropriate for small sample sizes.
@@ -340,13 +335,13 @@ summary(brms_g1)
 
 ```
 
+
 ```{r}
 #| label: model_result - brms model1 (SN)
 #| echo: false
 
 brms_g1 <- readRDS(here("Rdata", "brms_SN1.rds"))
 summary(brms_g1)
-
 ```
 
 First, you need to check the effective sample size (`**_ESS`) and `Rhat` values. ESS should be greater than **400** ([Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221)), and $\hat{R}$ should be close to **1.0** (ideally \< 1.01). If these conditions are not met, you may need to increase the number of iterations or adjust the model specification.
@@ -370,6 +365,129 @@ Here is the explanation of the output table:
 ------------------------------------------------------------------------
 
 Now, you can find the results from `glmmTMB` and `brms` are very close to each other, but there are some differences in the estimates and standard errors. This came from the different estimation methods used by the two packages. `glmmTMB` uses maximum likelihood estimation, while `brms` uses Bayesian estimation with Markov Chain Monte Carlo (MCMC) sampling.
+
+
+## Result figures
+The figure visualises results from the `glmmTMB` and `brms` models.
+
+-   **Location part**: Points and error bars indicate the estimated `log(AdTarsus)` for each combination of treatment and sex. In `glmmTMB`, values are estimated marginal means on the log scale with 95% confidence intervals, whereas in `brms` they are posterior medians with 95% credible intervals. Only four group-level estimates (2 sexes × 2 treatments) are relevant here, so neither raw data nor fitted values are plotted (no random effects are included, so points would not scatter).
+
+-   **Scale part**: Points and error bars show the estimated log($\sigma$), the dispersion parameter of the Gaussian distribution, for each treatment–sex cell. Because $\sigma$ is a distributional parameter rather than an observed variable, no observation-level points can be plotted; only group-level estimates with uncertainty intervals are shown.
+
+Although raw data could be plotted for both the location and scale parts, these would not represent model-derived estimates and are therefore omitted here.
+
+```{r}
+#| label: result_figure_model1
+
+# TODO: change colours and maybe set figure size
+
+# glmmTMB ----
+# Extract estimated marginal means for location part
+# returns predicted log(AdTarsus) by Sex*Treatment
+emm_mu_link <- emmeans(model_1, ~ Sex * Treatment,
+                       component = "cond", type = "link")
+df_mu_link <- as.data.frame(emm_mu_link) %>%
+  rename(
+    mean_log = emmean, # estimated log(mean AdTarsus)
+    lwr = lower.CL, # lower 95% CI (log scale)
+    upr = upper.CL # upper 95% CI (log scale)
+  )
+
+# Extract estimated marginal means for scale part 
+emm_sigma_link <- emmeans(model_1, ~ Sex * Treatment,
+                          component = "disp", type = "link")
+df_sigma_link <- as.data.frame(emm_sigma_link) %>%
+  rename(
+    log_sigma = emmean, # estimated log(sigma)
+    lwr = lower.CL, # lower 95% CI (log scale)
+    upr = upper.CL # upper 95% CI (log scale)
+  )
+
+pos <- position_dodge(width = 0.4)
+
+# Plot predicted log(AdTarsus) ± 95% CI for Sex*Treatment
+p_mean_link <- ggplot(df_mu_link, aes(x = Sex, y = mean_log, color = Treatment)) +
+  geom_point(position = pos, size = 3) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = pos, width = 0.15) +
+  labs(
+    title = "Location",
+    x = "Sex",
+    y = " log(AdTarsus)"
+  ) +
+  scale_y_continuous(limits = c(2.8, 3.0), breaks = seq(2.8, 3.0, by = 0.1) ) + 
+  theme_classic()
+
+# Plot predicted log(sigma) ± 95% CI for Sex*Treatment
+p_sigma_link <- ggplot(df_sigma_link, aes(x = Sex, y = log_sigma, color = Treatment)) +
+  geom_point(position = pos, size = 3) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = pos, width = 0.15) +
+  labs(
+    title = "Scale",
+    x = "Sex",
+    y = "log(sigma)"
+  ) +
+  scale_y_continuous(limits = c(-4.5, -2.5), breaks = seq(-4.5, -2.5, by = 0.1) ) + 
+  theme_classic()
+
+# scale_data <- log(sqrt(residuals(model_1)^2)) # this is the residual  - we can add the figure, but it does not come from the model
+     
+p_glmmTMB_m1 <- p_mean_link + p_sigma_link
+
+# brms ----
+nd <- dat_tarsus %>%
+  distinct(Sex, Treatment) %>%
+  arrange(Sex, Treatment)
+
+draws_mu <- epred_draws(brms_g1, newdata = nd, re_formula = NA) %>%
+  median_qi(.epred, .width = 0.95)
+
+draws_sig <- epred_draws(brms_g1, newdata = nd, re_formula = NA, dpar = TRUE) %>%
+  transmute(Sex, Treatment, log_sigma = log(sigma)) %>%
+  median_qi(log_sigma, .width = 0.95)
+
+dat_points_loc <- dat_tarsus %>%
+  mutate(y_log = log(AdTarsus))
+
+lp_sigma <- posterior_linpred(
+  brms_g1, newdata = dat_tarsus, re_formula = NA,
+  dpar = "sigma", transform = FALSE
+)
+dat_points_scl <- dat_tarsus %>%
+  mutate(log_sigma_hat = apply(lp_sigma, 2, median))
+
+pos <- position_dodge(width = 0.5)
+
+p_loc <- ggplot(draws_mu, aes(x = Sex, y = .epred, color = Treatment)) +
+  geom_point(position = pos, size = 3) +
+  geom_errorbar(aes(ymin = .lower, ymax = .upper), position = pos, width = 0.15) +
+  labs(title = "Location",
+       x = "Sex", y = "log(AdTarsus)"
+       ) +
+  scale_y_continuous(limits = c(2.8, 3.0), breaks = seq(2.8, 3.0, by = 0.1) ) +
+  theme_classic()
+
+p_scl <- ggplot(draws_sig, aes(x = Sex, y = log_sigma, color = Treatment)) +
+  geom_point(position = pos, size = 3) +
+  geom_errorbar(aes(ymin = .lower, ymax = .upper), position = pos, width = 0.15) +
+  geom_point(
+    data = dat_points_scl,
+    aes(x = Sex, y = log_sigma_hat, color = Treatment),
+    position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.08),
+    size = 1.6, alpha = 0.35, inherit.aes = FALSE
+  ) +
+  labs(title = "Scale",
+       x = "Sex", y = "log(sigma)"
+       ) +
+  scale_y_continuous(limits = c(-4.5, -2.5), breaks = seq(-4.5, -2.5, by = 0.1) ) + 
+  theme_classic()
+
+p_brms_m1 <- p_loc + p_scl
+
+# combine ----
+(p_glmmTMB_m1 / p_brms_m1) +
+  plot_annotation(title = "top: glmmTMB / bottom: brms")
+
+```
 :::
 
 ### Comparison of location-only model and location-scale model
@@ -389,7 +507,7 @@ While both `AIC` (Akaike Information Criterion) and `AICc` (AIC with correction)
 -   Average adult tarsus length was around 18 mm in the control females (back-transformed: `SexFemale`; $\beta_{[\text{intercept}]}^{(l)}$ = -3.28). Neither food supplementation nor sex produced more than ~2-4% differences in mean length: males were estimated to be −1.6% to +3.7% longer than females, supplemented birds were −2.0% to +4.2% longer than controls, and supplemented males were −2.3% to +5.2% longer than control males. These small and uncertain differences indicate that food supplementation did not meaningfully alter average adult tarsus length.
 
 **Scale (dispersion) part:**
-
+<!-- Added -->
 -   There was a significant negative interaction between sex and treatment (`SexMale:TreatmentFed`; $\beta_{[\text{interaction}]}^{(s)} = -0.95$, 95% CI = -1.66, -0.24). Back-transformation indicated that the residual standard deviation in supplemented males was 61.3% lower than that in control males (95% CI: -81.0% to -21.3%). Thus, early-life food supplementation substantially reduced variation in adult tarsus length among males, resulting in more uniform growth. Neither sex nor treatment alone had a significant effect on variance; the reduction was specific to supplemented males.
 
 ## Conclusion

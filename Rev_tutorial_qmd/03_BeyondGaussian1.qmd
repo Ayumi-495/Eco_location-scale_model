@@ -430,16 +430,18 @@ pp_check(model_nb_brms)
 
 ## Result figures
 
--   Location part: Points and error bars indicate the estimated log(mean frequency) for each combination of condition and sex. For `glmmTMB`, values are estimated marginal means (on the log scale) with 95% confidence intervals. For `brms`, values are posterior medians with 95% credible intervals. Faint dots represent model-based predictions of log(mean frequency) for individual observations (i.e. fitted values including random effects), shown to illustrate how the model maps observed data points onto the underlying mean structure.
+-   Location part: Points and error bars indicate the estimated log(mean frequency) for each combination of feeding condition and sex. For `glmmTMB`, values are estimated marginal means (on the log scale) with 95% confidence intervals. For `brms`, values are posterior medians with 95% credible intervals. Faint dots represent model-based predictions of log(mean frequency) for individual observations (i.e. fitted values including random effects), shown to illustrate how the model maps observed data points onto the underlying mean structure.
 
--   Scale part: Points and error bars show the estimated log($\theta$), the dispersion (shape) parameter of the negative binomial distribution, for each condition–sex cell. Because $\theta$ is a distributional parameter rather than an observed variable, there are no raw or fitted data points that can be plotted at the observation level; only the estimated group-level values with uncertainty intervals are shown.
+-   Scale part: Points and error bars show the estimated log($\theta$), the dispersion (shape) parameter of the negative binomial distribution, for each condition–sex cell. Because $\theta$ is a distributional parameter rather than an observed variable, there are no fitted data points (or raw) that can be plotted at the observation level; only the estimated group-level values with uncertainty intervals are shown.
 
 ```{r}
 #| label: result_figure_nb
 #| echo: false
 
-# glmmTMB
-# Location part (conditional model): log(mean frequency)
+# TODO: change colours and maybe set figure size
+
+# glmmTMB ----
+# Location part
 emm_mu_link <- emmeans(model_pref, ~ condition * sex,
                        component = "cond", type = "link")  # return log(mu)
 
@@ -460,7 +462,7 @@ df_mu_link <- as.data.frame(emm_mu_link) %>%
     upr = asymp.UCL # upper 95% CI on log scale
   )
 
-# Scale part (dispersion model): log(theta)
+# Scale part
 emm_disp_link <- emmeans(model_pref, ~ condition * sex,
                          component = "disp", type = "link")  # return log(θ)
 df_disp_link <- as.data.frame(emm_disp_link) %>%
@@ -515,8 +517,7 @@ p_disp_link <- ggplot(df_disp_link, aes(x = sex, y = log_theta, color = conditio
 
 p_glmmTMB_nb <- p_mu_link_predObs + p_disp_link
 
-
-# brms 
+# brms ----
 dat_pref <- dat_pref %>%
   mutate(
     condition = factor(condition),
@@ -603,7 +604,6 @@ pred_obs <- draws_obs |>
     .groups = "drop"
   )
 
-
 p_loc_predObs <- p_loc +
   geom_point(
     data = dat_pref2,
@@ -611,7 +611,6 @@ p_loc_predObs <- p_loc +
     position = position_jitterdodge(dodge.width = 0.4, jitter.width = 0.08),
     alpha = 0.35, size = 1.6, inherit.aes = FALSE
   )
-
 
 # Plot: Scale (log(theta)) 
 p_shape <- ggplot(sum_shape, aes(x = sex, y = log_theta, color = condition)) +
@@ -626,8 +625,7 @@ p_shape <- ggplot(sum_shape, aes(x = sex, y = log_theta, color = condition)) +
 
 p_brms_nb <- p_loc_predObs + p_shape
 
-# combine
-
+# combine ----
 (p_glmmTMB_nb / p_brms_nb) + plot_annotation(title = "top: glmmTMB / bottom: brms")
 ```
 :::
