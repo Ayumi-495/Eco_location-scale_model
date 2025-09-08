@@ -13,7 +13,7 @@ pacman::p_load(
   dplyr, tibble, tidyverse, broom, broom.mixed,
   
   ## model fitting
-  ape, arm, brms, broom.mixed, cmdstanr, emmeans, glmmTMB, MASS, phytools, rstan, TreeTools,
+  ape, arm, brms, broom.mixed, cmdstanr, emmeans, ggeffects, glmmTMB, MASS, phytools, rstan, TreeTools,
   
   ## model checking and evaluation
   DHARMa, loo, MuMIn, parallel,
@@ -63,7 +63,8 @@ dat <- read_csv(here("data","SMI_Drummond_et_al_2025.csv")) %>%subset(REDUCTION 
 
 dat<- dat%>%
   dplyr::select(-TIME, -HATCHING_DATE,-REDUCTION,-RING) %>%
-  mutate(SMI = as.numeric(SMI), # Scaled mass index
+  mutate(SMI = as.numeric(SMI),# Scaled mass index
+         lnSMI=log(SMI),
          NEST = as.factor(NEST), 
          WORKYEAR = as.factor(WORKYEAR),
          RANK = factor(RANK, levels = c("1", "2")))
@@ -128,14 +129,107 @@ Following the previous section, we first fit a location-only model as our baseli
 ```{r}
 #| label: model_fitting2-model1
 
-model2_1<-glmmTMB(log(SMI) ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
+model2_1<-glmmTMB(lnSMI ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
               family = gaussian(), data=dat)
 
+```
 
-summary(model2_1)
-confint(model2_1)
+::: {.callout-note appearance="simple" icon="false"}
+Rationale for Log-Transforming SMI
+Transforming the dependent variable to $log(SMI)$ is a standard approach used here for three primary reasons:
+
+To Normalize Residuals: Mass data are typically right-skewed. The log transformation helps symmetrize the data's distribution, making the model's residuals better approximate the Gaussian distribution required by the family.
+
+To Linearize Relationships: The log transform converts potentially non-linear, multiplicative relationships (common in biology) into the linear, additive relationships that are the foundation of this modeling framework.
+
+To Address Heteroscedasticity: This transformation can help reduce heteroscedasticity, where variance increases with the mean. It's a common first step to stabilize variance, though we will explicitly model the dispersion in subsequent models rather than relying solely on this transformation.
+
+
+```{r}
+#| label: show_data - model2_log
+#| fig-width: 8
+#| fig-height: 6
+#| code-fold: true
+
+
+ggplot(dat, aes(x = RANK, y = lnSMI, fill = RANK, color = RANK)) +
+ geom_violin(aes(fill = RANK),
+              color = "#8B8B83",
+              width = 0.8, 
+              alpha = 0.3,
+              position = position_dodge(width = 0.7)) +
+  geom_jitter(aes(color = RANK),
+              size = 3,
+              alpha = 0.4,
+              shape = 1,
+              position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.15)) + 
+  stat_summary(fun = mean,              
+               geom = "crossbar",       
+               width = 0.1,             
+               color = "black",         
+               linewidth = 0.5,         
+               position = position_dodge(width = 0.7))+
+  labs(
+    title = "ln(SMI) by Hatching Order",
+    x = "Hatching Order",
+    y = "Scaled Mass Index (g)"
+  ) +
+  scale_fill_manual(
+    values = c("1" = "#1F78B4", "2" = "#E31A1C") # 
+  ) +
+  scale_color_manual(
+    values = c("1" = "#1F78B4", "2" = "#E31A1C") # 
+  ) +
+  scale_x_discrete(
+    labels = c("1" = "First-Hatched", "2" = "Second-Hatched"),
+    expand = expansion(add = 0.5)
+  ) +
+  theme_classic(base_size = 16) +
+  theme(
+    axis.text = element_text(color = "#6E7B8B", size = 14),
+    axis.title = element_text(color = "#6E7B8B", size = 14),
+    legend.position = "none",
+    axis.text.x = element_text(angle = 0, hjust = 0.5)
+  )
 
 ```
+
+:::
+
+
+```{r}
+summary(model2_1)
+confint(model2_1)
+```
+
+
+
+::: {.callout-note appearance="simple" icon="false"}
+Interpreting Log-Level Model Coefficients
+Since the outcome is logged, this is a log-level model. A coefficient for a categorical predictor like RANK represents a multiplicative change on the original SMI scale.
+
+To interpret a coefficient (β) for a given level of RANK relative to the reference level, you must exponentiate it.
+
+The multiplicative factor on SMI is $exp(β)$.
+
+The percentage change in SMI is $(exp(β) - 1) * 100\%$.
+
+Example:
+Our model estimates the coefficient for RANK = 'junior' to be -0.018 (with 'senior' as the reference level):
+
+Calculate the multiplicative factor: $exp(-0.018) \approx 0.982$.
+
+Convert to a percentage change: $(0.982 - 1) * 100\% = -1.7\%$.
+
+
+The concise interpretation is: 
+
+"The scaled mass index for subordinate individuals is, on average, 1.7% lower than that of the dominant reference group."
+
+:::
+
+
+## Model diagnostics
 
 Then we use the 'DHARMa' package to simulate residuals and plot them automatically. This step is crucial for checking the model's assumptions, such as normality and homoscedasticity of residuals.
 
@@ -156,7 +250,7 @@ The QQ plot and Kolmogorov-Smirnov (KS) test reveal that the model's residuals a
 # location-scale model ---- 
 
 model2_2 <- glmmTMB(
-    log(SMI) ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
+    lnSMI ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
     dispformula = ~ 1 + RANK,     
     data = dat, 
     family = gaussian
@@ -165,6 +259,38 @@ summary(model2_2)
 
 confint(model2_2)
 ```
+::: {.callout-note appearance="simple" icon="false"}
+
+Interpreting Location-Scale Model Coefficients
+
+::: panel-tabset
+
+## Location Model: Mean (Conditional model)
+
+This component predicts the mean of $log(SMI)$. Because it’s on the log scale, coefficients translate into percentage changes in SMI.
+
+RANK2 Coefficient = -0.01880
+
+Multiplicative factor: $e^{-0.01880} \approx 0.981$
+
+Percentage change: $-1.86%$
+
+Interpretation: Individuals in RANK2 have, on average, a 1.9% lower SMI than those in RANK1.
+
+## Scale Model: Variability (Dispersion model)
+
+This component models the residual standard deviation ($σ$) of log(SMI). Since $σ$ is constrained to be positive, the model uses a log link, so coefficients are exponentiated and interpreted as percentage changes in variability.
+
+RANK2 Coefficient = 0.13035
+
+Multiplicative factor: $e^{0.13035} \approx 1.14$
+
+Percentage change: $+14.0%$
+
+Interpretation: The residual variability in log(SMI) for RANK2 individuals is 14% higher than for RANK1, meaning their SMI values are more variable.
+:::
+
+:::
 
 ## Model comparison
 
@@ -286,11 +412,65 @@ gt(results_1_disp) %>%
   cols_align(align = "center", columns = everything())
 ```
 
+## Figures
+
+```{r}
+#| label: emmeans_plots - model2 - glmmtmb
+
+emm_location <- emmeans(model2_2, ~ RANK,
+                        component = "cond", type = "link")
+df_location <- as.data.frame(emm_location) %>%
+  rename(
+    mean_log = emmean, 
+    lwr = lower.CL,    
+    upr = upper.CL     
+  )
+emm_dispersion <- emmeans(model2_2, ~ RANK,
+                          component = "disp", type = "response")
+df_dispersion <- as.data.frame(emm_dispersion) %>%
+  rename(
+    log_sigma = response, 
+    lwr = lower.CL,     
+    upr = upper.CL     
+  )
+pos <- position_dodge(width = 0.4)
+
+
+plot_location_emmeans <- ggplot(df_location, aes(x = RANK, y = mean_log)) +
+  geom_point(position = pos, size = 3) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = pos, width = 0.15) +
+  labs(
+    title = "Location",
+    x = "Hatching order",
+    y = "log(SMI)"
+  ) +
+  theme_classic()+ scale_y_continuous(breaks = seq(7.2,7.5,0.05),limits = c(7.2, 7.5))
+
+plot_dispersion_emmeans <- ggplot(df_dispersion, aes(x = RANK, y = log_sigma)) +
+  geom_point(position = pos, size = 3) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = pos, width = 0.15) +
+  labs(
+    title = "Scale",
+    x = "Hatching order",
+    y = "Standard Deviation"
+  ) +
+  theme_classic() + scale_y_continuous(breaks = seq(0.07,0.12,0.01),limits = c(0.07, 0.12))
+
+plot_location_emmeans + plot_dispersion_emmeans
+```
+
+:::
+
+
+
 ## Bonus
 
 Here is how to fit the same location-scale models using the `brms` package for comparison.
 
-### Location-only model
+
+::: panel-tabset
+
+## Location-only model
 
 <!-- I will remove the commentout results. -->
 
@@ -329,7 +509,7 @@ fit1 <- readRDS(here("Rdata","mod1RED.rds"))
 summary(fit1)
 ```
 
-### Location-scale model
+## Location-scale model
 
 ```{r}
 #| label: model_fitting2 - model2 - brms
@@ -366,7 +546,7 @@ fit2 <- readRDS(here("Rdata","mod2RED.rds"))
 summary(fit2)
 ```
 
-### Model comparison
+## Model comparison
 
 <!-- Once I finalised the online tutorial, I will remove the `eval: false` option so that the models will be fitted and the results will be displayed in the online tutorial. For now, I will keep the `eval: false` option to avoid errors. -->
 
@@ -389,7 +569,7 @@ fc
 
 LOO (Leave-One-Out) model comparison helps us estimate which Bayesian model will best predict new data. The `elpd_diff` (Estimated Log Predictive Density difference) tells us the difference in predictive accuracy, with a more positive number indicating better performance. The `se_diff` (Standard Error of the Difference) provides the uncertainty around this difference. In our results, `fit2` (the location-scale model) has an  `elpd_diff` of 0.0, meaning it's the reference or best-performing model. `fit1` (the location-only model) has an `elpd_diff` of -10.3 with an `se_diff` of 7.6, indicating that `fit2` is estimated to be substantially better at predicting new data than `fit1`, although there is some uncertainty in that difference. As a rule of thumb, if the absolute value of the `elpd_diff` is more than twice the `se_diff`, we can consider the difference as meaningful ($|elpd\_diff| > 2 * se\_diff$).
 
-### Summary of brms model results
+## Summary of brms model results
 
 <!-- Once I finalised the online tutorial, I will remove the `eval: false` option so that the models will be fitted and the results will be displayed in the online tutorial. For now, I will keep the `eval: false` option to avoid errors. -->
 
@@ -522,25 +702,108 @@ results_df1
 results_df2
 
 ```
+
+## Figures brms models
+
+```{r}
+#| label: emmeans_plots - model2 - brms
+
+m2_draws<-fit2 %>%
+  tidybayes::epred_draws(newdata = expand.grid(
+    RANK = unique(dat$RANK)
+  ), re_formula = NA, dpar =TRUE) 
+
+
+plot_lm2 <- ggplot(m2_draws, aes(x = factor(RANK), y = .epred,fill = factor(RANK))) +
+  geom_violin(alpha = 0.5, show.legend = FALSE)+
+  stat_pointinterval(show.legend = FALSE) +
+  labs(
+    title = "Location",
+    x = "Hatching order", 
+    y = "log(SMI)"
+  ) +
+  theme_classic() + scale_y_continuous(breaks = seq(7.2,7.5,0.05),limits = c(7.2, 7.5))
+
+
+plot_sm2 <- ggplot(m2_draws, aes(x = factor(RANK), y = sigma,fill = factor(RANK))) +
+geom_violin(alpha = 0.5, show.legend = FALSE)+
+  stat_pointinterval(show.legend = FALSE) +
+  labs(
+    title = "Scale",
+    x = "Hatching order", 
+    y = "Standard Deviation"
+  ) +
+  theme_classic() + scale_y_continuous(breaks = seq(0.07,0.12,0.01),limits = c(0.07, 0.12))
+
+combinded_plot<-(plot_lm2 + plot_sm2)& 
+  theme(
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank()
+  )
+combinded_plot
+```
+
+::: {.callout-note appearance="simple" icon="false"}
+
+
+## The Challenge: Summarized Data vs. Distributional Plots
+
+A **violin plot** is a powerful tool for visualizing the entire distribution of a dataset. To draw its characteristic shape, `ggplot2::geom_violin()` needs the full "cloud" of possible values to calculate the data's density at different points.
+
+However, many traditional analysis functions are designed to provide **summarized marginal means**, not raw posterior draws. For example, when you use a function like `emmeans()` on a frequentist model, it calculates a single point estimate (like a mean) and a confidence interval for each group.
+
+The resulting data frame is **already summarized**. This summary data lacks the thousands of individual data points needed to describe a distribution's shape. `geom_violin()` simply cannot work with this, as it has no information about the density of the predictions, only their central tendency and range.
+
+## The `brms` Solution: The Full Posterior Distribution
+
+This is where the Bayesian workflow with `brms` and `tidybayes` excels. The `tidybayes::epred_draws()` function is specifically designed to extract the **full posterior distribution** from your `brms` model and provide it as a tidy, long-format data frame.
+
+Instead of a single summary row per group, `epred_draws()` gives you thousands of rows—one for each posterior draw from your model. This data frame represents the entire "cloud" of possible values that `geom_violin()` needs.
+
+By providing the complete posterior distribution in a clean, plot-ready format, the `brms` and `tidybayes` ecosystem makes creating rich, distributional visualizations like violin plots a natural and direct step in the analysis workflow.
+
+::: panel-tabset
+
+## Point estimates
+```{r}
+
+#| echo: false
+
+
+plot_location_emmeans + plot_dispersion_emmeans
+
+
+```
+## Posterior distribution
+
+
+```{r}
+#| echo: false
+plot_lm2 + plot_sm2
+```
+
+:::
 :::
 
-### Comparison of location-only model and location-scale model
+## Comparison of location-only model and location-scale model
 
 The location-scale model (Model 2) was the most-supported model based on AICc values (-8070.8) compared to the location-only model (-8048.8; see `Model comparison` tab for details).
+:::
 
-### Interpretation of location-scale model :
+
+## Interpretation of location-scale model :
 
 **Location (mean) part:**
 
--   There was a conclusive effect of hatching order on the mean of `log(SMI)`, with second-hatched chicks having a lower SMI than first-hatched chicks ($\beta_{[\text{first-second}]}^{(l)}$ = -0.018, 95% CI = \[-0.024, -0.013\]).
+-   There was a conclusive effect of hatching order on the mean of `log(SMI)`, with second-hatched chicks having a lower SMI than first-hatched chicks ($\beta_{[\text{first-second}]}^{(l)}$ = -0.018, 95% CI = \[-0.024, -0.013\]).In percentage terms, the SMI for second-hatched chicks is estimated to be 1.8% lower than for first-hatched chicks
 
 **Scale (dispersion) part:**
 
--   The scale component revealed a conclusive difference in the variability of SMI between hatching orders. The second-hatched chicks exhibited greater variability in SMI compared to first-hatched chicks ($\beta_{[\text{first-second}]}^{(s)}$ = 0.130, 95% CI = \[0.077, 0.183\]).
+-   The scale component revealed a conclusive difference in the variability of SMI between hatching orders. The second-hatched chicks exhibited greater variability in SMI compared to first-hatched chicks ($\beta_{[\text{first-second}]}^{(s)}$ = 0.130, 95% CI = \[0.077, 0.183\]).This means the standard deviation of SMI for second-hatched chicks is 13.9% higher than for first-hatched chicks
 
 **Location (mean) random effects:**
 
--   There is very little variation in the average body condition across different nests ($\sigma_{[\text{Nest\_ID}]}^{(l)}$ = 0.049, 95% CI \[0.044, 0.054\]), suggesting that most nests have similar average body conditions for their chicks.
+-   There is very little variation in the average body condition across different nests ($\sigma_{[\text{Nest\_ID}]}^{(l)}$ = 0.049, 95% CI \[0.044, 0.054\]), suggesting that most nests have similar average body conditions for their chicks. 
 
 -   There is also very little variation in the average body condition across different years ($\sigma_{[\text{Year}]}^{(l)}$ = 0.092, 95% CI \[0.069, 0.124\]),implying generally consistent average body conditions from year to year.
 
@@ -553,6 +816,8 @@ Answer: Answer: Yes, first-hatched chicks have a significantly higher Scaled Mas
 **Does the variability in body mass differ between first and second-hatched chicks?**
 
 Answer: Yes, the variability in body mass (SMI) is significantly greater in second-hatched chicks compared to first-hatched chicks. This indicates that second-hatched chicks show more variation in their body condition at fledgling.
+
+
 
 # Double-hierarchical location-scale model (Model 3)
 
