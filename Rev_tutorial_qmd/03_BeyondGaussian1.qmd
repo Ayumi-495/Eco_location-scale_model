@@ -427,6 +427,209 @@ model_nb_brms <- readRDS(here("Rdata", "model_nb_AM.rds"))
 summary(model_nb_brms)
 pp_check(model_nb_brms)
 ```
+
+## Result figures
+
+-   Location part: Points and error bars indicate the estimated log(mean frequency) for each combination of condition and sex. For `glmmTMB`, values are estimated marginal means (on the log scale) with 95% confidence intervals. For `brms`, values are posterior medians with 95% credible intervals. Faint dots represent model-based predictions of log(mean frequency) for individual observations (i.e. fitted values including random effects), shown to illustrate how the model maps observed data points onto the underlying mean structure.
+
+-   Scale part: Points and error bars show the estimated log($\theta$), the dispersion (shape) parameter of the negative binomial distribution, for each condition–sex cell. Because $\theta$ is a distributional parameter rather than an observed variable, there are no raw or fitted data points that can be plotted at the observation level; only the estimated group-level values with uncertainty intervals are shown.
+
+```{r}
+#| label: result_figure_nb
+#| echo: false
+
+# glmmTMB
+# Location part (conditional model): log(mean frequency)
+emm_mu_link <- emmeans(model_pref, ~ condition * sex,
+                       component = "cond", type = "link")  # return log(mu)
+
+head(as.data.frame(emm_mu_link)) 
+# condition sex   emmean        SE  df asymp.LCL asymp.UCL
+# deprived  F   4.873695 0.2041941 Inf  4.473482  5.273908
+# supplied  F   4.028497 0.2231513 Inf  3.591129  4.465866
+# deprived  M   4.769738 0.2079726 Inf  4.362120  5.177357
+# supplied  M   3.924540 0.2228790 Inf  3.487705  4.361375
+# 
+# Results are given on the log (not the response) scale. 
+# Confidence level used: 0.95 
+
+df_mu_link <- as.data.frame(emm_mu_link) %>%
+  rename(
+    mean_log = emmean, # estimated log(mean frequency)
+    lwr = asymp.LCL, # lower 95% CI on log scale
+    upr = asymp.UCL # upper 95% CI on log scale
+  )
+
+# Scale part (dispersion model): log(theta)
+emm_disp_link <- emmeans(model_pref, ~ condition * sex,
+                         component = "disp", type = "link")  # return log(θ)
+df_disp_link <- as.data.frame(emm_disp_link) %>%
+  rename(
+    log_theta = emmean, # estimated log(dispersion parameter theta)
+    lwr = asymp.LCL, # lower 95% CI on log scale
+    upr = asymp.UCL # upper 95% CI on log scale
+  )
+
+pos <- position_dodge(width = 0.4)
+
+# Plot location (mean, on log scale)
+p_mu_link <- ggplot(df_mu_link, aes(x = sex, y = mean_log, color = condition)) +
+  geom_point(position = pos, size = 3) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = pos, width = 0.15) +
+  labs(
+    title = "Location",
+    x = "Sex", y = "log(mean frequency)" # log scale
+  ) +
+  scale_y_continuous(limits = c(2.0, 6.5), breaks = seq(2.0, 6.5, by = 0.5) ) + 
+  theme_classic()
+
+# p_mu_link_raw <- p_mu_link +
+#   geom_point(
+#     data = dat_pref,
+#     aes(x = sex, y = log(frequency), color = condition),
+#     position = position_jitterdodge(dodge.width = 0.4, jitter.width = 0.08),
+#     alpha = 0.35, size = 1.6, inherit.aes = FALSE
+#   )
+
+dat_pref$pred_logmu <- predict(model_pref, type = "link", re.form = NULL)
+
+p_mu_link_predObs <- p_mu_link +
+  geom_point(
+    data = dat_pref,
+    aes(x = sex, y = pred_logmu, color = condition),
+    position = position_jitterdodge(dodge.width = 0.4, jitter.width = 0.08),
+    alpha = 0.35, size = 1.6, inherit.aes = FALSE
+  )
+
+
+# Plot dispersion (theta, on log scale)
+p_disp_link <- ggplot(df_disp_link, aes(x = sex, y = log_theta, color = condition)) +
+  geom_point(position = pos, size = 3) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = pos, width = 0.15) +
+  labs(
+    title = "Scale",
+    x = "Sex", y = "log(theta)" # log scale
+  ) +
+  scale_y_continuous(limits = c(-0.5, 2.0), breaks = seq(-0.5, 2.0, by = 0.5) ) + 
+  theme_classic()
+
+p_glmmTMB_nb <- p_mu_link_predObs + p_disp_link
+
+
+# brms 
+dat_pref <- dat_pref %>%
+  mutate(
+    condition = factor(condition),
+    sex = factor(sex)
+  )
+
+# Newdata grid for all Sex and Condition
+nd <- tidyr::expand_grid(
+  condition = levels(dat_pref$condition),
+  sex  = levels(dat_pref$sex)
+)
+
+# Location(mu): log(mean) on the model scale
+# add_linpred_draws(..., dpar = "mu") returns draws of the linear predictor (log link) for mu
+draws_mu <- add_linpred_draws(
+  nd, 
+  object = model_nb_brms, 
+  dpar   = "mu", # distributional parameter 'mu'
+  re_formula = NA # population-level (exclude group-level REs) for EMM-like estimates
+)
+
+# Summarise posterior draws to median and 95% CrI on the log scale
+sum_mu <- draws_mu %>%
+  group_by(condition, sex) %>%
+  summarise(
+    mean_log = median(.linpred), # posterior median of log(mu)
+    lwr      = quantile(.linpred, 0.025), # 95% CrI lower (log scale)
+    upr      = quantile(.linpred, 0.975), # 95% CrI upper (log scale)
+    .groups = "drop"
+  )
+
+# Scale (shape theta): log(theta) on the model scale
+# add_linpred_draws(..., dpar = "shape") returns draws for log(theta)
+draws_shape <- add_linpred_draws(
+  nd,
+  object = model_nb_brms, 
+  dpar   = "shape",
+  re_formula = NA
+)
+
+sum_shape <- draws_shape %>%
+  group_by(condition, sex) %>%
+  summarise(
+    log_theta = median(shape), # posterior median of log(theta)
+    lwr       = quantile(shape, 0.025),
+    upr       = quantile(shape, 0.975),
+    .groups = "drop"
+  )
+
+# Plot: Location (log(mu))
+pos <- position_dodge(width = 0.4)
+
+p_loc <- ggplot(sum_mu, aes(x = sex, y = mean_log, color = condition)) +
+  geom_point(position = pos, size = 3) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = pos, width = 0.15) +
+  labs(
+    title = "Location",
+    x = "Sex", y = "log(mean frequency)"
+  ) +
+  scale_y_continuous(limits = c(2.0, 6.5), breaks = seq(2.0, 6.5, by = 0.5) ) +
+  theme_classic()
+
+# p_mean_link_raw <- p_loc +
+#   geom_point(
+#     data = dat_pref,
+#     aes(x = sex, y = log(frequency), color = condition),
+#     position = position_jitterdodge(dodge.width = 0.4, jitter.width = 0.08),
+#     alpha = 0.35, size = 1.6, inherit.aes = FALSE
+#   )
+
+dat_pref2 <- dat_pref |> dplyr::mutate(.row = dplyr::row_number())
+
+draws_obs <- add_linpred_draws(
+  dat_pref2,
+  object = model_nb_brms,
+  dpar   = "mu",
+  re_formula = NULL   
+)
+
+pred_obs <- draws_obs |>
+  dplyr::group_by(.row, condition, sex) |>
+  dplyr::summarise(
+    pred_logmu = median(.linpred),
+    .groups = "drop"
+  )
+
+
+p_loc_predObs <- p_loc +
+  geom_point(
+    data = dat_pref2,
+    aes(x = sex, y = pred_logmu, color = condition),
+    position = position_jitterdodge(dodge.width = 0.4, jitter.width = 0.08),
+    alpha = 0.35, size = 1.6, inherit.aes = FALSE
+  )
+
+
+# Plot: Scale (log(theta)) 
+p_shape <- ggplot(sum_shape, aes(x = sex, y = log_theta, color = condition)) +
+  geom_point(position = pos, size = 3) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = pos, width = 0.15) +
+  labs(
+    title = "Scale",
+    x = "Sex", y = "log(theta)"
+  ) +
+  scale_y_continuous(limits = c(-0.5, 2.0), breaks = seq(-0.5, 2.0, by = 0.5) ) + 
+  theme_classic()
+
+p_brms_nb <- p_loc_predObs + p_shape
+
+# combine
+
+(p_glmmTMB_nb / p_brms_nb) + plot_annotation(title = "top: glmmTMB / bottom: brms")
+```
 :::
 
 ### Comparison of location-only model and location-scale model
@@ -452,7 +655,7 @@ pp_check(model_nb_brms)
 
 -   Species-level variation ($sd^{(l)}_{\text{species}}=0.55$, 95% CI 0.31, 0.99) exceeded within-species individual variation.
 
-**Location (dispersion) random effects:** 
+**Location (dispersion) random effects:**
 
 -   Individual-level variation ($sd^{(l)}_{\text{id}}=0.34$, 95% CI 0.17, 0.68) was present but smaller than species-level differences.
 
@@ -460,9 +663,8 @@ pp_check(model_nb_brms)
 
 **Q1: Do birds gaze at dot patterns more (or less) when food-deprived compared to food-supplied?**
 
-Answer: Yes. In the location (mean) part of the model, the coefficient for the supplied condition is significantly negative. This indicates that participants made fewer gazes toward dot stimuli in the food-supplied condition compared to the food-deprived condition. So, the average gaze frequency is lower when food is supplied.
+Answer: Yes. The average gaze frequency is lower when food is supplied.
 
 **Q2: Does the variability in gaze responses differ between conditions?**
 
-Answer: Yes. In the scale (dispersion) part of the model, the coefficient for the food-supplied condition is significantly negative. Since lower θ values imply greater dispersion, this result suggests that individual gaze responses were more variable when food was supplied. In other words, birds showed more consistent gaze responses when food was deprived, and more varied responses when food was available.
-
+Answer: Yes. Birds showed more consistent gaze responses when food was deprived, and more varied responses when food was available.
