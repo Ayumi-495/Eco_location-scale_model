@@ -126,7 +126,7 @@ b.  Location-Scale Model: This more comprehensive model will estimate both the a
 
 ### Model fitting
 
-::::: panel-tabset
+:::::: panel-tabset
 ## Location-only model
 
 ::: {.callout-tip appearance="simple" icon="false"}
@@ -228,6 +228,67 @@ fit1 <- readRDS(here("Rdata", "fit1_BETA_Burros.rds"))
 summary(fit1)
 ```
 
+::: callout-note
+The model output for the mean (`mu`), zero-inflation (`zoi`), and one-inflation (`coi`) components is on the **logit scale**. The precision (`phi`) component is on the **log scale**. These scales are mathematically convenient but aren't directly interpretable. To understand the results, we need to convert the estimates back to their natural scales.
+
+The conversion method depends on whether you are interpreting an **intercept** (a baseline value) or the **effect of a predictor**.
+
+
+##### Probabilities for `mu`, `zoi`, and `coi`
+
+To find the baseline probability for the reference group, you apply the **inverse-logit** (or logistic) function to the intercept's `Estimate`.
+
+* **Formula:**
+    $$
+    \text{Probability} = \frac{1}{1 + e^{-\text{estimate}}}
+    $$
+
+* **Example (`zoi_Intercept`):** The estimate is `0.72`.
+    * Probability = $1 / (1 + e^{-0.72}) = 0.673$
+    * **Interpretation:** There is a **67.3%** probability of an observation being an exact zero in the baseline group.
+
+##### Precision for `phi`
+
+The `phi` parameter represents precision (higher `phi` = less variance) and is on a **log scale**. To find the baseline precision, you exponentiate the intercept.
+
+* **Formula:**
+    $$
+    \text{Precision} = e^{\text{estimate}}
+    $$
+
+* **Example (`phi_Intercept`):** The estimate is `1.73`.
+    * Precision = $e^{1.73} \approx 5.64$
+    * **Interpretation:** The baseline precision of the data (for values between 0 and 1) is **5.64**.
+
+
+
+##### Changes in Odds for `mu`, `zoi`, and `coi`
+
+The coefficient for a predictor on the logit scale represents a **log-odds ratio**. To interpret it, you first exponentiate the estimate to get the **odds ratio (OR)**, which tells you how the odds are multiplied.
+
+* **Formula:**
+    $$
+    \text{Odds Ratio (OR)} = e^{\text{estimate}}
+    $$
+
+* **Example (`if_kill` on `mu`):** The estimate is `-1.22`.
+    * Odds Ratio = $e^{-1.22} \approx 0.295$
+    * **Interpretation:** To express this as a percentage change, we calculate $(\text{OR} - 1) \times 100\%$. This gives $(0.295 - 1) \times 100\% = -70.5\%$. This means the odds of having higher cover **decrease by about 70.5%** when burro kills are present.
+
+##### Changes in Precision for `phi`
+
+The coefficient for a predictor on the log scale tells you how the precision is multiplied. To find this factor, you exponentiate the estimate.
+
+* **Formula:**
+    $$
+    \text{Multiplicative Factor} = e^{\text{estimate}}
+    $$
+
+* **Example (`if_kill` on `phi`):** The estimate is `-1.07`.
+    * Factor = $e^{-1.07} \approx 0.343$
+    * **Interpretation:** This means the precision is **multiplied by 0.343**. A factor of 1.0 represents 100% of the original value, so a factor of 0.343 means the new precision is 34.3% of the original. The decrease is the difference: $100\% - 34.3\% = 65.7\%$. This indicates the data become more spread out when burro kills are present.
+:::
+
 ## Model Comparison
 
 ```{r}
@@ -242,7 +303,85 @@ fc
 # fit1  0.0       0.0   
 # fit0 -2.7       1.6   
 ```
-:::::
+
+## Plot results 
+
+
+```{r}
+burro_draws<-fit1 %>%
+  epred_draws(newdata = expand.grid(if_kill=unique(dat$if_kill)
+                                    ),re_formula = NA, dpar=TRUE) 
+
+
+
+
+
+# Plot for location
+plot_mu <- ggplot(burro_draws, aes(x = factor(if_kill), y = mu, fill = factor(if_kill))) +
+  geom_violin(alpha = 0.5, show.legend = FALSE) +
+  stat_pointinterval(show.legend = FALSE) +
+  labs(
+    title = "Location",
+    subtitle = "Trampled Bare Ground",
+    x = "Cougar Kill Presence",
+    y = "Proportion "
+  ) +
+  theme_classic()+scale_y_continuous(breaks = seq(0,1,0.2),limits = c(0, 1))
+
+# Plot for Zero-Inflation (zoi)
+plot_zoi <- ggplot(burro_draws, aes(x = factor(if_kill), y = zoi, fill = factor(if_kill))) +
+  geom_violin(alpha = 0.5, show.legend = FALSE) +
+  stat_pointinterval(show.legend = FALSE) +
+  labs(
+    title = "Zero-Inflation (zoi)",
+     x = "Cougar Kill Presence",
+    y = "Probability of Zero"
+  ) +
+  theme_classic()+scale_y_continuous(breaks = seq(0,1,0.2),limits = c(0, 1))
+
+# Plot for One-Inflation (coi)
+plot_coi <- ggplot(burro_draws, aes(x = factor(if_kill), y = coi, fill = factor(if_kill))) +
+  geom_violin(alpha = 0.5, show.legend = FALSE) +
+  stat_pointinterval(show.legend = FALSE) +
+  labs(
+    title = "One-Inflation (coi)",
+     x = "Cougar Kill Presence",
+    y = "Probability of One"
+  ) +
+  theme_classic() +scale_y_continuous(breaks = seq(0,1,0.2),limits = c(0, 1))
+
+# Plot for Precision (phi)
+plot_phi <- ggplot(burro_draws, aes(x = factor(if_kill), y = phi, fill = factor(if_kill))) +
+  geom_violin(alpha = 0.5, show.legend = FALSE) +
+  stat_pointinterval(show.legend = FALSE) +
+  labs(
+    title = "Scale",
+    x = "Cougar Kill Presence",
+    y = "Precision"
+  ) +
+  theme_classic()+scale_y_continuous(breaks = seq(0,25,5),limits = c(0, 25))
+
+# --- 4. Combine Plots into a Single Figure ---
+# Arrange the four plots in a 2x2 grid
+combined_plot <- (plot_mu + plot_zoi) / (plot_coi + plot_phi) &
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+# Display the final combined plot
+combined_plot
+
+
+
+
+```
+
+
+
+
+
+::::::
 
 ### Model Comparison Results
 
@@ -252,13 +391,13 @@ Our analysis of the model comparison results shows that the location-scale model
 
 **Location (mean) part:**
 
-On average, the log-odds of the mean percentage of trampled bare ground are lower when burro kills are present compared to when they are absent ($\beta_{[\text{No-Yes}]}^{(l)}$ = -1.22, 95% CI \[-2.27, -0.18\]). This suggests that the presence of burro kills is associated with a lower average percentage of trampled bare ground.
+On average, the log-odds of the mean percentage of trampled bare ground are lower when burro kills are present compared to when they are absent ($\beta_{[\text{No-Yes}]}^{(l)}$ = -1.22, 95% CI \[-2.27, -0.18\]). This corresponds to a 70.5% decrease in the odds of having a higher percentage of trampled ground, suggesting the presence of burro kills is associated with a lower average of trampled bare ground.
 
-**Scale (dispersion/phi) part:** The log-precision (phi) is lower when burro kills are present, compared to when they are absent ($\beta_{[\text{No-Yes}]}^{(s)}$ = -1.07, 95% CI \[-2.01, -0.04\]). Suggesting that the percentage of trampled bare ground exhibits more variation or less consistency in areas where burro kills are present.
+**Scale (dispersion/phi) part:** The log-precision (phi) is lower when burro kills are present, compared to when they are absent ($\beta_{[\text{No-Yes}]}^{(s)}$ = -1.07, 95% CI \[-2.01, -0.04\]). This means the precision is multiplied by a factor of 0.34 (a 65.7% decrease), suggesting that the percentage of trampled bare ground exhibits more variation in areas where burro kills are present.
 
-**Zero-One Inflation (zoi) part:** The log-odds of observing exactly 0% or 100% trampled bare ground are lower when burro kills are present ($\beta_{[\text{No-Yes}]}^{(l)}$ = -1.71, 95% CI \[-2.55, -0.89\]). In other words, areas with burro kills are less likely to be at the extreme boundaries of either no trampled ground or entirely trampled ground.
+**Zero-One Inflation (zoi) part:** The log-odds of observing exactly 0% or 100% trampled bare ground are lower when burro kills are present ($\beta_{[\text{No-Yes}]}^{(l)}$ = -1.71, 95% CI \[-2.55, -0.89\]). This represents an 81.9% decrease in the odds of observing completely untrampled ground, meaning areas with burro kills are less likely to be at this specific boundary.
 
-**Conditional on Inflation (coi) part:** The log-odds of a boundary observation being 100% rather than 0% are lower when burro kills are present ($\beta_{[\text{No-Yes}]}^{(l)}$ = -4.20, 95% CI \[-12.07, -0.08\]). This implies that if a boundary value is encountered with burro kills, it is less likely to be 100% (and potentially more likely to be 0%) compared to the "burro kills absent" scenario.
+**One-inflation (coi) part:** The log-odds of a boundary observation being 100% rather than 0% are lower when burro kills are present ($\beta_{[\text{No-Yes}]}^{(l)}$ = -4.20, 95% CI \[-12.07, -0.08\]). This equates to a 98.5% decrease in the odds, implying that it's extremely unlikely to find completely trampled ground (100%) where burro kills are present compared to where they are absent.
 
 ## Conclusion
 
