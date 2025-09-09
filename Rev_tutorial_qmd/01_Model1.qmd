@@ -56,7 +56,6 @@ The plot shows how adult tarsus length varies by treatment (early-life food supp
 
 It should be noted that we applied a log-transformation to `AdTarsus` to reduce skewness and stabilise residual variance. Continuous variables are often log-transformed and mean-centred, but in location-scale models, we do not standardise the predictors, as doing so would be remove interpretable variation in the scale part of the model.
 
-
 ```{r}
 #| label: show_data - model1
 #| fig-width: 8
@@ -335,7 +334,6 @@ summary(brms_g1)
 
 ```
 
-
 ```{r}
 #| label: model_result - brms model1 (SN)
 #| echo: false
@@ -364,17 +362,21 @@ Here is the explanation of the output table:
 
 ------------------------------------------------------------------------
 
+We evaluated model fit using posterior predictive checks implemented in the brms function` pp_check()`. This procedure generates replicated datasets from the posterior distribution of the fitted model and compares them with the observed data. If the model provides an adequate description of the data, the replicated distributions should resemble the observed distribution in both central tendency and variability.
+
+```{r}
+pp_check(brms_g1) # posterior predictive check
+
+```
+Posterior predictive checks indicated that the Gaussian location–scale model adequately reproduced the observed distribution of `log(AdTarsus)`. In the plots, the dark line shows the observed data, while the lighter lines represent simulated datasets drawn from the posterior predictive distribution. Close overlap between observed and replicated distributions indicates that the model reproduces the data well. Deviations suggest areas where the model fails to capture features of the data (e.g. heavy tails, skewness, or multimodality).
+
+*****
+
 Now, you can find the results from `glmmTMB` and `brms` are very close to each other, but there are some differences in the estimates and standard errors. This came from the different estimation methods used by the two packages. `glmmTMB` uses maximum likelihood estimation, while `brms` uses Bayesian estimation with Markov Chain Monte Carlo (MCMC) sampling.
 
-
 ## Result figures
-The figure visualises results from the `glmmTMB` and `brms` models.
 
--   **Location part**: Points and error bars indicate the estimated `log(AdTarsus)` for each combination of treatment and sex. In `glmmTMB`, values are estimated marginal means on the log scale with 95% confidence intervals, whereas in `brms` they are posterior medians with 95% credible intervals. Only four group-level estimates (2 sexes × 2 treatments) are relevant here, so neither raw data nor fitted values are plotted (no random effects are included, so points would not scatter).
-
--   **Scale part**: Points and error bars show the estimated log($\sigma$), the dispersion parameter of the Gaussian distribution, for each treatment–sex cell. Because $\sigma$ is a distributional parameter rather than an observed variable, no observation-level points can be plotted; only group-level estimates with uncertainty intervals are shown.
-
-Although raw data could be plotted for both the location and scale parts, these would not represent model-derived estimates and are therefore omitted here.
+The figure visualises results from the `glmmTMB` and `brms` models shown on the link scale.
 
 ```{r}
 #| label: result_figure_model1
@@ -439,7 +441,7 @@ d <- dat_tarsus %>%
   arrange(Sex, Treatment)
 
 draws_link <- tidybayes::linpred_draws(
-  brms_g1, newdata = nd, re_formula = NA, dpar = TRUE, transform = FALSE
+  brms_g1, newdata = d, re_formula = NA, dpar = TRUE, transform = FALSE
 ) %>%
   transmute(
     Sex, Treatment, .draw,
@@ -481,6 +483,12 @@ p_brms_m1 <- p_loc + p_scl
   plot_annotation(title = "top: glmmTMB / bottom: brms")
 
 ```
+
+-   **Location (mean) part**: The `glmmTMB` panel (top) shows estimated marginal means (EMMs) with 95% confidence intervals, represented as points with error bars, obtained via `emmeans`. The brms panel (bottom) displays posterior samples drawn with `tidybayes::linpred_draws()` as violin plots, overlaid with the posterior median and 95% credible intervals. Thus, the top panel presents point estimates with symmetric CIs based on normal approximation, while the bottom panel visualises the full posterior distribution, including its shape (skewness and tail thickness). Both use `type = "link"`, so the vertical axis is aligned on the `log(AdTarsus)` link scale.
+-   **Scale (variance) part**: The plots from `glmmTMB` model display Estimated marginal means of log(sigma) with 95% confidence intervals. the plots from `brms` show posterior distributions, medians, and 95% credible intervals for log(sigma).
+-   **Interpretation of uncertainty intervals**: A confidence interval (CI) has a frequentist interpretation: if the data were replicated infinitely, 95% of such intervals would contain the true value. A credible interval (CrI) has a Bayesian interpretation: given the data and the prior, there is a 95% probability that the true value lies within the interval.
+
+In principle, raw data could also be plotted for both the location and scale parts (e.g., observed values or residual variability), but these would not represent model-derived estimates. Therefore, only group-level estimates and their uncertainty are shown here.
 :::
 
 ### Comparison of location-only model and location-scale model
@@ -495,13 +503,36 @@ While both `AIC` (Akaike Information Criterion) and `AICc` (AIC with correction)
 
 ### Interpretation of location-scale model :
 
+#### How to back-transflrm the log-link scale to natural scale?
+
+The models were fitted with different link functions for the location and scale submodels. Estimates were therefore back-transformed before biological interpretation. For the location part, the link was identity, so predicted values of `log(AdTarsus)` were exponentiated to return to millimetres of adult tarsus length. For the scale part, the link was logarithmic, so estimates of log(sigma) were exponentiated to obtain the residual standard deviation (sigma) on the original scale. To facilitate interpretation, group differences in means are expressed as percentage changes relative to the control females, and group differences in residual variation are expressed as proportional changes in σ (i.e. percentage reduction or increase compared with the reference group).
+
+For example…
+
+1.  Location part
+
+-   females with control: `exp(2.89) = 17.99`
+
+-   males with control: `exp(2.89 + 0.01) = 18.17` \
+    if we want to know the percentage difference between females vs males with control… `exp(0.01) - 1 = +1.0%`
+
+-   females with fed: `exp(2.89 + 0.01) = 18.17`
+-   males with fed: `exp(2.89 + 0.01 + 0.01 + 0.01) = 18.54`
+
+
+2.  Scale part
+
+-   males with control: log(sigma) = `exp(-3.19 + 0.04) = 0.043`
+
+
+#### Biological meanings
+
+
 **Location (mean) part:**
 
--   Average adult tarsus length was around 18 mm in the control females (back-transformed: `SexFemale`; $\beta_{[\text{intercept}]}^{(l)}$ = -3.28). Neither food supplementation nor sex produced more than ~2-4% differences in mean length: males were estimated to be −1.6% to +3.7% longer than females, supplemented birds were −2.0% to +4.2% longer than controls, and supplemented males were −2.3% to +5.2% longer than control males. These small and uncertain differences indicate that food supplementation did not meaningfully alter average adult tarsus length.
+-   Average adult tarsus length was around 18 mm in the control females (back-transformed: `SexFemale`; $\beta_{[\text{intercept}]}^{(l)}$ = -3.28). Neither food supplementation nor sex produced more than \~2-4% differences in mean length: males were estimated to be −1.6% to +3.7% longer than females, supplemented birds were −2.0% to +4.2% longer than controls, and supplemented males were −2.3% to +5.2% longer than control males. These small and uncertain differences indicate that food supplementation did not meaningfully alter average adult tarsus length.
 
-**Scale (dispersion) part:**
-<!-- Added -->
--   There was a significant negative interaction between sex and treatment (`SexMale:TreatmentFed`; $\beta_{[\text{interaction}]}^{(s)} = -0.95$, 95% CI = -1.66, -0.24). Back-transformation indicated that the residual standard deviation in supplemented males was 61.3% lower than that in control males (95% CI: -81.0% to -21.3%). Thus, early-life food supplementation substantially reduced variation in adult tarsus length among males, resulting in more uniform growth. Neither sex nor treatment alone had a significant effect on variance; the reduction was specific to supplemented males.
+**Scale (dispersion) part:** <!-- Added --> - There was a significant negative interaction between sex and treatment (`SexMale:TreatmentFed`; $\beta_{[\text{interaction}]}^{(s)} = -0.95$, 95% CI = -1.66, -0.24 in `glmmTMB`). Back-transformation indicated that the residual standard deviation in supplemented males was 61.3% lower than that in control males (95% CI: -81.0% to -21.3%). Thus, early-life food supplementation substantially reduced variation in adult tarsus length among males, resulting in more uniform growth. Neither sex nor treatment alone had a significant effect on variance; the reduction was specific to supplemented males.
 
 ## Conclusion
 

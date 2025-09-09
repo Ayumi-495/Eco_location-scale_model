@@ -64,8 +64,11 @@ brms_m1 <- readRDS(here("Rdata", "brms_m1.rds"))
 
 You will see similar code snippets throughout the tutorial. Feel free to modify them based on your own setup. If everything is placed correctly, the `.qmd` file should run without any issues.
 
-
 This tutorial provides a step-by-step guide to applying location-scale models in ecology, evolution, and environmental sciences. We focus on practical applications and demonstrate how to implement these models in `R` using the `glmmTMB` and `brms` packages.
+
+<!-- Added -->
+
+For models that can be implemented in both (e.g., `Model 1`, `Model 2` or the negative binomial model in `Beyond Gaussian 1`), we provide code for both packages. However, for models that are currently only feasible in `brms` package (e.g., `Model 3`: where the location and scale parts include random effects), we illustrate the analysis using it alone.
 
 After a brief introduction to both modeling frameworks, we present worked examples using real datasets. In the final section, we also discuss approaches for model comparison and selection.
 
@@ -217,3 +220,48 @@ Here's how the scale component is handled in `glmmTMB` and `brms`, along with co
 *Note: In `glmmTMB`, `dispformula` is generally used to model the dispersion or scale parameter, regardless of its specific Greek letter notation, which varies by distribution.*
 
 The scale part varies depending on the distribution: for example, $\sigma$ for Gaussian or $\theta$ for negative binomial, $\nu$ for Conway–Maxwell–Poisson, $\phi$ for beta- binomial distribution (see the main text).
+
+
+## Interpreting regression coefficients on the log scale in terms of percentage change
+
+Many of the models we use (Gaussian with log-transformed response, negative binomial, zero-one-inflated beta, Conway–Maxwell–Poisson, etc.) employ a **log link** for at least one distributional parameter. In these cases, regression coefficients ($\beta$) describe **multiplicative changes** in the parameter of interest. These can be interpreted as percentage changes after exponentiation.
+
+### Rule of thumb
+
+If the parameter of interest is modelled on the natural log scale, then\
+$$
+  \% \Delta = 100 \times \left(\exp(\beta) - 1\right)
+$$\
+gives the percent change in the parameter for a one-unit increase in the predictor.
+
+### Intercept vs. coefficients
+
+-   **Intercept:**
+    -   If the response was log-transformed before fitting (e.g. Gaussian on log(Y)), exponentiating the intercept gives the **geometric mean** of Y in the reference group. This is close to the arithmetic mean when residual variance is small, but strictly speaking they differ.\
+    -   If a log link was used (e.g. Poisson, negative binomial, Gaussian with log link), exponentiating the intercept gives the expected **arithmetic mean** of Y in the reference group.
+-   **Coefficients:**
+    -   Each coefficient is an additive effect on the log scale. After exponentiation, it represents a **multiplicative ratio** on the original response scale.\
+    -   Example: $\beta = 0.05 \;\Rightarrow\; \exp(0.05) \approx 1.05$ -> the expected response is about 5% larger.\
+    -   Negative coefficients imply proportional decreases (e.g. $\beta = -0.30 \;\Rightarrow\; \exp(-0.30) \approx 0.74$ → about a 26% reduction).
+
+### What the percent change applies to…
+
+-   **Log-transformed response (e.g. Gaussian on log(Y)):**\
+    Coefficients are additive effects on log(Y). After exponentiation, these correspond to multiplicative changes in the original response Y. For example, a coefficient of 0.05 implies that the mean of Y is multiplied by $\exp(0.05) \approx 1.05$, i.e. about a 5% increase.
+
+-   **Models with a log link (e.g. Poisson, negative binomial, Gaussian with log link):**\
+    Coefficients directly represent multiplicative changes in the mean of Y. A coefficient of 0.05 again corresponds to about a 5% increase in the expected response.
+
+-   **Negative binomial (log link for** $\theta$, dispersion):\
+    $\% \Delta$ applies to the precision parameter $\theta$ (larger $\theta$ = weaker overdispersion).
+
+-   **Conway–Maxwell–Poisson (**$\nu$, log link):\
+    $\% \Delta$ applies to the dispersion parameter $\nu$ ($\nu > 1$ = under-dispersion, $\nu < 1$ = over-dispersion).
+
+-   **Zero-one-inflated beta:**
+    -   Location (mean, logit link) -> odds ratios (not %Δ directly).\
+    -   Precision $\phi$ (log link) -> interpret as % change in $\phi$ (larger $\phi$ = less extra-binomial scatter).
+
+### Multiple-unit changes, interactions, and uncertainty
+-   **Interactions:** Sum the relevant coefficients (main effects + interaction term) before exponentiating.\
+-   **Confidence/credible intervals:** Transform the endpoints. If $\beta$ ranges from L to U, then the ratio is between exp(L) and exp(U), and the percentage change is between 100 × (exp(L) − 1) and 100 × (exp(U) − 1).
