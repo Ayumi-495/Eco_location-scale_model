@@ -228,65 +228,72 @@ fit1 <- readRDS(here("Rdata", "fit1_BETA_Burros.rds"))
 summary(fit1)
 ```
 
+
 ::: callout-note
-The model output for the mean (`mu`), zero-inflation (`zoi`), and one-inflation (`coi`) components is on the **logit scale**. The precision (`phi`) component is on the **log scale**. These scales are mathematically convenient but aren't directly interpretable. To understand the results, we need to convert the estimates back to their natural scales.
+### Interpreting Model Outputs
 
-The conversion method depends on whether you are interpreting an **intercept** (a baseline value) or the **effect of a predictor**.
+Model outputs for components like mean (`mu`), zero-inflation (`zoi`), and one-inflation (`coi`) are often on the **logit scale**, while outputs for precision (`phi`) are on the **log scale**. These scales are not directly interpretable, so we must convert them back.
 
+The interpretation method changes depending on whether you're looking at an **intercept** (a baseline value) or the **effect of a predictor** (a coefficient).
 
-##### Probabilities for `mu`, `zoi`, and `coi`
+::: panel-tabset
 
-To find the baseline probability for the reference group, you apply the **inverse-logit** (or logistic) function to the intercept's `Estimate`.
+## Part 1: Interpreting Intercepts (Baseline Values)
 
-* **Formula:**
-    $$
-    \text{Probability} = \frac{1}{1 + e^{-\text{estimate}}}
-    $$
+An intercept gives you the starting point for your reference group.
 
-* **Example (`zoi_Intercept`):** The estimate is `0.72`.
-    * Probability = $1 / (1 + e^{-0.72}) = 0.673$
-    * **Interpretation:** There is a **67.3%** probability of an observation being an exact zero in the baseline group.
+* **For Probabilities (Logit Scale):** To find the baseline probability, apply the **inverse-logit** function to the intercept.
+    
+    * **Formula:**
+        $$
+        \text{Probability} = \frac{1}{1 + e^{-\text{Estimate}}}
+        $$
+    * **Example (`zoi_Intercept` = 0.72):**
+        The probability of an exact zero in the baseline group is $1 / (1 + e^{-0.72}) \approx 0.673$, or **67.3%**.
 
-##### Precision for `phi`
-
-The `phi` parameter represents precision (higher `phi` = less variance) and is on a **log scale**. To find the baseline precision, you exponentiate the intercept.
-
-* **Formula:**
-    $$
-    \text{Precision} = e^{\text{estimate}}
-    $$
-
-* **Example (`phi_Intercept`):** The estimate is `1.73`.
-    * Precision = $e^{1.73} \approx 5.64$
-    * **Interpretation:** The baseline precision of the data (for values between 0 and 1) is **5.64**.
-
+* **For Other Values (Log Scale):** To find the baseline value (e.g., precision), **exponentiate** the intercept.
+    
+    * **Formula:**
+        $$
+        \text{Value} = e^{\text{Estimate}}
+        $$
+    * **Example (`phi_Intercept` = 1.73):**
+        The baseline precision is $e^{1.73} \approx 5.64$.
 
 
-##### Changes in Odds for `mu`, `zoi`, and `coi`
 
-The coefficient for a predictor on the logit scale represents a **log-odds ratio**. To interpret it, you first exponentiate the estimate to get the **odds ratio (OR)**, which tells you how the odds are multiplied.
+## Part 2: Interpreting Predictor Coefficients (Effects)
 
-* **Formula:**
-    $$
-    \text{Odds Ratio (OR)} = e^{\text{estimate}}
-    $$
+A coefficient shows how a predictor changes the outcome relative to the reference group. The key is to **exponentiate the coefficient** first.
 
-* **Example (`if_kill` on `mu`):** The estimate is `-1.22`.
-    * Odds Ratio = $e^{-1.22} \approx 0.295$
-    * **Interpretation:** To express this as a percentage change, we calculate $(\text{OR} - 1) \times 100\%$. This gives $(0.295 - 1) \times 100\% = -70.5\%$. This means the odds of having higher cover **decrease by about 70.5%** when burro kills are present.
+* **For Odds (Logit Scale):** The exponentiated coefficient is an **Odds Ratio (OR)**.
+    
+    * **Formula:**
+        $$
+        \text{Odds Ratio (OR)} = e^{\text{Coefficient}}
+        $$       
+        $$
+        \text{Percentage Change in Odds} = (\text{OR} - 1) \times 100\%
+        $$
+    * **Example (`if_kill` on `mu` = -1.22):**
+        The OR is $e^{-1.22} \approx 0.295$. The percentage change is $(0.295 - 1) \times 100\% = -70.5\%$.
+    * **Interpretation:** The odds of having higher cover **decrease by 70.5%** when burro kills are present.
 
-##### Changes in Precision for `phi`
+* **For Other Values (Log Scale):** The exponentiated coefficient is a **multiplicative factor**.
+    
+    * **Formula:**
+        $$
+        \text{Multiplicative Factor} = e^{\text{Coefficient}}
+        $$       
+        $$
+        \text{Percentage Change} = (\text{Factor} - 1) \times 100\%
+        $$
+    * **Example (`if_kill` on `phi` = -1.07):**
+        The factor is $e^{-1.07} \approx 0.343$. The percentage change is $(0.343 - 1) \times 100\% = -65.7\%$.
+    * **Interpretation:** The presence of burro kills **decreases precision by 65.7%**.
+    
 
-The coefficient for a predictor on the log scale tells you how the precision is multiplied. To find this factor, you exponentiate the estimate.
-
-* **Formula:**
-    $$
-    \text{Multiplicative Factor} = e^{\text{estimate}}
-    $$
-
-* **Example (`if_kill` on `phi`):** The estimate is `-1.07`.
-    * Factor = $e^{-1.07} \approx 0.343$
-    * **Interpretation:** This means the precision is **multiplied by 0.343**. A factor of 1.0 represents 100% of the original value, so a factor of 0.343 means the new precision is 34.3% of the original. The decrease is the difference: $100\% - 34.3\% = 65.7\%$. This indicates the data become more spread out when burro kills are present.
+:::
 :::
 
 ## Model Comparison

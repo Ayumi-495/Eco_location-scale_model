@@ -205,26 +205,37 @@ confint(model2_1)
 
 
 ::: {.callout-note appearance="simple" icon="false"}
-Interpreting Log-Level Model Coefficients
-Since the outcome is logged, this is a log-level model. A coefficient for a categorical predictor like RANK represents a multiplicative change on the original SMI scale.
+### Interpreting Log-Level Model Coefficients
 
-To interpret a coefficient (β) for a given level of RANK relative to the reference level, you must exponentiate it.
+Since the outcome is logged, this is a log-level model. A coefficient for a categorical predictor like `RANK` represents a multiplicative change on the original `SMI` scale.
 
-The multiplicative factor on SMI is $exp(β)$.
+To interpret a coefficient ($\beta$) for a given level of `RANK` relative to the reference level, you must exponentiate it.
 
-The percentage change in SMI is $(exp(β) - 1) * 100\%$.
+* **Multiplicative Factor on SMI:**
+    $$
+    \text{Factor} = e^{\beta}
+    $$
+* **Percentage Change in SMI:**
+    $$
+    \text{Change} = (e^{\beta} - 1) \times 100\%
+    $$
 
-Example:
-Our model estimates the coefficient for RANK = 'junior' to be -0.018 (with 'senior' as the reference level):
+#### Example:
 
-Calculate the multiplicative factor: $exp(-0.018) \approx 0.982$.
+Our model estimates the coefficient for `RANK` = 'junior' to be **-0.018** (with 'senior' as the reference level):
 
-Convert to a percentage change: $(0.982 - 1) * 100\% = -1.7\%$.
+1.  **Calculate the multiplicative factor:**
+    $$
+    e^{-0.018} \approx 0.982
+    $$
+2.  **Convert to a percentage change:**
+    $$
+    (0.982 - 1) \times 100\% = -1.7\%
+    $$
 
+The concise interpretation is:
 
-The concise interpretation is: 
-
-"The scaled mass index for subordinate individuals is, on average, 1.7% lower than that of the dominant reference group."
+"The scaled mass index for second-hatched individuals is, on average, **1.7% lower** than that of the first-hatched reference group."
 
 :::
 
