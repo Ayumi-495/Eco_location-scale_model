@@ -365,5 +365,15 @@ The model comparison results indicate that the double-hierarchical location-scal
 
 Answer: Yes, there's a tendency for nests with higher average chick body condition to also exhibit greater consistency among their chicks' body conditions. This is supported by a negative correlation between nest-specific average body condition and its variability.
 
+::: ::: {.callout-note}
+Modeling Correlated Random Effects with brms vs. glmmTMB
 
+This specific hierarchical model can be fit using brms but not with glmmTMB due to a key difference in their capabilities.
+
+The model has two parts: one predicting the mean (`mu`) of the outcome and another predicting its variability (`sigma`). For each grouping factor (e.g., `NEST`), the model estimates a random effect for both the mean and the variability.
+
+The core issue is that `glmmTMB` cannot estimate the correlation between these two different random effects. It is forced to assume that a group's effect on the mean is completely unrelated to its effect on the variability. `brms`, being a more flexible Bayesian tool, can estimate this relationship directly from the data.
+
+Therefore, if your hypothesis involves a potential link between the random effects for different parts of your model (e.g., "do nests with higher average SMI also have less variable SMI?"), you must use a package like `brms` that can model this covariance.
+:::
 
