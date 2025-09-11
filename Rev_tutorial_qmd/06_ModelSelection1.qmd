@@ -58,12 +58,13 @@ dat <- read_csv(here("data","SMI_Drummond_et_al_2025.csv")) %>%subset(REDUCTION 
 dat<- dat%>%
   dplyr::select(-TIME, -HATCHING_DATE,-REDUCTION,-RING) %>%
   mutate(SMI = as.numeric(SMI), # Scaled mass index
+         lnSMI=log(SMI),
          NEST = as.factor(NEST), 
          WORKYEAR = as.factor(WORKYEAR),
          RANK = factor(RANK, levels = c("1", "2")))
 
 
-ggplot(dat, aes(x = RANK, y = SMI, fill = RANK, color = RANK)) +
+ggplot(dat, aes(x = RANK, y = lnSMI, fill = RANK, color = RANK)) +
  geom_violin(aes(fill = RANK),
               color = "#8B8B83",
               width = 0.8, 
@@ -83,7 +84,7 @@ ggplot(dat, aes(x = RANK, y = SMI, fill = RANK, color = RANK)) +
   labs(
     title = "Body Condition (SMI) by Hatching Order",
     x = "Hatching Order",
-    y = "Scaled Mass Index (g)"
+    y = "ln(Scaled Mass Index)"
   ) +
   scale_fill_manual(
     values = c("1" = "#1F78B4", "2" = "#E31A1C") # 
@@ -95,6 +96,7 @@ ggplot(dat, aes(x = RANK, y = SMI, fill = RANK, color = RANK)) +
     labels = c("1" = "First-Hatched", "2" = "Second-Hatched"),
     expand = expansion(add = 0.5)
   ) +
+  scale_y_continuous(breaks = seq(6.5,8,0.2),limits = c(6.5,8)) +
   theme_classic(base_size = 16) +
   theme(
     axis.text = element_text(color = "#6E7B8B", size = 14),
@@ -114,7 +116,7 @@ Having established our initial modeling framework, we now move to a critical pha
 ```{r}
 #| label: model_fitting2-model1-eg1
 
-model2_1<-glmmTMB(log(SMI) ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
+model2_1<-glmmTMB(lnSMI ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
               family = gaussian(),data=dat)
 
 
@@ -161,7 +163,7 @@ dat<- dat%>%
 #| label: model_fitting2 - model2 - glmmtmb  - eg1
 
 model2_2 <- glmmTMB(
-    log(SMI) ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
+    lnSMI ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
     dispformula = ~ 1 + RANK,     
     data = dat, 
     family = gaussian
@@ -175,7 +177,7 @@ First, we  build a location-scale model with `ST_DATE` (centered) as a fixed eff
 ```{r}
 #| label: model_fitting2 add new covariable  - eg1
 model2_3a <- glmmTMB(
-    log(SMI) ~ 1 + RANK + ST_DATE + (1|NEST)+(1|WORKYEAR),
+    lnSMI ~ 1 + RANK + ST_DATE + (1|NEST)+(1|WORKYEAR),
     dispformula = ~ 1 + RANK,     
     data = dat, 
     family = gaussian
@@ -186,7 +188,7 @@ Following the previous model, we now increase complexity further by including a 
 ```{r}
 #| label: model_fitting2 interaction  - eg1
 model2_3b<- glmmTMB(
-    log(SMI) ~ 1 + RANK + ST_DATE + RANK*ST_DATE +(1|NEST)+(1|WORKYEAR),
+    lnSMI ~ 1 + RANK + ST_DATE + RANK*ST_DATE +(1|NEST)+(1|WORKYEAR),
     dispformula = ~ 1 + RANK,     
     data = dat, 
     family = gaussian
@@ -200,7 +202,7 @@ model2_3b<- glmmTMB(
 
 To  evaluate whether our model's fit is significantly improved by the inclusion of additional covariates and interaction terms, we will now employ information criteria, specifically the Akaike Information Criterion corrected for small sample sizes (AICc). AICc provides a balance between model fit and model complexity, penalizing models with more parameters to help identify the most parsimonious yet well-fitting model.
 
-Our first comparison will be between the model that includes hatching date as a fixed effect in the location part and the simpler model that omits this covariate. This will allow us to assess the individual contribution of `ST_DATE` to explaining the variation in `log(SMI)`.
+Our first comparison will be between the model that includes hatching date as a fixed effect in the location part and the simpler model that omits this covariate. This will allow us to assess the individual contribution of `ST_DATE` to explaining the variation in `lnSMI`.
 
 ```{r}
 #| label: model_comparison no interactions  - eg1
@@ -229,5 +231,91 @@ summary(model2_3b)
 ```
 
 By systematically comparing models and gradually increasing their complexity, we can gain deeper insights into the underlying data generating process. In this analysis, we expanded our model by incorporating `ST_DATE` as a covariate and, importantly, its interaction with `RANK`.
-The results from this more complex model show that both ST_DATE and the RANK:ST_DATE interaction term are statistically significant predictors of log(SMI). This suggests that the relationship between SMI and RANK changes over time, and/or the effect of ST_DATE on SMI depends on RANK. While these terms demonstrably improve the model's fit, it's worth noting that their estimated slopes are quite shallow (e.g., -0.0008479 for ST_DATE and -0.00007263 for the interaction). This implies that, despite their statistical significance, the practical impact of ST_DATE and its interaction on log(SMI) might be relatively small. Therefore, depending on the specific goals of the analysis and the desired level of model parsimony, a simpler model without these terms might perform nearly as well in terms of predictive power, while being easier to interpret
+
+The results from this more complex model show that both `ST_DATE` and the `RANK:ST_DATE` interaction term are statistically significant predictors of `lnSMI`. This suggests that the relationship between `SMI` and hatching order changes as the season progresses. We can quantify this by interpreting the model's coefficients as percentage changes in `SMI`. The coefficient for ST_DATE indicates that for each additional day into the season, the `SMI` of a first-hatched chick is predicted to decrease by approximately 0.085%. The significant interaction term reveals that this seasonal decline is almost twice as steep for second-hatched chicks, whose `SMI` is predicted to decrease by a combined 0.16% per day.
+
+While these effects are statistically significant, the small magnitude of these daily percentage changes implies that their practical impact might be relatively modest. Therefore, depending on the specific goals of the analysis and the desired level of model parsimony, a simpler model without these terms might perform nearly as well in terms of predictive power, while being easier to interpret.
+
+
+::: {.callout-note}
+
+Precise Percentage Change Calculation
+To calculate the exact percentage change from a coefficient (β), you must use the exponential function with the formula: `100 * (exp(β) - 1)`.
+
+For a first-hatched chick (RANK 1):
+The calculation using the ST_DATE coefficient is:
+`100 * (exp(-0.00085) - 1) =` -0.085% change in SMI per day.
+
+For a second-hatched chick (RANK 2):
+First, combine the main and interaction coefficients to get the total slope:
+`Total Slope = -0.00085 + (-0.00073) =` -0.00158
+Then, apply the formula to this combined slope:
+`100 * (exp(-0.00158) - 1) =` -0.158% change in SMI per day.
+:::
+
+
+## Figures
+
+```{r}
+#| label: emmeans_plots - model2_3b - glmmtmb
+
+
+
+st_date_seq <- seq(min(dat$ST_DATE), max(dat$ST_DATE), length.out = 50)
+
+
+emm_location <- emmeans(model2_3b, ~ST_DATE*RANK,
+                        component = "cond", type = "response",
+                        at= list(ST_DATE = st_date_seq,RANK=unique(dat$RANK)))
+
+df_location <- as.data.frame(emm_location) %>%
+  rename(
+    mean_log = emmean, 
+    lwr = lower.CL,    
+    upr = upper.CL     
+  )
+emm_dispersion <- emmeans(model2_3b, ~ RANK,
+                          component = "disp", type = "response")
+df_dispersion <- as.data.frame(emm_dispersion) %>%
+  rename(
+    log_sigma = response, 
+    lwr = lower.CL,     
+    upr = upper.CL     
+  )
+pos <- position_dodge(width = 0.4)
+
+
+plot_location_emmeans <- ggplot(df_location, aes(x = ST_DATE, y = mean_log,color=factor(RANK),group=factor(RANK))) +
+   geom_ribbon(aes(ymin = lwr, ymax = upr, fill = factor(RANK)), alpha = 0.2, linetype = 0) +
+  geom_line(linewidth = 1)+
+  labs(
+    title = "Location",
+    x = "Hatching date (days)",
+    y = "ln(SMI)",
+    color="Hatching order",
+    fill= "Hatching order"
+  ) +
+  theme_classic()+ 
+    scale_y_continuous(breaks = seq(6.5,8,0.2),limits = c(6.5,8))+
+    scale_x_continuous(breaks= seq(0,160,30),limits = c(0, 160)) +theme(legend.position = 'bottom')
+
+plot_dispersion_emmeans <- ggplot(df_dispersion, aes(x = RANK, y = log_sigma,color=factor(RANK))) +
+  geom_point(position = pos, size = 3) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = pos, width = 0.15) +
+  labs(
+    title = "Scale",
+    x = "Hatching order",
+    y = "Standard Deviation",
+    color="Hatching order"
+  ) +
+  theme_classic() + scale_y_continuous(breaks = seq(0.07,0.12,0.01),limits = c(0.07, 0.12))+
+  theme(legend.position = "none")
+
+plot_location_emmeans + plot_dispersion_emmeans
+```
+::: {.callout-caution}
+## Incomplete Confidence Interval
+The blue confidence ribbon appears incomplete because it extends into a region where the model is extrapolating beyond the available data for that group. The model's uncertainty here becomes too large to calculate a reliable confidence interval, which serves as a visual warning to interpret these extended predictions with care
+:::
+
 :::
