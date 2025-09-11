@@ -367,7 +367,7 @@ The model comparison results indicate that the double-hierarchical location-scal
 
 Answer: Yes, there's a tendency for nests with higher average chick body condition to also exhibit greater consistency among their chicks' body conditions. This is supported by a negative correlation between nest-specific average body condition and its variability.
 
-::: ::: {.callout-note}
+::: {.callout-note}
 Modeling Correlated Random Effects with brms vs. glmmTMB
 
 This specific hierarchical model can be fit using brms but not with glmmTMB due to a key difference in their capabilities.

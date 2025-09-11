@@ -257,7 +257,7 @@ Then, apply the formula to this combined slope:
 
 ```{r}
 #| label: emmeans_plots - model2_3b - glmmtmb
-
+#| code-fold: true
 
 
 st_date_seq <- seq(min(dat$ST_DATE), max(dat$ST_DATE), length.out = 50)
@@ -312,9 +312,5 @@ plot_dispersion_emmeans <- ggplot(df_dispersion, aes(x = RANK, y = log_sigma,col
 
 plot_location_emmeans + plot_dispersion_emmeans
 ```
-::: {.callout-caution}
-## Incomplete Confidence Interval
-The blue confidence ribbon appears incomplete because it extends into a region where the model is extrapolating beyond the available data for that group. The model's uncertainty here becomes too large to calculate a reliable confidence interval, which serves as a visual warning to interpret these extended predictions with care
-:::
 
 :::
