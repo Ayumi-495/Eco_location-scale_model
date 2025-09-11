@@ -64,8 +64,11 @@ brms_m1 <- readRDS(here("Rdata", "brms_m1.rds"))
 
 You will see similar code snippets throughout the tutorial. Feel free to modify them based on your own setup. If everything is placed correctly, the `.qmd` file should run without any issues.
 
-
 This tutorial provides a step-by-step guide to applying location-scale models in ecology, evolution, and environmental sciences. We focus on practical applications and demonstrate how to implement these models in `R` using the `glmmTMB` and `brms` packages.
+
+<!-- Added -->
+
+For models that can be implemented in both (e.g., `Model 1`, `Model 2` or the negative binomial model in `Beyond Gaussian 1`), we provide code for both packages. However, for models that are currently only feasible in `brms` package (e.g., `Model 3`: where the location and scale parts include random effects), we illustrate the analysis using it alone.
 
 After a brief introduction to both modeling frameworks, we present worked examples using real datasets. In the final section, we also discuss approaches for model comparison and selection.
 
@@ -217,3 +220,60 @@ Here's how the scale component is handled in `glmmTMB` and `brms`, along with co
 *Note: In `glmmTMB`, `dispformula` is generally used to model the dispersion or scale parameter, regardless of its specific Greek letter notation, which varies by distribution.*
 
 The scale part varies depending on the distribution: for example, $\sigma$ for Gaussian or $\theta$ for negative binomial, $\nu$ for Conway–Maxwell–Poisson, $\phi$ for beta- binomial distribution (see the main text).
+
+## Interpreting regression coefficients on the log scale
+Before moving on to the examples, we provide a brief overview of how to interpret regression coefficients when the response variable or a distributional parameter is modelled on the non-natural scale. This is relevant for many of the models we will discuss in this tutorial.
+The models we use (Gaussian with log-transformed response, negative binomial, zero-one-inflated beta, Conway–Maxwell–Poisson, etc.) employ a **log link** for at least one distributional parameter. In these cases, regression coefficients ($\beta$) describe **multiplicative changes** in the parameter of interest. After exponentiation, these can usually be interpreted as percentage changes, with the important exception of logit-linked parameters, which yield **odds ratios** instead.
+
+### Rule of thumb
+
+-   **When using a log link:**
+    -   $\exp(\beta)$ gives the **multiplicative ratio** associated with a one-unit increase in the predictor.
+    -   $100 \times (\exp(\beta) - 1)$ gives the **percent change** associated with a one-unit increase in the predictor.\
+        This applies to parameters such as the mean, variance/dispersion, or precision when they are modelled with a log link.
+-   **When using a logit link:**\
+    Exponentiated coefficients represent **odds ratios**, not percentage changes.\
+    Example: $\beta = 0.7 \;\Rightarrow\; \exp(0.7) \approx 2.0$, meaning the odds are about twice as high for a one-unit increase in the predictor.
+
+### Intercept vs. coefficients
+
+-   **Intercept:**
+    -   If the response was log-transformed before fitting (e.g. Gaussian on log(Y)), exponentiating the intercept gives the **geometric mean** of Y in the reference group.\
+    -   If a log link was used (e.g. Poisson, negative binomial), exponentiating the intercept gives the **arithmetic mean** of Y in the reference group.
+-   **Coefficients:**
+    -   Each coefficient is an additive effect on the log scale. After exponentiation, it represents a **multiplicative ratio** on the original response scale.\
+    -   Example: $\beta = 0.05 \;\Rightarrow\; \exp(0.05) \approx 1.05$ → the expected response is about 5% larger.\
+    -   Negative coefficients imply proportional decreases (e.g. $\beta = -0.30 \;\Rightarrow\; \exp(-0.30) \approx 0.74$ → about a 26% reduction).
+
+### What the change applies to…
+
+#### Location (mean of Y)
+
+-   **Log-transformed response (e.g. Gaussian on log(Y)):**\
+    Coefficients describe multiplicative changes in the original response Y.
+
+-   **Models with a log link (e.g. Poisson, negative binomial, Gaussian with log link):**\
+    Coefficients describe multiplicative changes in the mean of Y.
+
+-   **Zero-one-inflated beta (mean, logit link):**\
+    Exponentiated coefficients are odds ratios, not percent changes.
+
+#### Scale (variance, dispersion, precision)
+
+-   **Negative binomial (log link for** $\theta$, precision):\
+    Coefficients describe % changes in the precision parameter $\theta$ (larger $\theta$ = less overdispersion).
+
+-   **Conway–Maxwell–Poisson (**$\nu$, log link):\
+    Coefficients describe % changes in $\nu$ ($\nu > 1$ = under-dispersion, $\nu < 1$ = over-dispersion).
+
+-   **Zero-one-inflated beta:**\
+
+-   **Precision** $\phi$ (log link): interpret as % change in $\phi$ (larger $\phi$ = less extra-binomial scatter).\
+
+-   **Zero-inflation (logit link):** exponentiated coefficients are odds ratios for the probability of structural zeros or ones.
+
+### Multiple-unit changes, interactions, and uncertainty
+
+-   **Interactions:** Sum the relevant coefficients (main effects + interaction term) before exponentiating.\
+-   **Why not sum CIs directly?** Because fixed effects are correlated. Proper CI calculation requires using the full variance–covariance matrix (frequentist) or summing posterior draws (Bayesian).\
+-   **Confidence/credible intervals:** If a coefficient ranges from L to U, then the multiplicative ratio is between $\exp(L)$ and $\exp(U)$; the % change is between $100 \times (\exp(L) - 1)$ and $100 \times (\exp(U) - 1)$.

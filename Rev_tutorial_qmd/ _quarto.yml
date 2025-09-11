@@ -3,7 +3,7 @@ project:
   output-dir: _book
 
 book:
-  title: "Location–scale models in ecology: handling heterogeneity in continuous, count and proportion data"
+  title: "Location–scale models in ecology and evolution: handling heterogeneity in continuous, count and proportion data"
   subtitle: "step by step online tutorial"
   date: "`r Sys.Date()`"
   chapters:

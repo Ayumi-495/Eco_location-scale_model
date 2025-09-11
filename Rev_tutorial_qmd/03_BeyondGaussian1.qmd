@@ -428,11 +428,9 @@ summary(model_nb_brms)
 pp_check(model_nb_brms)
 ```
 
+Posterior predictive checks indicated that the negative binomial location–scale model adequately captured the central tendency of gaze frequencies. However, the model slightly underestimated the heaviness of the right tail, suggesting that a small number of extreme observations were not fully reproduced.
+
 ## Result figures
-
--   Location part: Points and error bars indicate the estimated log(mean frequency) for each combination of feeding condition and sex. For `glmmTMB`, values are estimated marginal means (on the log scale) with 95% confidence intervals. For `brms`, values are posterior medians with 95% credible intervals. Faint dots represent model-based predictions of log(mean frequency) for individual observations (i.e. fitted values including random effects), shown to illustrate how the model maps observed data points onto the underlying mean structure.
-
--   Scale part: Points and error bars show the estimated log($\theta$), the dispersion (shape) parameter of the negative binomial distribution, for each condition–sex cell. Because $\theta$ is a distributional parameter rather than an observed variable, there are no fitted data points (or raw) that can be plotted at the observation level; only the estimated group-level values with uncertainty intervals are shown.
 
 ```{r}
 #| label: result_figure_nb
@@ -518,116 +516,109 @@ p_disp_link <- ggplot(df_disp_link, aes(x = sex, y = log_theta, color = conditio
 p_glmmTMB_nb <- p_mu_link_predObs + p_disp_link
 
 # brms ----
-dat_pref <- dat_pref %>%
-  mutate(
-    condition = factor(condition),
-    sex = factor(sex)
-  )
 
-# Newdata grid for all Sex and Condition
+# Create a grid of predictor values for posterior distributions
 nd <- tidyr::expand_grid(
   condition = levels(dat_pref$condition),
   sex  = levels(dat_pref$sex)
 )
 
-# Location(mu): log(mean) on the model scale
-# add_linpred_draws(..., dpar = "mu") returns draws of the linear predictor (log link) for mu
-draws_mu <- add_linpred_draws(
-  nd, 
-  object = model_nb_brms, 
-  dpar   = "mu", # distributional parameter 'mu'
-  re_formula = NA # population-level (exclude group-level REs) for EMM-like estimates
-)
+# Get posterior draws for mu and shape and reshape the data
+draws_link <- tidybayes::linpred_draws(
+  model_nb_brms, 
+  newdata = nd, 
+  re_formula = NA, 
+  dpar = TRUE
+) %>%
+  transmute(
+    sex, condition, .draw,
+    log_mu = mu,
+    log_theta = shape
+  ) %>%
+  tidyr::pivot_longer(
+    cols = c(log_mu, log_theta), 
+    names_to = "parameter", 
+    values_to = "value"
+  )
 
-# Summarise posterior draws to median and 95% CrI on the log scale
-sum_mu <- draws_mu %>%
-  group_by(condition, sex) %>%
+
+# Get the posterior median of the linear predictor for each observation
+pred_obs <- add_linpred_draws(
+    newdata = dat_pref,    # Use the original data here
+    object = model_nb_brms,
+    dpar   = "mu",
+    re_formula = NULL      # Include group-level effects for specific predictions
+  ) %>%
+  group_by(.row, condition, sex) %>% # .row is added by add_linpred_draws
   summarise(
-    mean_log = median(.linpred), # posterior median of log(mu)
-    lwr      = quantile(.linpred, 0.025), # 95% CrI lower (log scale)
-    upr      = quantile(.linpred, 0.975), # 95% CrI upper (log scale)
+    predicted_logmu = median(.linpred), # Calculate the posterior median
     .groups = "drop"
   )
 
-# Scale (shape theta): log(theta) on the model scale
-# add_linpred_draws(..., dpar = "shape") returns draws for log(theta)
-draws_shape <- add_linpred_draws(
-  nd,
-  object = model_nb_brms, 
-  dpar   = "shape",
-  re_formula = NA
-)
-
-sum_shape <- draws_shape %>%
-  group_by(condition, sex) %>%
-  summarise(
-    log_theta = median(shape), # posterior median of log(theta)
-    lwr       = quantile(shape, 0.025),
-    upr       = quantile(shape, 0.975),
-    .groups = "drop"
-  )
-
-# Plot: Location (log(mu))
-pos <- position_dodge(width = 0.4)
-
-p_loc <- ggplot(sum_mu, aes(x = sex, y = mean_log, color = condition)) +
-  geom_point(position = pos, size = 3) +
-  geom_errorbar(aes(ymin = lwr, ymax = upr), position = pos, width = 0.15) +
-  labs(
-    title = "Location",
-    x = "Sex", y = "log(mean frequency)"
+# Create the plot for the Location parameter (mu) with predicted points
+p_loc <- draws_link %>%
+  filter(parameter == "log_mu") %>%
+  ggplot(aes(x = sex, y = value, fill = condition)) +
+  geom_violin(
+    width = 0.9, trim = FALSE, alpha = 0.6,
+    color = NA, position = position_dodge(0.6)
   ) +
-  scale_y_continuous(limits = c(2.0, 6.5), breaks = seq(2.0, 6.5, by = 0.5) ) +
-  theme_classic()
-
-# p_mean_link_raw <- p_loc +
-#   geom_point(
-#     data = dat_pref,
-#     aes(x = sex, y = log(frequency), color = condition),
-#     position = position_jitterdodge(dodge.width = 0.4, jitter.width = 0.08),
-#     alpha = 0.35, size = 1.6, inherit.aes = FALSE
-#   )
-
-dat_pref2 <- dat_pref |> dplyr::mutate(.row = dplyr::row_number())
-
-draws_obs <- add_linpred_draws(
-  dat_pref2,
-  object = model_nb_brms,
-  dpar   = "mu",
-  re_formula = NULL   
-)
-
-pred_obs <- draws_obs |>
-  dplyr::group_by(.row, condition, sex) |>
-  dplyr::summarise(
-    pred_logmu = median(.linpred),
-    .groups = "drop"
-  )
-
-p_loc_predObs <- p_loc +
+  stat_pointinterval(
+    aes(color = condition),
+    position = position_dodge(width = 0.6),
+    .width = 0.95, size = 0.8
+  ) +
+  # Add the new layer for predicted data points
   geom_point(
-    data = dat_pref2,
-    aes(x = sex, y = pred_logmu, color = condition),
-    position = position_jitterdodge(dodge.width = 0.4, jitter.width = 0.08),
-    alpha = 0.35, size = 1.6, inherit.aes = FALSE
-  )
-
-# Plot: Scale (log(theta)) 
-p_shape <- ggplot(sum_shape, aes(x = sex, y = log_theta, color = condition)) +
-  geom_point(position = pos, size = 3) +
-  geom_errorbar(aes(ymin = lwr, ymax = upr), position = pos, width = 0.15) +
-  labs(
-    title = "Scale",
-    x = "Sex", y = "log(theta)"
+    data = pred_obs,
+    aes(y = predicted_logmu, color = condition), # y-aesthetic is the predicted value
+    position = position_jitterdodge(
+      dodge.width = 0.6,     # Must match the dodge width above
+      jitter.width = 0.1
+    ),
+    alpha = 0.4,
+    size = 1.5
   ) +
-  scale_y_continuous(limits = c(-0.5, 2.0), breaks = seq(-0.5, 2.0, by = 0.5) ) + 
-  theme_classic()
+  labs(
+    title = "Location", 
+    x = "Sex", 
+    y = "log(mean frequency)"
+  ) +
+  scale_y_continuous(limits = c(2.0, 6.5), breaks = seq(2.0, 6.5, by = 0.5)) +
+  theme_classic() +
+  theme(legend.position = "right")
 
-p_brms_nb <- p_loc_predObs + p_shape
+# Create the plot for the Scale parameter (shape)
+p_scl <- draws_link %>%
+  filter(parameter == "log_theta") %>%
+  ggplot(aes(x = sex, y = value, fill = condition)) +
+  geom_violin(
+    width = 0.9, trim = FALSE, alpha = 0.6,
+    color = NA, position = position_dodge(0.6)
+  ) +
+  stat_pointinterval(
+    aes(color = condition),
+    position = position_dodge(width = 0.6),
+    .width = 0.95, size = 0.8
+  ) +
+  labs(
+    title = "Scale", 
+    x = "Sex", 
+    y = "log(theta)"
+  ) +
+  scale_y_continuous(limits = c(-0.5, 2.0), breaks = seq(-0.5, 2.0, by = 0.5)) +
+  theme_classic() +
+  theme(legend.position = "right")
+
+p_brms_nb <- p_loc + p_scl
 
 # combine ----
 (p_glmmTMB_nb / p_brms_nb) + plot_annotation(title = "top: glmmTMB / bottom: brms")
 ```
+-   **Location part**: Points and error bars indicate the estimated log(mean frequency) for each combination of feeding condition and sex. For `glmmTMB`, values are estimated marginal means (on the log scale) with 95% confidence intervals. For `brms`, values are posterior medians with 95% credible intervals. In addition, the `brms` panels include violin plots, which visualise the full posterior distributions of the estimates. Faint dots represent model-based predictions of log(mean frequency) for individual observations (i.e. fitted values including random effects), shown to illustrate how the model maps observed data points onto the underlying mean structure.
+
+-   **Scale part**: Points and error bars show the estimated log(theta), the dispersion (shape) parameter of the negative binomial distribution, for each condition–sex cell. Because theta is a distributional parameter rather than an observed variable, there are no fitted or raw data points that can be plotted at the observation level. In the `brms` panels, violin plots again illustrate the posterior distributions for log(theta), while points and intervals indicate the posterior median and 95% credible interval.
+
 :::
 
 ### Comparison of location-only model and location-scale model
@@ -638,9 +629,15 @@ p_brms_nb <- p_loc_predObs + p_shape
 
 ### Interpretation of location-scale model :
 
+#### How to back-transflrm the log-link scale to natural scale?
+-   The location part uses a log link, so estimates are on the log(mean frequency) scale. To obtain the expected mean frequency on the natural scale, simply exponentiate the estimate.
+
+-   The dispersion part also uses a log link, so estimates are on the log(theta) scale. To get theta on the natural scale, exponentiate the estimate.
+
+#### Biological meanings:
 **Location (mean) part:**
 
--   Birds gazed significantly less at dots when food was supplied ($\beta^{(l)}_{\text{deprived–supplied}}=-0.85$, 95% CI -1.08, -0.61), corresponding to a rate ratio of $\exp(\beta^{(l)})=0.43$ (i.e., mean frequency reduced by 57.3%; CI −66.0% to −45.7%).
+-   Birds gazed significantly less at dots when food was supplied ($\beta^{(l)}_{\text{deprived–supplied}} = -0.85$, 95% CI -1.08, -0.61), corresponding to a rate ratio of $\exp(\beta^{(l)}) = 0.43$ (i.e., mean frequency reduced by 57.3%; CI −66.0% to −45.7%).
 -   There is no significant sex difference in mean gaze frequency ($\beta_{[\text{sex-male}]}^{(l)}$ = -0.104, 95% CI \[-0.37, 0.16\]\$).
 
 **Scale (dispersion) part:**
