@@ -1,0 +1,70 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Location–scale models in ecology and evolution: handling heterogeneity in continuous, count and proportion data"
+  subtitle: "step by step online tutorial"
+ 
+
+  date: last-modified
+  date-format: "MMMM D, YYYY"
+
+  chapters:
+    - index.qmd
+    - part: "Main part"
+      chapters:
+        - 01_Model1.qmd
+        - 02_Model2.qmd
+        - 03_Model3.qmd        
+        - 04_BeyondGaussian1.qmd
+        - 05_BeyondGaussian2.qmd
+    - part: "Appendices"
+      chapters:
+        - 06_ModelSelection.qmd
+        - 07_ModelSelection1.qmd    
+        - 08_ModelSelection2.qmd   
+        - 09_Simulation.qmd
+  
+  sidebar:
+    style: floating
+    search: true
+  page-navigation: true
+  repo-url: https://github.com/Ayumi-495/Eco_location-scale_model
+
+website:
+  navbar:
+    right:
+      - icon: github
+        href: https://github.com/Ayumi-495/Eco_location-scale_model
+
+
+format:
+  html:
+    theme: cosmo
+    toc: true            
+    toc-depth: 6
+    toc-title: "**CONTENTS**"
+    code-link: true
+    code-tools: true
+    df-print: paged
+    fontsize: 12pt
+    mainfont: "Source Sans Pro"
+    monofont: "Fira Code"
+    code-overflow: wrap
+    code-line-numbers: false
+    grid:
+      margin-width: 120px
+
+#  number-sections: false   
+# 
+# editor_options:
+#   chunk_output_type: console
+
+execute:
+  warning: false
+  message: false
+  tidy: true
+
+# bibliography: bib/ref.bib   
+# embed-resources: true      

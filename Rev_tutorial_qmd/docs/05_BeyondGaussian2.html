@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.29">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>6&nbsp; Beyond Gaussian 2 – Location–scale models in ecology and evolution: handling heterogeneity in continuous, count and proportion data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./06_ModelSelection.html" rel="next">
+<link href="./04_BeyondGaussian1.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-8cc03548bcbadad0f0054bd07a93e883.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_Model1.html">Main part</a></li><li class="breadcrumb-item"><a href="./05_BeyondGaussian2.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Beyond Gaussian 2</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Location–scale models in ecology and evolution: handling heterogeneity in continuous, count and proportion data</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/Ayumi-495/Eco_location-scale_model" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Main part</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Model1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Fixed-effects location–scale model (model 1)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_Model2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Adding random effects in the location part only (model 2)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_Model3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Double-hierarchical location-scale model (Model 3)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_BeyondGaussian1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Beyond Gaussian 1</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_BeyondGaussian2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Beyond Gaussian 2</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_ModelSelection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection (introduction)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_ModelSelection1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Selection (Example 1)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_ModelSelection2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Model Selection (Example 2)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_Simulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Simulation</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title"><strong>CONTENTS</strong></h2>
+   
+  <ul>
+<li>
+<a href="#questions" id="toc-questions" class="nav-link active" data-scroll-target="#questions"><span class="header-section-number">6.1</span> Questions</a>
+  <ul>
+<li><a href="#variables-included" id="toc-variables-included" class="nav-link" data-scroll-target="#variables-included"><span class="header-section-number">6.1.1</span> Variables included</a></li>
+  </ul>
+</li>
+  <li><a href="#visualise-the-dataset" id="toc-visualise-the-dataset" class="nav-link" data-scroll-target="#visualise-the-dataset"><span class="header-section-number">6.2</span> Visualise the dataset</a></li>
+  <li>
+<a href="#run-models-and-interpret-results" id="toc-run-models-and-interpret-results" class="nav-link" data-scroll-target="#run-models-and-interpret-results"><span class="header-section-number">6.3</span> Run models and interpret results</a>
+  <ul>
+<li><a href="#model-fitting" id="toc-model-fitting" class="nav-link" data-scroll-target="#model-fitting"><span class="header-section-number">6.3.1</span> Model fitting</a></li>
+  <li><a href="#model-comparison-results" id="toc-model-comparison-results" class="nav-link" data-scroll-target="#model-comparison-results"><span class="header-section-number">6.3.2</span> Model Comparison Results</a></li>
+  <li><a href="#model-interpretation" id="toc-model-interpretation" class="nav-link" data-scroll-target="#model-interpretation"><span class="header-section-number">6.3.3</span> Model Interpretation</a></li>
+  </ul>
+</li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">6.4</span> Conclusion</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_Model1.html">Main part</a></li><li class="breadcrumb-item"><a href="./05_BeyondGaussian2.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Beyond Gaussian 2</span></a></li></ol></nav><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">
+<span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Beyond Gaussian 2</span>
+</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>This dataset comes from <a href="https://doi.org/10.1111/1365-2656.13766">Lundgren et al.&nbsp;(2022)</a>, which examined the activity and impact of feral donkeys (<em>Equus africanus asinus</em>) between wetlands with and without cougar (<em>Puma concolor</em>) predation.</p>
+<p>For this example, we will focus on the effect of cougar predation on the percentage of ground trampled by feral donkeys.</p>
+<section id="questions" class="level2" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="questions">
+<span class="header-section-number">6.1</span> Questions</h2>
+<ol type="1">
+<li><strong>Does cougar predation affect the percentage of ground trampled by feral donkeys?</strong></li>
+<li><strong>Does cougar predation affect the variability in the percentage of ground trampled by feral donkeys?</strong></li>
+</ol>
+<section id="variables-included" class="level3" data-number="6.1.1"><h3 data-number="6.1.1" class="anchored" data-anchor-id="variables-included">
+<span class="header-section-number">6.1.1</span> Variables included</h3>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<ul>
+<li>
+<code>cover</code>: Percentage of ground trampled by feral donkeys</li>
+<li>
+<code>Site</code>: Name of the site where the data was collected</li>
+<li>
+<code>Access_point</code>: Access point to the sites</li>
+<li>
+<code>if_kill</code>: Whether a cougar kill (dead donkey) was found at the site (1 = yes, 0 = no)</li>
+</ul>
+</div>
+</div>
+</div>
+</section></section><section id="visualise-the-dataset" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="visualise-the-dataset">
+<span class="header-section-number">6.2</span> Visualise the dataset</h2>
+<p>Violin plots illustrate the overall density distribution of percentage of trampled Bare Ground for both areas with (Yes) and without (No) donkey kills Each individual empty circle represents the trampled bare ground cover of a single observation. The plot visually highlights individual variability and allows for the comparison of both central tendency (indicated by the black solid line, representing the mean) and spread of trampled bare ground cover between areas where burro kills are absent versus present.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="fu">here</span><span class="op">(</span><span class="st">"data"</span>,<span class="st">"Lundgren_Cougar_Burro_Trophic_Cascade_Trampled_BareGround.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">dat</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Site</span>, <span class="va">Pool</span>, <span class="va">if_kill</span>, <span class="va">cover</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>Site<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">Site</span><span class="op">)</span>,</span>
+<span>         if_kill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">if_kill</span><span class="op">)</span>,</span>
+<span>         cover<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">cover</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   115 obs. of  4 variables:
+ $ Site   : Factor w/ 13 levels "Anvil Spring",..: 1 1 1 1 1 1 1 1 2 2 ...
+ $ Pool   : chr  "Anvil Spring" "Anvil Spring" "Anvil Spring" "Anvil Spring" ...
+ $ if_kill: Factor w/ 2 levels "burro kills absent",..: 1 1 1 1 1 1 1 1 2 2 ...
+ $ cover  : num  1 1 1 1 1 1 1 1 1 0.6 ...</code></pre>
+</div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">dat</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">if_kill</span>, y <span class="op">=</span> <span class="va">cover</span>, fill <span class="op">=</span> <span class="va">if_kill</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_violin</span><span class="op">(</span></span>
+<span>    <span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="va">if_kill</span><span class="op">)</span>, <span class="co"># Fill violins based on 'if_kill'</span></span>
+<span>    color <span class="op">=</span> <span class="st">"#8B8B83"</span>, <span class="co"># Outline color for violins</span></span>
+<span>    width <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>    alpha <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>    position <span class="op">=</span> <span class="fu">position_dodge</span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_jitter</span><span class="op">(</span></span>
+<span>    <span class="fu">aes</span><span class="op">(</span>color <span class="op">=</span> <span class="va">if_kill</span><span class="op">)</span>, <span class="co"># Color jittered points based on 'if_kill'</span></span>
+<span>    size <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>    alpha <span class="op">=</span> <span class="fl">0.4</span>,</span>
+<span>    shape <span class="op">=</span> <span class="fl">1</span>, <span class="co"># Open circles for jittered points</span></span>
+<span>    position <span class="op">=</span> <span class="fu">position_jitterdodge</span><span class="op">(</span>dodge.width <span class="op">=</span> <span class="fl">0.5</span>, jitter.width <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">stat_summary</span><span class="op">(</span></span>
+<span>    fun <span class="op">=</span> <span class="va">mean</span>,</span>
+<span>    geom <span class="op">=</span> <span class="st">"crossbar"</span>,</span>
+<span>    width <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>    color <span class="op">=</span> <span class="st">"black"</span>, <span class="co"># Black crossbar for mean</span></span>
+<span>    linewidth <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>    position <span class="op">=</span> <span class="fu">position_dodge</span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Donkey Trampling by Cougar Kill Presence"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Cougar Kill Presence"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Proportion Trampled Bare Ground"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_fill_manual</span><span class="op">(</span></span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"burro kills absent"</span> <span class="op">=</span> <span class="st">"cornflowerblue"</span>, <span class="st">"burro kills present"</span> <span class="op">=</span> <span class="st">"firebrick"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_color_manual</span><span class="op">(</span> <span class="co"># Add scale_color_manual for jitter points</span></span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"burro kills absent"</span> <span class="op">=</span> <span class="st">"cornflowerblue"</span>, <span class="st">"burro kills present"</span> <span class="op">=</span> <span class="st">"firebrick"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_discrete</span><span class="op">(</span></span>
+<span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"burro kills absent"</span> <span class="op">=</span> <span class="st">"No"</span>, <span class="st">"burro kills present"</span> <span class="op">=</span> <span class="st">"Yes"</span><span class="op">)</span>,</span>
+<span>    expand <span class="op">=</span> <span class="fu">expansion</span><span class="op">(</span>add <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_classic</span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">16</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span></span>
+<span>    axis.text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#6E7B8B"</span>, size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span>,</span>
+<span>    axis.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#6E7B8B"</span>, size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span>,</span>
+<span>    legend.position <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>    axis.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">0</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="05_BeyondGaussian2_files/figure-html/show_data - beyond_gaussian2-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="run-models-and-interpret-results" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="run-models-and-interpret-results">
+<span class="header-section-number">6.3</span> Run models and interpret results</h2>
+<p>We will fit two zero-one inflated beta regression models to the data using the <code>brms</code> package. We’ll use the <code>brms</code> package because the <code>glmmTMB</code> (frequentist) approach does not allow for values of ‘1’, while the <code>brms</code> package allows us to fit zero-one inflation models to account for these boundary values. All models incorporate <code>Pool</code> as a random effect to account for non-independence of observations collected at the same wetland access point</p>
+<p>The models are as follows:</p>
+<ol type="a">
+<li>Location-Only Model: This model will estimate the average difference in the percentage of trampled bare ground between areas where “burro kills are absent” and where “burro kills are present.”</li>
+<li>Location-Scale Model: This more comprehensive model will estimate both the average difference (location) and any differences in the variability (scale) of the percentage of trampled bare ground between areas with and without burro kills.</li>
+</ol>
+<section id="model-fitting" class="level3" data-number="6.3.1"><h3 data-number="6.3.1" class="anchored" data-anchor-id="model-fitting">
+<span class="header-section-number">6.3.1</span> Model fitting</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" aria-current="page">Location-only model</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Location-scale model</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Model Comparison</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false">Plot results</a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><code>zoi ~ if_kill</code> (Zero-One Inflation; zoi): This part of the model estimates how if_kill (cougar kill presence) influences the probability that an observation is exactly 0% or exactly 100% trampled bare ground. If <code>if_kill</code> increases the <code>zoi</code> probability, it means that areas with burro kills are more likely to have either no trampled ground or completely trampled ground, compared to areas without burro kills.</p>
+<p><code>coi ~ if_kill</code> (Conditional One-Inflation): This is where we distinguish between the 0% and 100% boundaries. If an observation is exactly at a boundary (0% or 100% trampled bare ground), the <code>coi</code> part of the model estimates how <code>if_kill</code> influences the probability that this boundary observation is 100% (fully trampled) rather than 0% (no trampled ground). So, if <code>coi</code> increases with <code>if_kill</code>, it suggests that if a site has exact boundary values, the presence of burro kills makes it more likely for that site to be completely trampled (100%) rather than completely untrampled (0%).</p>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m0</span><span class="op">&lt;-</span><span class="fu">bf</span><span class="op">(</span><span class="va">cover</span> <span class="op">~</span> <span class="va">if_kill</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">Pool</span><span class="op">)</span>,</span>
+<span>       <span class="va">zoi</span><span class="op">~</span>  <span class="va">if_kill</span>, </span>
+<span>       <span class="va">coi</span><span class="op">~</span>  <span class="va">if_kill</span><span class="op">)</span> </span>
+<span><span class="va">prior1</span><span class="op">&lt;-</span><span class="fu">default_prior</span><span class="op">(</span><span class="va">m0</span>, family<span class="op">=</span><span class="fu">zero_one_inflated_beta</span><span class="op">(</span><span class="op">)</span>, data<span class="op">=</span><span class="va">dat</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Since this model is time-consuming, reload without running it:</span></span>
+<span><span class="va">rerun</span> <span class="op">&lt;-</span> <span class="cn">F</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="va">rerun</span><span class="op">)</span><span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="va">fit0</span> <span class="op">&lt;-</span> <span class="fu">brm</span><span class="op">(</span></span>
+<span>   <span class="va">m0</span>,</span>
+<span>   data <span class="op">=</span> <span class="va">dat</span>,</span>
+<span>   family <span class="op">=</span> <span class="fu">zero_one_inflated_beta</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>   prior <span class="op">=</span> <span class="va">prior1</span>,</span>
+<span>   iter <span class="op">=</span> <span class="fl">6000</span>,</span>
+<span>   warmup <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>   chains <span class="op">=</span> <span class="fl">2</span>,  cores<span class="op">=</span><span class="fl">2</span>,</span>
+<span>   control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>     adapt_delta <span class="op">=</span> <span class="fl">0.99</span>,</span>
+<span>     max_treedepth <span class="op">=</span> <span class="fl">15</span></span>
+<span>   <span class="op">)</span>,</span>
+<span>   seed <span class="op">=</span> <span class="fl">123</span>,</span>
+<span>   refresh <span class="op">=</span> <span class="fl">500</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">fit0</span>, file <span class="op">=</span> <span class="fu">here</span><span class="op">(</span><span class="st">"Rdata"</span>, <span class="st">"fit0_BETA_Burros.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="op">}</span><span class="kw">else</span><span class="op">{</span></span>
+<span>  <span class="va">fit0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu">here</span><span class="op">(</span><span class="st">"Rdata"</span>, <span class="st">"fit0_BETA_Burros.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fit0</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> Family: zero_one_inflated_beta 
+  Links: mu = logit; phi = identity; zoi = logit; coi = logit 
+Formula: cover ~ if_kill + (1 | Pool) 
+         zoi ~ if_kill
+         coi ~ if_kill
+   Data: dat (Number of observations: 115) 
+  Draws: 2 chains, each with iter = 6000; warmup = 1000; thin = 1;
+         total post-warmup draws = 10000
+
+Multilevel Hyperparameters:
+~Pool (Number of levels: 16) 
+              Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sd(Intercept)     0.42      0.25     0.03     0.98 1.00     2136     2656
+
+Regression Coefficients:
+                             Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+Intercept                        0.70      0.41    -0.11     1.52 1.00     6799
+zoi_Intercept                    0.72      0.33     0.10     1.37 1.00    15641
+coi_Intercept                    6.31      2.97     2.51    13.90 1.00     4844
+if_killburrokillspresent        -1.02      0.46    -1.95    -0.11 1.00     7279
+zoi_if_killburrokillspresent    -1.70      0.42    -2.53    -0.89 1.00    15364
+coi_if_killburrokillspresent    -4.24      3.06   -11.91    -0.07 1.00     4529
+                             Tail_ESS
+Intercept                        6130
+zoi_Intercept                    7396
+coi_Intercept                    3104
+if_killburrokillspresent         6371
+zoi_if_killburrokillspresent     7048
+coi_if_killburrokillspresent     3118
+
+Further Distributional Parameters:
+    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+phi     2.11      0.35     1.51     2.87 1.00     6161     7129
+
+Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><code>phi</code> (Precision/Scale Parameter): This part of the model estimates how <code>if_kill</code> (cougar kill presence) influences the variability of the percentage of trampled bare ground for observations that fall between 0% and 100% (i.e., not exactly at the boundaries). A higher <code>phi</code> value indicates lower variability (data points are more tightly clustered around the mean). A lower <code>phi</code> value indicates higher variability (data points are more spread out).</p>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m1</span><span class="op">&lt;-</span><span class="fu">bf</span><span class="op">(</span><span class="va">cover</span> <span class="op">~</span> <span class="va">if_kill</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">Pool</span><span class="op">)</span>,</span>
+<span>       <span class="va">zoi</span> <span class="op">~</span> <span class="va">if_kill</span>, </span>
+<span>       <span class="va">coi</span> <span class="op">~</span> <span class="va">if_kill</span>,</span>
+<span>       <span class="va">phi</span> <span class="op">~</span> <span class="va">if_kill</span><span class="op">)</span> </span>
+<span><span class="va">prior2</span><span class="op">&lt;-</span><span class="fu">default_prior</span><span class="op">(</span><span class="va">m1</span>, family<span class="op">=</span><span class="fu">zero_one_inflated_beta</span><span class="op">(</span><span class="op">)</span>, data<span class="op">=</span><span class="va">dat</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rerun</span> <span class="op">&lt;-</span> <span class="cn">F</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="va">rerun</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu">brm</span><span class="op">(</span></span>
+<span>   <span class="va">m1</span>,</span>
+<span>   data <span class="op">=</span> <span class="va">dat</span>,</span>
+<span>   family <span class="op">=</span> <span class="fu">zero_one_inflated_beta</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>   prior <span class="op">=</span> <span class="va">prior2</span>,</span>
+<span>   iter <span class="op">=</span> <span class="fl">6000</span>,</span>
+<span>   warmup <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>   chains <span class="op">=</span> <span class="fl">2</span>,  cores<span class="op">=</span><span class="fl">2</span>,</span>
+<span>   control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>     adapt_delta <span class="op">=</span> <span class="fl">0.99</span>,</span>
+<span>     max_treedepth <span class="op">=</span> <span class="fl">15</span></span>
+<span>   <span class="op">)</span>,</span>
+<span>   seed <span class="op">=</span> <span class="fl">123</span>,      <span class="co">#</span></span>
+<span>   refresh <span class="op">=</span> <span class="fl">500</span>    <span class="co">#</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">fit1</span>, file <span class="op">=</span> <span class="fu">here</span><span class="op">(</span><span class="st">"Rdata"</span>, <span class="st">"fit1_BETA_Burros.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="kw">else</span><span class="op">{</span></span>
+<span>  <span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu">here</span><span class="op">(</span><span class="st">"Rdata"</span>, <span class="st">"fit1_BETA_Burros.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fit1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> Family: zero_one_inflated_beta 
+  Links: mu = logit; phi = log; zoi = logit; coi = logit 
+Formula: cover ~ if_kill + (1 | Pool) 
+         zoi ~ if_kill
+         coi ~ if_kill
+         phi ~ if_kill
+   Data: dat (Number of observations: 115) 
+  Draws: 2 chains, each with iter = 6000; warmup = 1000; thin = 1;
+         total post-warmup draws = 10000
+
+Multilevel Hyperparameters:
+~Pool (Number of levels: 16) 
+              Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sd(Intercept)     0.63      0.26     0.13     1.19 1.00     2237     2163
+
+Regression Coefficients:
+                             Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+Intercept                        0.92      0.46     0.01     1.85 1.00     4499
+phi_Intercept                    1.73      0.49     0.72     2.61 1.00     3574
+zoi_Intercept                    0.72      0.33     0.10     1.39 1.00    12262
+coi_Intercept                    6.28      2.95     2.61    14.08 1.00     4100
+if_killburrokillspresent        -1.22      0.52    -2.27    -0.18 1.00     4920
+phi_if_killburrokillspresent    -1.07      0.51    -2.01    -0.04 1.00     4334
+zoi_if_killburrokillspresent    -1.71      0.42    -2.55    -0.89 1.00    11924
+coi_if_killburrokillspresent    -4.20      3.05   -12.07    -0.08 1.00     3953
+                             Tail_ESS
+Intercept                        5041
+phi_Intercept                    5090
+zoi_Intercept                    7049
+coi_Intercept                    2701
+if_killburrokillspresent         5730
+phi_if_killburrokillspresent     5570
+zoi_if_killburrokillspresent     6844
+coi_if_killburrokillspresent     2698
+
+Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Interpreting Model Outputs
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Model outputs for components like mean (<code>mu</code>), zero-inflation (<code>zoi</code>), and one-inflation (<code>coi</code>) are often on the <strong>logit scale</strong>, while outputs for precision (<code>phi</code>) are on the <strong>log scale</strong>. These scales are not directly interpretable, so we must convert them back.</p>
+<p>The interpretation method changes depending on whether you’re looking at an <strong>intercept</strong> (a baseline value) or the <strong>effect of a predictor</strong> (a coefficient).</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Part 1: Interpreting Intercepts (Baseline Values)</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Part 2: Interpreting Predictor Coefficients (Effects)</a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>An intercept gives you the starting point for your reference group.</p>
+<ul>
+<li>
+<p><strong>For Probabilities (Logit Scale):</strong> To find the baseline probability, apply the <strong>inverse-logit</strong> function to the intercept.</p>
+<ul>
+<li>
+<strong>Formula:</strong> <span class="math display">\[
+  \text{Probability} = \frac{1}{1 + e^{-\text{Estimate}}}
+  \]</span>
+</li>
+<li>
+<strong>Example (<code>zoi_Intercept</code> = 0.72):</strong> The probability of an exact zero in the baseline group is <span class="math inline">\(1 / (1 + e^{-0.72}) \approx 0.673\)</span>, or <strong>67.3%</strong>.</li>
+</ul>
+</li>
+<li>
+<p><strong>For Other Values (Log Scale):</strong> To find the baseline value (e.g., precision), <strong>exponentiate</strong> the intercept.</p>
+<ul>
+<li>
+<strong>Formula:</strong> <span class="math display">\[
+  \text{Value} = e^{\text{Estimate}}
+  \]</span>
+</li>
+<li>
+<strong>Example (<code>phi_Intercept</code> = 1.73):</strong> The baseline precision is <span class="math inline">\(e^{1.73} \approx 5.64\)</span>.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>A coefficient shows how a predictor changes the outcome relative to the reference group. The key is to <strong>exponentiate the coefficient</strong> first.</p>
+<ul>
+<li>
+<p><strong>For Odds (Logit Scale):</strong> The exponentiated coefficient is an <strong>Odds Ratio (OR)</strong>.</p>
+<ul>
+<li>
+<strong>Formula:</strong> <span class="math display">\[
+  \text{Odds Ratio (OR)} = e^{\text{Coefficient}}
+  \]</span><br><span class="math display">\[
+  \text{Percentage Change in Odds} = (\text{OR} - 1) \times 100\%
+  \]</span>
+</li>
+<li>
+<strong>Example (<code>if_kill</code> on <code>mu</code> = -1.22):</strong> The OR is <span class="math inline">\(e^{-1.22} \approx 0.295\)</span>. The percentage change is <span class="math inline">\((0.295 - 1) \times 100\% = -70.5\%\)</span>.</li>
+<li>
+<strong>Interpretation:</strong> The odds of having higher cover <strong>decrease by 70.5%</strong> when burro kills are present.</li>
+</ul>
+</li>
+<li>
+<p><strong>For Other Values (Log Scale):</strong> The exponentiated coefficient is a <strong>multiplicative factor</strong>.</p>
+<ul>
+<li>
+<strong>Formula:</strong> <span class="math display">\[
+  \text{Multiplicative Factor} = e^{\text{Coefficient}}
+  \]</span><br><span class="math display">\[
+  \text{Percentage Change} = (\text{Factor} - 1) \times 100\%
+  \]</span>
+</li>
+<li>
+<strong>Example (<code>if_kill</code> on <code>phi</code> = -1.07):</strong> The factor is <span class="math inline">\(e^{-1.07} \approx 0.343\)</span>. The percentage change is <span class="math inline">\((0.343 - 1) \times 100\% = -65.7\%\)</span>.</li>
+<li>
+<strong>Interpretation:</strong> The presence of burro kills <strong>decreases precision by 65.7%</strong>.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">f0loo</span> <span class="op">&lt;-</span> <span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo.html">loo</a></span><span class="op">(</span><span class="va">fit0</span><span class="op">)</span></span>
+<span><span class="va">f1loo</span> <span class="op">&lt;-</span> <span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo.html">loo</a></span><span class="op">(</span><span class="va">fit1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fc</span><span class="op">&lt;-</span><span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo_compare.html">loo_compare</a></span><span class="op">(</span><span class="va">f0loo</span>, <span class="va">f1loo</span><span class="op">)</span></span>
+<span><span class="va">fc</span></span>
+<span><span class="co">#      elpd_diff se_diff</span></span>
+<span><span class="co"># fit1  0.0       0.0   </span></span>
+<span><span class="co"># fit0 -2.7       1.6   </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">burro_draws</span><span class="op">&lt;-</span><span class="va">fit1</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">epred_draws</span><span class="op">(</span>newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span>if_kill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">if_kill</span><span class="op">)</span></span>
+<span>                                    <span class="op">)</span>,re_formula <span class="op">=</span> <span class="cn">NA</span>, dpar<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Plot for location</span></span>
+<span><span class="va">plot_mu</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">burro_draws</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">if_kill</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">mu</span>, fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">if_kill</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_violin</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">stat_pointinterval</span><span class="op">(</span>show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Location"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Trampled Bare Ground"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Cougar Kill Presence"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Proportion "</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_classic</span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu">scale_y_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0.2</span><span class="op">)</span>,limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot for Zero-Inflation (zoi)</span></span>
+<span><span class="va">plot_zoi</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">burro_draws</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">if_kill</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">zoi</span>, fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">if_kill</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_violin</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">stat_pointinterval</span><span class="op">(</span>show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Zero-Inflation (zoi)"</span>,</span>
+<span>     x <span class="op">=</span> <span class="st">"Cougar Kill Presence"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Probability of Zero"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_classic</span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu">scale_y_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0.2</span><span class="op">)</span>,limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot for One-Inflation (coi)</span></span>
+<span><span class="va">plot_coi</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">burro_draws</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">if_kill</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">coi</span>, fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">if_kill</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_violin</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">stat_pointinterval</span><span class="op">(</span>show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"One-Inflation (coi)"</span>,</span>
+<span>     x <span class="op">=</span> <span class="st">"Cougar Kill Presence"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Probability of One"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_classic</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span><span class="fu">scale_y_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0.2</span><span class="op">)</span>,limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot for Precision (phi)</span></span>
+<span><span class="va">plot_phi</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">burro_draws</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">if_kill</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">phi</span>, fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">if_kill</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_violin</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">stat_pointinterval</span><span class="op">(</span>show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Scale"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Cougar Kill Presence"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Precision"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_classic</span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu">scale_y_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">25</span>,<span class="fl">5</span><span class="op">)</span>,limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># --- 4. Combine Plots into a Single Figure ---</span></span>
+<span><span class="co"># Arrange the four plots in a 2x2 grid</span></span>
+<span><span class="va">combined_plot</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">plot_mu</span> <span class="op">+</span> <span class="va">plot_zoi</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">plot_coi</span> <span class="op">+</span> <span class="va">plot_phi</span><span class="op">)</span> <span class="op">&amp;</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span></span>
+<span>    panel.grid.major <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    panel.grid.minor <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Display the final combined plot</span></span>
+<span><span class="va">combined_plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="05_BeyondGaussian2_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section><section id="model-comparison-results" class="level3" data-number="6.3.2"><h3 data-number="6.3.2" class="anchored" data-anchor-id="model-comparison-results">
+<span class="header-section-number">6.3.2</span> Model Comparison Results</h3>
+<p>Our analysis of the model comparison results shows that the location-scale model is the most supported by the data. This is indicated by its lowest LOO (Leave-One-Out Cross-Validation) information criterion value.</p>
+</section><section id="model-interpretation" class="level3" data-number="6.3.3"><h3 data-number="6.3.3" class="anchored" data-anchor-id="model-interpretation">
+<span class="header-section-number">6.3.3</span> Model Interpretation</h3>
+<p><strong>Location (mean) part:</strong></p>
+<p>On average, the log-odds of the mean percentage of trampled bare ground are lower when burro kills are present compared to when they are absent (<span class="math inline">\(\beta_{[\text{No-Yes}]}^{(l)}\)</span> = -1.22, 95% CI [-2.27, -0.18]). This corresponds to a 70.5% decrease in the odds of having a higher percentage of trampled ground, suggesting the presence of burro kills is associated with a lower average of trampled bare ground.</p>
+<p><strong>Scale (dispersion/phi) part:</strong> The log-precision (phi) is lower when burro kills are present, compared to when they are absent (<span class="math inline">\(\beta_{[\text{No-Yes}]}^{(s)}\)</span> = -1.07, 95% CI [-2.01, -0.04]). This means the precision is multiplied by a factor of 0.34 (a 65.7% decrease), suggesting that the percentage of trampled bare ground exhibits more variation in areas where burro kills are present.</p>
+<p><strong>Zero-One Inflation (zoi) part:</strong> The log-odds of observing exactly 0% or 100% trampled bare ground are lower when burro kills are present (<span class="math inline">\(\beta_{[\text{No-Yes}]}^{(l)}\)</span> = -1.71, 95% CI [-2.55, -0.89]). This represents an 81.9% decrease in the odds of observing completely untrampled ground, meaning areas with burro kills are less likely to be at this specific boundary.</p>
+<p><strong>One-inflation (coi) part:</strong> The log-odds of a boundary observation being 100% rather than 0% are lower when burro kills are present (<span class="math inline">\(\beta_{[\text{No-Yes}]}^{(l)}\)</span> = -4.20, 95% CI [-12.07, -0.08]). This equates to a 98.5% decrease in the odds, implying that it’s extremely unlikely to find completely trampled ground (100%) where burro kills are present compared to where they are absent.</p>
+</section></section><section id="conclusion" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="conclusion">
+<span class="header-section-number">6.4</span> Conclusion</h2>
+<p><strong>Does cougar predation affect the percentage of ground trampled by feral donkeys?</strong></p>
+<p>Answer: Yes, cougar predation, affects the average percentage of ground trampled by feral donkeys.</p>
+<p><strong>Does cougar predation affect the variability in the percentage of ground trampled by feral donkeys?</strong></p>
+<p>Answer: The model provides evidence that cougar predation affects the variability in the percentage of ground trampled by feral donkeys.</p>
+
+
+<!-- -->
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./04_BeyondGaussian1.html" class="pagination-link" aria-label="Beyond Gaussian 1">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Beyond Gaussian 1</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./06_ModelSelection.html" class="pagination-link" aria-label="Model Selection (introduction)">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection (introduction)</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb10" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Beyond Gaussian 2"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load_packages</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required packages</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="do">## data manipulation</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  dplyr, tibble, tidyverse, broom, broom.mixed,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="do">## model fitting</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  ape, arm, brms, broom.mixed, cmdstanr, emmeans, glmmTMB, MASS, phytools, rstan, TreeTools,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="do">## model checking and evaluation</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  DHARMa, loo, MuMIn, parallel,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="do">## visualisation</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  bayesplot, ggplot2, patchwork, tidybayes,</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  <span class="do">## reporting and utilities</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  gt, here, kableExtra, knitr</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>This dataset comes from <span class="co">[</span><span class="ot">Lundgren et al. (2022)</span><span class="co">](https://doi.org/10.1111/1365-2656.13766)</span>, which examined the activity and impact of feral donkeys (*Equus africanus asinus*) between wetlands with and without cougar (*Puma concolor*) predation.</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>For this example, we will focus on the effect of cougar predation on the percentage of ground trampled by feral donkeys.</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## Questions</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Does cougar predation affect the percentage of ground trampled by feral donkeys?**</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Does cougar predation affect the variability in the percentage of ground trampled by feral donkeys?**</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variables included</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple" icon="false"}</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`cover`</span>: Percentage of ground trampled by feral donkeys</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Site`</span>: Name of the site where the data was collected</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Access_point`</span>: Access point to the sites</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`if_kill`</span>: Whether a cougar kill (dead donkey) was found at the site (1 = yes, 0 = no)</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visualise the dataset</span></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>Violin plots illustrate the overall density distribution of percentage of trampled Bare Ground for both areas with (Yes) and without (No) donkey kills Each individual empty circle represents the trampled bare ground cover of a single observation. The plot visually highlights individual variability and allows for the comparison of both central tendency (indicated by the black solid line, representing the mean) and spread of trampled bare ground cover between areas where burro kills are absent versus present.</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: show_data - beyond_gaussian2</span></span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>,<span class="st">"Lundgren_Cougar_Burro_Trophic_Cascade_Trampled_BareGround.csv"</span>))</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span></span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Site, Pool, if_kill, cover) <span class="sc">%&gt;%</span></span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Site=</span><span class="fu">as.factor</span>(Site),</span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>         <span class="at">if_kill=</span><span class="fu">as.factor</span>(if_kill),</span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>         <span class="at">cover=</span><span class="fu">as.numeric</span>(cover)</span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dat)</span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat, <span class="fu">aes</span>(<span class="at">x =</span> if_kill, <span class="at">y =</span> cover, <span class="at">fill =</span> if_kill)) <span class="sc">+</span></span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(</span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill =</span> if_kill), <span class="co"># Fill violins based on 'if_kill'</span></span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#8B8B83"</span>, <span class="co"># Outline color for violins</span></span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.8</span>,</span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.3</span>,</span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.7</span>)</span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(</span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> if_kill), <span class="co"># Color jittered points based on 'if_kill'</span></span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>,</span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">1</span>, <span class="co"># Open circles for jittered points</span></span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_jitterdodge</span>(<span class="at">dodge.width =</span> <span class="fl">0.5</span>, <span class="at">jitter.width =</span> <span class="fl">0.15</span>)</span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(</span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> mean,</span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">geom =</span> <span class="st">"crossbar"</span>,</span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.1</span>,</span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>, <span class="co"># Black crossbar for mean</span></span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.5</span>,</span>
+<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.7</span>)</span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Donkey Trampling by Cougar Kill Presence"</span>,</span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Cougar Kill Presence"</span>,</span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Proportion Trampled Bare Ground"</span></span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"burro kills absent"</span> <span class="ot">=</span> <span class="st">"cornflowerblue"</span>, <span class="st">"burro kills present"</span> <span class="ot">=</span> <span class="st">"firebrick"</span>)</span>
+<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>( <span class="co"># Add scale_color_manual for jitter points</span></span>
+<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"burro kills absent"</span> <span class="ot">=</span> <span class="st">"cornflowerblue"</span>, <span class="st">"burro kills present"</span> <span class="ot">=</span> <span class="st">"firebrick"</span>)</span>
+<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(</span>
+<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"burro kills absent"</span> <span class="ot">=</span> <span class="st">"No"</span>, <span class="st">"burro kills present"</span> <span class="ot">=</span> <span class="st">"Yes"</span>),</span>
+<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fl">0.5</span>)</span>
+<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"#6E7B8B"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"#6E7B8B"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="fu">## Run models and interpret results</span></span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a>We will fit two zero-one inflated beta regression models to the data using the <span class="in">`brms`</span> package. We'll use the <span class="in">`brms`</span> package because the <span class="in">`glmmTMB`</span> (frequentist) approach does not allow for values of '1', while the <span class="in">`brms`</span> package allows us to fit zero-one inflation models to account for these boundary values. All models incorporate <span class="in">`Pool`</span> as a random effect to account for non-independence of observations collected at the same wetland access point</span>
+<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a>The models are as follows:</span>
+<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a>a.  Location-Only Model: This model will estimate the average difference in the percentage of trampled bare ground between areas where "burro kills are absent" and where "burro kills are present."</span>
+<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a>b.  Location-Scale Model: This more comprehensive model will estimate both the average difference (location) and any differences in the variability (scale) of the percentage of trampled bare ground between areas with and without burro kills.</span>
+<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a><span class="fu">### Model fitting</span></span>
+<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a>:::::: panel-tabset</span>
+<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a><span class="fu">## Location-only model</span></span>
+<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple" icon="false"}</span>
+<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a><span class="in">`zoi ~ if_kill`</span> (Zero-One Inflation; zoi): This part of the model estimates how if_kill (cougar kill presence) influences the probability that an observation is exactly 0% or exactly 100% trampled bare ground. If <span class="in">`if_kill`</span> increases the <span class="in">`zoi`</span> probability, it means that areas with burro kills are more likely to have either no trampled ground or completely trampled ground, compared to areas without burro kills.</span>
+<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a><span class="in">`coi ~ if_kill`</span> (Conditional One-Inflation): This is where we distinguish between the 0% and 100% boundaries. If an observation is exactly at a boundary (0% or 100% trampled bare ground), the <span class="in">`coi`</span> part of the model estimates how <span class="in">`if_kill`</span> influences the probability that this boundary observation is 100% (fully trampled) rather than 0% (no trampled ground). So, if <span class="in">`coi`</span> increases with <span class="in">`if_kill`</span>, it suggests that if a site has exact boundary values, the presence of burro kills makes it more likely for that site to be completely trampled (100%) rather than completely untrampled (0%).</span>
+<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model_fitting1 - beyond_gaussian2</span></span>
+<span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a>m0<span class="ot">&lt;-</span><span class="fu">bf</span>(cover <span class="sc">~</span> if_kill <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Pool),</span>
+<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a>       zoi<span class="sc">~</span>  if_kill, </span>
+<span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a>       coi<span class="sc">~</span>  if_kill) </span>
+<span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a>prior1<span class="ot">&lt;-</span><span class="fu">default_prior</span>(m0, <span class="at">family=</span><span class="fu">zero_one_inflated_beta</span>(), <span class="at">data=</span>dat)</span>
+<span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a><span class="co"># Since this model is time-consuming, reload without running it:</span></span>
+<span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a>rerun <span class="ot">&lt;-</span> F</span>
+<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(rerun){</span>
+<span id="cb10-155"><a href="#cb10-155" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-156"><a href="#cb10-156" aria-hidden="true" tabindex="-1"></a>  fit0 <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a>   m0,</span>
+<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a>   <span class="at">data =</span> dat,</span>
+<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a>   <span class="at">family =</span> <span class="fu">zero_one_inflated_beta</span>(),</span>
+<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a>   <span class="at">prior =</span> prior1,</span>
+<span id="cb10-161"><a href="#cb10-161" aria-hidden="true" tabindex="-1"></a>   <span class="at">iter =</span> <span class="dv">6000</span>,</span>
+<span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a>   <span class="at">warmup =</span> <span class="dv">1000</span>,</span>
+<span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a>   <span class="at">chains =</span> <span class="dv">2</span>,  <span class="at">cores=</span><span class="dv">2</span>,</span>
+<span id="cb10-164"><a href="#cb10-164" aria-hidden="true" tabindex="-1"></a>   <span class="at">control =</span> <span class="fu">list</span>(</span>
+<span id="cb10-165"><a href="#cb10-165" aria-hidden="true" tabindex="-1"></a>     <span class="at">adapt_delta =</span> <span class="fl">0.99</span>,</span>
+<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a>     <span class="at">max_treedepth =</span> <span class="dv">15</span></span>
+<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a>   ),</span>
+<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a>   <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a>   <span class="at">refresh =</span> <span class="dv">500</span></span>
+<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit0, <span class="at">file =</span> <span class="fu">here</span>(<span class="st">"Rdata"</span>, <span class="st">"fit0_BETA_Burros.rds"</span>))</span>
+<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-173"><a href="#cb10-173" aria-hidden="true" tabindex="-1"></a>}<span class="cf">else</span>{</span>
+<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a>  fit0 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"Rdata"</span>, <span class="st">"fit0_BETA_Burros.rds"</span>))</span>
+<span id="cb10-175"><a href="#cb10-175" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit0)</span>
+<span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-179"><a href="#cb10-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-182"><a href="#cb10-182" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-183"><a href="#cb10-183" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model_fitting1_results - beyond_gaussian2</span></span>
+<span id="cb10-184"><a href="#cb10-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-185"><a href="#cb10-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-186"><a href="#cb10-186" aria-hidden="true" tabindex="-1"></a>fit0 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"Rdata"</span>, <span class="st">"fit0_BETA_Burros.rds"</span>))</span>
+<span id="cb10-187"><a href="#cb10-187" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit0)</span>
+<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-189"><a href="#cb10-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-190"><a href="#cb10-190" aria-hidden="true" tabindex="-1"></a><span class="fu">## Location-scale model</span></span>
+<span id="cb10-191"><a href="#cb10-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-192"><a href="#cb10-192" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple" icon="false"}</span>
+<span id="cb10-193"><a href="#cb10-193" aria-hidden="true" tabindex="-1"></a><span class="in">`phi`</span> (Precision/Scale Parameter): This part of the model estimates how <span class="in">`if_kill`</span> (cougar kill presence) influences the variability of the percentage of trampled bare ground for observations that fall between 0% and 100% (i.e., not exactly at the boundaries). A higher <span class="in">`phi`</span> value indicates lower variability (data points are more tightly clustered around the mean). A lower <span class="in">`phi`</span> value indicates higher variability (data points are more spread out).</span>
+<span id="cb10-194"><a href="#cb10-194" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-195"><a href="#cb10-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-198"><a href="#cb10-198" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-199"><a href="#cb10-199" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model_fitting2 - beyond_gaussian2</span></span>
+<span id="cb10-200"><a href="#cb10-200" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-201"><a href="#cb10-201" aria-hidden="true" tabindex="-1"></a>m1<span class="ot">&lt;-</span><span class="fu">bf</span>(cover <span class="sc">~</span> if_kill <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Pool),</span>
+<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a>       zoi <span class="sc">~</span> if_kill, </span>
+<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a>       coi <span class="sc">~</span> if_kill,</span>
+<span id="cb10-204"><a href="#cb10-204" aria-hidden="true" tabindex="-1"></a>       phi <span class="sc">~</span> if_kill) </span>
+<span id="cb10-205"><a href="#cb10-205" aria-hidden="true" tabindex="-1"></a>prior2<span class="ot">&lt;-</span><span class="fu">default_prior</span>(m1, <span class="at">family=</span><span class="fu">zero_one_inflated_beta</span>(), <span class="at">data=</span>dat)</span>
+<span id="cb10-206"><a href="#cb10-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-207"><a href="#cb10-207" aria-hidden="true" tabindex="-1"></a>rerun <span class="ot">&lt;-</span> F</span>
+<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(rerun){</span>
+<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a>  fit1 <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb10-210"><a href="#cb10-210" aria-hidden="true" tabindex="-1"></a>   m1,</span>
+<span id="cb10-211"><a href="#cb10-211" aria-hidden="true" tabindex="-1"></a>   <span class="at">data =</span> dat,</span>
+<span id="cb10-212"><a href="#cb10-212" aria-hidden="true" tabindex="-1"></a>   <span class="at">family =</span> <span class="fu">zero_one_inflated_beta</span>(),</span>
+<span id="cb10-213"><a href="#cb10-213" aria-hidden="true" tabindex="-1"></a>   <span class="at">prior =</span> prior2,</span>
+<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a>   <span class="at">iter =</span> <span class="dv">6000</span>,</span>
+<span id="cb10-215"><a href="#cb10-215" aria-hidden="true" tabindex="-1"></a>   <span class="at">warmup =</span> <span class="dv">1000</span>,</span>
+<span id="cb10-216"><a href="#cb10-216" aria-hidden="true" tabindex="-1"></a>   <span class="at">chains =</span> <span class="dv">2</span>,  <span class="at">cores=</span><span class="dv">2</span>,</span>
+<span id="cb10-217"><a href="#cb10-217" aria-hidden="true" tabindex="-1"></a>   <span class="at">control =</span> <span class="fu">list</span>(</span>
+<span id="cb10-218"><a href="#cb10-218" aria-hidden="true" tabindex="-1"></a>     <span class="at">adapt_delta =</span> <span class="fl">0.99</span>,</span>
+<span id="cb10-219"><a href="#cb10-219" aria-hidden="true" tabindex="-1"></a>     <span class="at">max_treedepth =</span> <span class="dv">15</span></span>
+<span id="cb10-220"><a href="#cb10-220" aria-hidden="true" tabindex="-1"></a>   ),</span>
+<span id="cb10-221"><a href="#cb10-221" aria-hidden="true" tabindex="-1"></a>   <span class="at">seed =</span> <span class="dv">123</span>,      <span class="co">#</span></span>
+<span id="cb10-222"><a href="#cb10-222" aria-hidden="true" tabindex="-1"></a>   <span class="at">refresh =</span> <span class="dv">500</span>    <span class="co">#</span></span>
+<span id="cb10-223"><a href="#cb10-223" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-224"><a href="#cb10-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit1, <span class="at">file =</span> <span class="fu">here</span>(<span class="st">"Rdata"</span>, <span class="st">"fit1_BETA_Burros.rds"</span>))</span>
+<span id="cb10-225"><a href="#cb10-225" aria-hidden="true" tabindex="-1"></a>}<span class="cf">else</span>{</span>
+<span id="cb10-226"><a href="#cb10-226" aria-hidden="true" tabindex="-1"></a>  fit1 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"Rdata"</span>, <span class="st">"fit1_BETA_Burros.rds"</span>))</span>
+<span id="cb10-227"><a href="#cb10-227" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-228"><a href="#cb10-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-229"><a href="#cb10-229" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit1)</span>
+<span id="cb10-230"><a href="#cb10-230" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-231"><a href="#cb10-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-234"><a href="#cb10-234" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-235"><a href="#cb10-235" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model_fitting2_results - beyond_gaussian2</span></span>
+<span id="cb10-236"><a href="#cb10-236" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-237"><a href="#cb10-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-238"><a href="#cb10-238" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"Rdata"</span>, <span class="st">"fit1_BETA_Burros.rds"</span>))</span>
+<span id="cb10-239"><a href="#cb10-239" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit1)</span>
+<span id="cb10-240"><a href="#cb10-240" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-241"><a href="#cb10-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-242"><a href="#cb10-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-243"><a href="#cb10-243" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb10-244"><a href="#cb10-244" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpreting Model Outputs</span></span>
+<span id="cb10-245"><a href="#cb10-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-246"><a href="#cb10-246" aria-hidden="true" tabindex="-1"></a>Model outputs for components like mean (<span class="in">`mu`</span>), zero-inflation (<span class="in">`zoi`</span>), and one-inflation (<span class="in">`coi`</span>) are often on the **logit scale**, while outputs for precision (`phi`) are on the **log scale**. These scales are not directly interpretable, so we must convert them back.</span>
+<span id="cb10-247"><a href="#cb10-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-248"><a href="#cb10-248" aria-hidden="true" tabindex="-1"></a>The interpretation method changes depending on whether you're looking at an **intercept** (a baseline value) or the **effect of a predictor** (a coefficient).</span>
+<span id="cb10-249"><a href="#cb10-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-250"><a href="#cb10-250" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb10-251"><a href="#cb10-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-252"><a href="#cb10-252" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 1: Interpreting Intercepts (Baseline Values)</span></span>
+<span id="cb10-253"><a href="#cb10-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-254"><a href="#cb10-254" aria-hidden="true" tabindex="-1"></a>An intercept gives you the starting point for your reference group.</span>
+<span id="cb10-255"><a href="#cb10-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-256"><a href="#cb10-256" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**For Probabilities (Logit Scale):** To find the baseline probability, apply the **inverse-logit** function to the intercept.</span>
+<span id="cb10-257"><a href="#cb10-257" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-258"><a href="#cb10-258" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Formula:**</span>
+<span id="cb10-259"><a href="#cb10-259" aria-hidden="true" tabindex="-1"></a>        $$</span>
+<span id="cb10-260"><a href="#cb10-260" aria-hidden="true" tabindex="-1"></a>        \text{Probability} = \frac{1}{1 + e^{-\text{Estimate}}}</span>
+<span id="cb10-261"><a href="#cb10-261" aria-hidden="true" tabindex="-1"></a>        $$</span>
+<span id="cb10-262"><a href="#cb10-262" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Example (`zoi_Intercept` = 0.72):**</span>
+<span id="cb10-263"><a href="#cb10-263" aria-hidden="true" tabindex="-1"></a>        The probability of an exact zero in the baseline group is $1 / (1 + e^{-0.72}) \approx 0.673$, or **67.3%**.</span>
+<span id="cb10-264"><a href="#cb10-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-265"><a href="#cb10-265" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**For Other Values (Log Scale):** To find the baseline value (e.g., precision), **exponentiate** the intercept.</span>
+<span id="cb10-266"><a href="#cb10-266" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-267"><a href="#cb10-267" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Formula:**</span>
+<span id="cb10-268"><a href="#cb10-268" aria-hidden="true" tabindex="-1"></a>        $$</span>
+<span id="cb10-269"><a href="#cb10-269" aria-hidden="true" tabindex="-1"></a>        \text{Value} = e^{\text{Estimate}}</span>
+<span id="cb10-270"><a href="#cb10-270" aria-hidden="true" tabindex="-1"></a>        $$</span>
+<span id="cb10-271"><a href="#cb10-271" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Example (`phi_Intercept` = 1.73):**</span>
+<span id="cb10-272"><a href="#cb10-272" aria-hidden="true" tabindex="-1"></a>        The baseline precision is $e^{1.73} \approx 5.64$.</span>
+<span id="cb10-273"><a href="#cb10-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-274"><a href="#cb10-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-275"><a href="#cb10-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-276"><a href="#cb10-276" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 2: Interpreting Predictor Coefficients (Effects)</span></span>
+<span id="cb10-277"><a href="#cb10-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-278"><a href="#cb10-278" aria-hidden="true" tabindex="-1"></a>A coefficient shows how a predictor changes the outcome relative to the reference group. The key is to **exponentiate the coefficient** first.</span>
+<span id="cb10-279"><a href="#cb10-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-280"><a href="#cb10-280" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**For Odds (Logit Scale):** The exponentiated coefficient is an **Odds Ratio (OR)**.</span>
+<span id="cb10-281"><a href="#cb10-281" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-282"><a href="#cb10-282" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Formula:**</span>
+<span id="cb10-283"><a href="#cb10-283" aria-hidden="true" tabindex="-1"></a>        $$</span>
+<span id="cb10-284"><a href="#cb10-284" aria-hidden="true" tabindex="-1"></a>        \text{Odds Ratio (OR)} = e^{\text{Coefficient}}</span>
+<span id="cb10-285"><a href="#cb10-285" aria-hidden="true" tabindex="-1"></a>        $$       </span>
+<span id="cb10-286"><a href="#cb10-286" aria-hidden="true" tabindex="-1"></a>        $$</span>
+<span id="cb10-287"><a href="#cb10-287" aria-hidden="true" tabindex="-1"></a>        \text{Percentage Change in Odds} = (\text{OR} - 1) \times 100\%</span>
+<span id="cb10-288"><a href="#cb10-288" aria-hidden="true" tabindex="-1"></a>        $$</span>
+<span id="cb10-289"><a href="#cb10-289" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Example (`if_kill` on `mu` = -1.22):**</span>
+<span id="cb10-290"><a href="#cb10-290" aria-hidden="true" tabindex="-1"></a>        The OR is $e^{-1.22} \approx 0.295$. The percentage change is $(0.295 - 1) \times 100\% = -70.5\%$.</span>
+<span id="cb10-291"><a href="#cb10-291" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Interpretation:** The odds of having higher cover **decrease by 70.5%** when burro kills are present.</span>
+<span id="cb10-292"><a href="#cb10-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-293"><a href="#cb10-293" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**For Other Values (Log Scale):** The exponentiated coefficient is a **multiplicative factor**.</span>
+<span id="cb10-294"><a href="#cb10-294" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-295"><a href="#cb10-295" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Formula:**</span>
+<span id="cb10-296"><a href="#cb10-296" aria-hidden="true" tabindex="-1"></a>        $$</span>
+<span id="cb10-297"><a href="#cb10-297" aria-hidden="true" tabindex="-1"></a>        \text{Multiplicative Factor} = e^{\text{Coefficient}}</span>
+<span id="cb10-298"><a href="#cb10-298" aria-hidden="true" tabindex="-1"></a>        $$       </span>
+<span id="cb10-299"><a href="#cb10-299" aria-hidden="true" tabindex="-1"></a>        $$</span>
+<span id="cb10-300"><a href="#cb10-300" aria-hidden="true" tabindex="-1"></a>        \text{Percentage Change} = (\text{Factor} - 1) \times 100\%</span>
+<span id="cb10-301"><a href="#cb10-301" aria-hidden="true" tabindex="-1"></a>        $$</span>
+<span id="cb10-302"><a href="#cb10-302" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Example (`if_kill` on `phi` = -1.07):**</span>
+<span id="cb10-303"><a href="#cb10-303" aria-hidden="true" tabindex="-1"></a>        The factor is $e^{-1.07} \approx 0.343$. The percentage change is $(0.343 - 1) \times 100\% = -65.7\%$.</span>
+<span id="cb10-304"><a href="#cb10-304" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Interpretation:** The presence of burro kills **decreases precision by 65.7%**.</span>
+<span id="cb10-305"><a href="#cb10-305" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-306"><a href="#cb10-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-307"><a href="#cb10-307" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-308"><a href="#cb10-308" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-309"><a href="#cb10-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-310"><a href="#cb10-310" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model Comparison</span></span>
+<span id="cb10-311"><a href="#cb10-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-314"><a href="#cb10-314" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-315"><a href="#cb10-315" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model_comparison - beyond_gaussian2</span></span>
+<span id="cb10-316"><a href="#cb10-316" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-317"><a href="#cb10-317" aria-hidden="true" tabindex="-1"></a>f0loo <span class="ot">&lt;-</span> loo<span class="sc">::</span><span class="fu">loo</span>(fit0)</span>
+<span id="cb10-318"><a href="#cb10-318" aria-hidden="true" tabindex="-1"></a>f1loo <span class="ot">&lt;-</span> loo<span class="sc">::</span><span class="fu">loo</span>(fit1)</span>
+<span id="cb10-319"><a href="#cb10-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-320"><a href="#cb10-320" aria-hidden="true" tabindex="-1"></a>fc<span class="ot">&lt;-</span>loo<span class="sc">::</span><span class="fu">loo_compare</span>(f0loo, f1loo)</span>
+<span id="cb10-321"><a href="#cb10-321" aria-hidden="true" tabindex="-1"></a>fc</span>
+<span id="cb10-322"><a href="#cb10-322" aria-hidden="true" tabindex="-1"></a><span class="co">#      elpd_diff se_diff</span></span>
+<span id="cb10-323"><a href="#cb10-323" aria-hidden="true" tabindex="-1"></a><span class="co"># fit1  0.0       0.0   </span></span>
+<span id="cb10-324"><a href="#cb10-324" aria-hidden="true" tabindex="-1"></a><span class="co"># fit0 -2.7       1.6   </span></span>
+<span id="cb10-325"><a href="#cb10-325" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-326"><a href="#cb10-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-327"><a href="#cb10-327" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plot results </span></span>
+<span id="cb10-328"><a href="#cb10-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-329"><a href="#cb10-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-332"><a href="#cb10-332" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-333"><a href="#cb10-333" aria-hidden="true" tabindex="-1"></a>burro_draws<span class="ot">&lt;-</span>fit1 <span class="sc">%&gt;%</span></span>
+<span id="cb10-334"><a href="#cb10-334" aria-hidden="true" tabindex="-1"></a>  <span class="fu">epred_draws</span>(<span class="at">newdata =</span> <span class="fu">expand.grid</span>(<span class="at">if_kill=</span><span class="fu">unique</span>(dat<span class="sc">$</span>if_kill)</span>
+<span id="cb10-335"><a href="#cb10-335" aria-hidden="true" tabindex="-1"></a>                                    ),<span class="at">re_formula =</span> <span class="cn">NA</span>, <span class="at">dpar=</span><span class="cn">TRUE</span>) </span>
+<span id="cb10-336"><a href="#cb10-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-337"><a href="#cb10-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-338"><a href="#cb10-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-339"><a href="#cb10-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-340"><a href="#cb10-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-341"><a href="#cb10-341" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot for location</span></span>
+<span id="cb10-342"><a href="#cb10-342" aria-hidden="true" tabindex="-1"></a>plot_mu <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(burro_draws, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(if_kill), <span class="at">y =</span> mu, <span class="at">fill =</span> <span class="fu">factor</span>(if_kill))) <span class="sc">+</span></span>
+<span id="cb10-343"><a href="#cb10-343" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-344"><a href="#cb10-344" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_pointinterval</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-345"><a href="#cb10-345" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-346"><a href="#cb10-346" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Location"</span>,</span>
+<span id="cb10-347"><a href="#cb10-347" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Trampled Bare Ground"</span>,</span>
+<span id="cb10-348"><a href="#cb10-348" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Cougar Kill Presence"</span>,</span>
+<span id="cb10-349"><a href="#cb10-349" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Proportion "</span></span>
+<span id="cb10-350"><a href="#cb10-350" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-351"><a href="#cb10-351" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span><span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.2</span>),<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb10-352"><a href="#cb10-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-353"><a href="#cb10-353" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot for Zero-Inflation (zoi)</span></span>
+<span id="cb10-354"><a href="#cb10-354" aria-hidden="true" tabindex="-1"></a>plot_zoi <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(burro_draws, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(if_kill), <span class="at">y =</span> zoi, <span class="at">fill =</span> <span class="fu">factor</span>(if_kill))) <span class="sc">+</span></span>
+<span id="cb10-355"><a href="#cb10-355" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-356"><a href="#cb10-356" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_pointinterval</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-357"><a href="#cb10-357" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-358"><a href="#cb10-358" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Zero-Inflation (zoi)"</span>,</span>
+<span id="cb10-359"><a href="#cb10-359" aria-hidden="true" tabindex="-1"></a>     <span class="at">x =</span> <span class="st">"Cougar Kill Presence"</span>,</span>
+<span id="cb10-360"><a href="#cb10-360" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Probability of Zero"</span></span>
+<span id="cb10-361"><a href="#cb10-361" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-362"><a href="#cb10-362" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span><span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.2</span>),<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb10-363"><a href="#cb10-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-364"><a href="#cb10-364" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot for One-Inflation (coi)</span></span>
+<span id="cb10-365"><a href="#cb10-365" aria-hidden="true" tabindex="-1"></a>plot_coi <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(burro_draws, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(if_kill), <span class="at">y =</span> coi, <span class="at">fill =</span> <span class="fu">factor</span>(if_kill))) <span class="sc">+</span></span>
+<span id="cb10-366"><a href="#cb10-366" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-367"><a href="#cb10-367" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_pointinterval</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-368"><a href="#cb10-368" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-369"><a href="#cb10-369" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"One-Inflation (coi)"</span>,</span>
+<span id="cb10-370"><a href="#cb10-370" aria-hidden="true" tabindex="-1"></a>     <span class="at">x =</span> <span class="st">"Cougar Kill Presence"</span>,</span>
+<span id="cb10-371"><a href="#cb10-371" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Probability of One"</span></span>
+<span id="cb10-372"><a href="#cb10-372" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-373"><a href="#cb10-373" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span><span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.2</span>),<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb10-374"><a href="#cb10-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-375"><a href="#cb10-375" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot for Precision (phi)</span></span>
+<span id="cb10-376"><a href="#cb10-376" aria-hidden="true" tabindex="-1"></a>plot_phi <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(burro_draws, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(if_kill), <span class="at">y =</span> phi, <span class="at">fill =</span> <span class="fu">factor</span>(if_kill))) <span class="sc">+</span></span>
+<span id="cb10-377"><a href="#cb10-377" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-378"><a href="#cb10-378" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_pointinterval</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-379"><a href="#cb10-379" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-380"><a href="#cb10-380" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Scale"</span>,</span>
+<span id="cb10-381"><a href="#cb10-381" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Cougar Kill Presence"</span>,</span>
+<span id="cb10-382"><a href="#cb10-382" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Precision"</span></span>
+<span id="cb10-383"><a href="#cb10-383" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-384"><a href="#cb10-384" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span><span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">25</span>,<span class="dv">5</span>),<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">25</span>))</span>
+<span id="cb10-385"><a href="#cb10-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-386"><a href="#cb10-386" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 4. Combine Plots into a Single Figure ---</span></span>
+<span id="cb10-387"><a href="#cb10-387" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange the four plots in a 2x2 grid</span></span>
+<span id="cb10-388"><a href="#cb10-388" aria-hidden="true" tabindex="-1"></a>combined_plot <span class="ot">&lt;-</span> (plot_mu <span class="sc">+</span> plot_zoi) <span class="sc">/</span> (plot_coi <span class="sc">+</span> plot_phi) <span class="sc">&amp;</span></span>
+<span id="cb10-389"><a href="#cb10-389" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb10-390"><a href="#cb10-390" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb10-391"><a href="#cb10-391" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb10-392"><a href="#cb10-392" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-393"><a href="#cb10-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-394"><a href="#cb10-394" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the final combined plot</span></span>
+<span id="cb10-395"><a href="#cb10-395" aria-hidden="true" tabindex="-1"></a>combined_plot</span>
+<span id="cb10-396"><a href="#cb10-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-397"><a href="#cb10-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-398"><a href="#cb10-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-399"><a href="#cb10-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-400"><a href="#cb10-400" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-401"><a href="#cb10-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-402"><a href="#cb10-402" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-403"><a href="#cb10-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-404"><a href="#cb10-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-405"><a href="#cb10-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-406"><a href="#cb10-406" aria-hidden="true" tabindex="-1"></a>::::::</span>
+<span id="cb10-407"><a href="#cb10-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-408"><a href="#cb10-408" aria-hidden="true" tabindex="-1"></a><span class="fu">### Model Comparison Results</span></span>
+<span id="cb10-409"><a href="#cb10-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-410"><a href="#cb10-410" aria-hidden="true" tabindex="-1"></a>Our analysis of the model comparison results shows that the location-scale model is the most supported by the data. This is indicated by its lowest LOO (Leave-One-Out Cross-Validation) information criterion value.</span>
+<span id="cb10-411"><a href="#cb10-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-412"><a href="#cb10-412" aria-hidden="true" tabindex="-1"></a><span class="fu">### Model Interpretation</span></span>
+<span id="cb10-413"><a href="#cb10-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-414"><a href="#cb10-414" aria-hidden="true" tabindex="-1"></a>**Location (mean) part:**</span>
+<span id="cb10-415"><a href="#cb10-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-416"><a href="#cb10-416" aria-hidden="true" tabindex="-1"></a>On average, the log-odds of the mean percentage of trampled bare ground are lower when burro kills are present compared to when they are absent ($\beta_{<span class="co">[</span><span class="ot">\text{No-Yes}</span><span class="co">]</span>}^{(l)}$ = -1.22, 95% CI <span class="sc">\[</span>-2.27, -0.18<span class="sc">\]</span>). This corresponds to a 70.5% decrease in the odds of having a higher percentage of trampled ground, suggesting the presence of burro kills is associated with a lower average of trampled bare ground.</span>
+<span id="cb10-417"><a href="#cb10-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-418"><a href="#cb10-418" aria-hidden="true" tabindex="-1"></a>**Scale (dispersion/phi) part:** The log-precision (phi) is lower when burro kills are present, compared to when they are absent ($\beta_{<span class="co">[</span><span class="ot">\text{No-Yes}</span><span class="co">]</span>}^{(s)}$ = -1.07, 95% CI <span class="sc">\[</span>-2.01, -0.04<span class="sc">\]</span>). This means the precision is multiplied by a factor of 0.34 (a 65.7% decrease), suggesting that the percentage of trampled bare ground exhibits more variation in areas where burro kills are present.</span>
+<span id="cb10-419"><a href="#cb10-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-420"><a href="#cb10-420" aria-hidden="true" tabindex="-1"></a>**Zero-One Inflation (zoi) part:** The log-odds of observing exactly 0% or 100% trampled bare ground are lower when burro kills are present ($\beta_{<span class="co">[</span><span class="ot">\text{No-Yes}</span><span class="co">]</span>}^{(l)}$ = -1.71, 95% CI <span class="sc">\[</span>-2.55, -0.89<span class="sc">\]</span>). This represents an 81.9% decrease in the odds of observing completely untrampled ground, meaning areas with burro kills are less likely to be at this specific boundary.</span>
+<span id="cb10-421"><a href="#cb10-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-422"><a href="#cb10-422" aria-hidden="true" tabindex="-1"></a>**One-inflation (coi) part:** The log-odds of a boundary observation being 100% rather than 0% are lower when burro kills are present ($\beta_{<span class="co">[</span><span class="ot">\text{No-Yes}</span><span class="co">]</span>}^{(l)}$ = -4.20, 95% CI <span class="sc">\[</span>-12.07, -0.08<span class="sc">\]</span>). This equates to a 98.5% decrease in the odds, implying that it's extremely unlikely to find completely trampled ground (100%) where burro kills are present compared to where they are absent.</span>
+<span id="cb10-423"><a href="#cb10-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-424"><a href="#cb10-424" aria-hidden="true" tabindex="-1"></a><span class="fu">## Conclusion</span></span>
+<span id="cb10-425"><a href="#cb10-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-426"><a href="#cb10-426" aria-hidden="true" tabindex="-1"></a>**Does cougar predation affect the percentage of ground trampled by feral donkeys?**</span>
+<span id="cb10-427"><a href="#cb10-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-428"><a href="#cb10-428" aria-hidden="true" tabindex="-1"></a>Answer: Yes, cougar predation, affects the average percentage of ground trampled by feral donkeys.</span>
+<span id="cb10-429"><a href="#cb10-429" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-430"><a href="#cb10-430" aria-hidden="true" tabindex="-1"></a>**Does cougar predation affect the variability in the percentage of ground trampled by feral donkeys?**</span>
+<span id="cb10-431"><a href="#cb10-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-432"><a href="#cb10-432" aria-hidden="true" tabindex="-1"></a>Answer: The model provides evidence that cougar predation affects the variability in the percentage of ground trampled by feral donkeys.</span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>
