@@ -225,7 +225,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_ModelSelection.html">Appendices</a></li><li class="breadcrumb-item"><a href="./07_ModelSelection1.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Selection (Example 1)</span></a></li></ol></nav><div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title">
 <span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Selection (Example 1)</span>
-</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -470,7 +470,7 @@ Note
 </section><section id="figures" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="figures">
 <span class="header-section-number">8.1</span> Figures</h2>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">st_date_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">ST_DATE</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">ST_DATE</span><span class="op">)</span>, length.out <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">st_date_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">ST_DATE</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">ST_DATE</span><span class="op">)</span>, length.out <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="va">emm_location</span> <span class="op">&lt;-</span> <span class="fu">emmeans</span><span class="op">(</span><span class="va">model2_3b</span>, <span class="op">~</span><span class="va">ST_DATE</span><span class="op">*</span><span class="va">RANK</span>,</span>
@@ -521,24 +521,11 @@ Note
 <span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">plot_location_emmeans</span> <span class="op">+</span> <span class="va">plot_dispersion_emmeans</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+</details><div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="07_ModelSelection1_files/figure-html/emmeans_plots - model2_3b - glmmtmb-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
-</div>
-</div>
-<div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Incomplete Confidence Interval
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The blue confidence ribbon appears incomplete because it extends into a region where the model is extrapolating beyond the available data for that group. The model’s uncertainty here becomes too large to calculate a reliable confidence interval, which serves as a visual warning to interpret these extended predictions with care</p>
 </div>
 </div>
 </section>
@@ -1269,7 +1256,7 @@ Incomplete Confidence Interval
 <span id="cb11-277"><a href="#cb11-277" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-280"><a href="#cb11-280" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb11-281"><a href="#cb11-281" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: emmeans_plots - model2_3b - glmmtmb</span></span>
-<span id="cb11-282"><a href="#cb11-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-282"><a href="#cb11-282" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
 <span id="cb11-283"><a href="#cb11-283" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-284"><a href="#cb11-284" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-285"><a href="#cb11-285" aria-hidden="true" tabindex="-1"></a>st_date_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(dat<span class="sc">$</span>ST_DATE), <span class="fu">max</span>(dat<span class="sc">$</span>ST_DATE), <span class="at">length.out =</span> <span class="dv">50</span>)</span>
@@ -1324,12 +1311,8 @@ Incomplete Confidence Interval
 <span id="cb11-334"><a href="#cb11-334" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-335"><a href="#cb11-335" aria-hidden="true" tabindex="-1"></a>plot_location_emmeans <span class="sc">+</span> plot_dispersion_emmeans</span>
 <span id="cb11-336"><a href="#cb11-336" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-337"><a href="#cb11-337" aria-hidden="true" tabindex="-1"></a>::: {.callout-caution}</span>
-<span id="cb11-338"><a href="#cb11-338" aria-hidden="true" tabindex="-1"></a><span class="fu">## Incomplete Confidence Interval</span></span>
-<span id="cb11-339"><a href="#cb11-339" aria-hidden="true" tabindex="-1"></a>The blue confidence ribbon appears incomplete because it extends into a region where the model is extrapolating beyond the available data for that group. The model's uncertainty here becomes too large to calculate a reliable confidence interval, which serves as a visual warning to interpret these extended predictions with care</span>
-<span id="cb11-340"><a href="#cb11-340" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb11-341"><a href="#cb11-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-342"><a href="#cb11-342" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb11-337"><a href="#cb11-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-338"><a href="#cb11-338" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -358,7 +358,7 @@ Model comparison based on AICc strongly favored the location-scale CMP model (mo
 
 In all three models, food-supplied birds showed significantly lower gaze frequencies toward dot stimuli. There was no evidence of sex differences in the location part in any model.
 
-Regarding the dispersion parameter, in the location-scale `NB` model (model_1), the dispersion part revealed a significant change in residual variance in the food-supplied condition ($\beta_{[\text{conditionSupplied}]}^{(l)}$ = –0.662). Given the parameterization of the Negative Binomial distribution (where a smaller dispersion parameter $\theta$ indicates greater overdispersion), this suggests an increase in overdispersion when food was supplied, implying less consistent behaviour across individuals. However, this effect was not statistically significant in the location-scale `CMP` model (model_2), where the corresponding estimate was 1.20 (p = 0.12). In the `CMP` model, a positive estimate for the dispersion parameter $\nu$ would imply a decrease in overdispersion (i.e., more consistent behavior) if it were significant.
+Regarding the dispersion parameter, in the location-scale `NB` model (model_1), the dispersion part revealed a significant change in residual variance in the food-supplied condition ($\beta_{[\text{conditionSupplied}]}^{(l)}$ = –0.662). Given the parameterisation of the Negative Binomial distribution (where a smaller dispersion parameter $\theta$ indicates greater overdispersion), this suggests an increase in overdispersion when food was supplied, implying less consistent behaviour across individuals. However, this effect was not statistically significant in the location-scale `CMP` model (model_2), where the corresponding estimate was 1.20 (p = 0.12). In the `CMP` model, a positive estimate for the dispersion parameter $\nu$ would imply a decrease in overdispersion (i.e., more consistent behavior) if it were significant.
 
 Random effects in all models consistently showed greater variance among species than among id within species. For example, in the location-scale CMP model, species-level variance was 0.246, while individual-level variance was 0.151.
 
@@ -427,6 +427,8 @@ pp_check(model_nb_brms)
 ```
 
 Posterior predictive checks indicated that the negative binomial location–scale model adequately captured the central tendency of gaze frequencies. However, the model slightly underestimated the heaviness of the right tail, suggesting that a small number of extreme observations were not fully reproduced.
+
+Note that we can also conduct the CMP model in `brms` using the `family = brmsfamily("com_poisson")` family, but it is still at an experimental stage and may not work well.
 
 ## Result figures
 

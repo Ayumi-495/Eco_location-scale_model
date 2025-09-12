@@ -451,7 +451,7 @@ window.Quarto = {
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code> Family: zero_one_inflated_beta 
-  Links: mu = logit; phi = identity; zoi = logit; coi = logit 
+  Links: mu = logit; zoi = logit; coi = logit 
 Formula: cover ~ if_kill + (1 | Pool) 
          zoi ~ if_kill
          coi ~ if_kill
@@ -535,7 +535,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code> Family: zero_one_inflated_beta 
-  Links: mu = logit; phi = log; zoi = logit; coi = logit 
+  Links: mu = logit; zoi = logit; coi = logit; phi = log 
 Formula: cover ~ if_kill + (1 | Pool) 
          zoi ~ if_kill
          coi ~ if_kill

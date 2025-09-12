@@ -192,7 +192,7 @@ Here's how the scale component is handled in `glmmTMB` and `brms`, along with co
 |:-----------------|:-----------------|:-----------------|:-----------------|
 | Gaussian | $\sigma$ | `dispformula = ~ ...` | `bf(..., sigma ~ ...)` |
 | Negative Binomial | $\theta$ | `dispformula = ~ ...` | `bf(..., shape ~ ...)` |
-| Conway-Maxwell-Poisson | $\nu$ | `dispformula = ~ ...` | `bf(..., nu ~ ...)` |
+| Conway-Maxwell-Poisson | $\nu$ | `dispformula = ~ ...` | `bf(..., shape ~ ...)` |
 | Beta-Binomial | $\phi$ | `dispformula = ~ ...` | `bf(..., phi ~ ...)` |
 
 *Note: In `glmmTMB`, `dispformula` is generally used to model the dispersion or scale parameter, regardless of its specific Greek letter notation, which varies by distribution.*

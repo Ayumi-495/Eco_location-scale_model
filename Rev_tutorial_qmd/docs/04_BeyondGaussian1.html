@@ -2123,7 +2123,7 @@ cond.Std.Dev.(Intercept)|id       0.2503174  0.6033250  0.3886165</code></pre>
 <p>Here, we compared three generalised linear mixed models. <strong>model_0</strong> was a <code>Negative Binomial (NB)</code> model with a single, overall estimated dispersion parameter (i.e., not modelled as a function of predictors). <strong>model_1</strong> extended this by modelling the <code>NB</code> dispersion parameter as a function of condition and sex. <strong>model_2</strong> further used a <code>Conway-Maxwell-Poisson (CMP)</code> distribution, which can accommodate both under- and over-dispersion, with its dispersion parameter similarly modelled by condition and sex.</p>
 <p>Model comparison based on AICc strongly favored the location-scale CMP model (model_2: AICc = 2159.2, model weight = 0.999), with the location-scale NB model (model_1: AICc = 2172.8) and the NB model with a single dispersion parameter (model_0: AICc = 2176.8) performing substantially worse.</p>
 <p>In all three models, food-supplied birds showed significantly lower gaze frequencies toward dot stimuli. There was no evidence of sex differences in the location part in any model.</p>
-<p>Regarding the dispersion parameter, in the location-scale <code>NB</code> model (model_1), the dispersion part revealed a significant change in residual variance in the food-supplied condition (<span class="math inline">\(\beta_{[\text{conditionSupplied}]}^{(l)}\)</span> = –0.662). Given the parameterization of the Negative Binomial distribution (where a smaller dispersion parameter <span class="math inline">\(\theta\)</span> indicates greater overdispersion), this suggests an increase in overdispersion when food was supplied, implying less consistent behaviour across individuals. However, this effect was not statistically significant in the location-scale <code>CMP</code> model (model_2), where the corresponding estimate was 1.20 (p = 0.12). In the <code>CMP</code> model, a positive estimate for the dispersion parameter <span class="math inline">\(\nu\)</span> would imply a decrease in overdispersion (i.e., more consistent behavior) if it were significant.</p>
+<p>Regarding the dispersion parameter, in the location-scale <code>NB</code> model (model_1), the dispersion part revealed a significant change in residual variance in the food-supplied condition (<span class="math inline">\(\beta_{[\text{conditionSupplied}]}^{(l)}\)</span> = –0.662). Given the parameterisation of the Negative Binomial distribution (where a smaller dispersion parameter <span class="math inline">\(\theta\)</span> indicates greater overdispersion), this suggests an increase in overdispersion when food was supplied, implying less consistent behaviour across individuals. However, this effect was not statistically significant in the location-scale <code>CMP</code> model (model_2), where the corresponding estimate was 1.20 (p = 0.12). In the <code>CMP</code> model, a positive estimate for the dispersion parameter <span class="math inline">\(\nu\)</span> would imply a decrease in overdispersion (i.e., more consistent behavior) if it were significant.</p>
 <p>Random effects in all models consistently showed greater variance among species than among id within species. For example, in the location-scale CMP model, species-level variance was 0.246, while individual-level variance was 0.151.</p>
 <section id="comparing-negative-binomial-and-cmp-models" class="level3 page-columns page-full" data-number="5.2.2"><h3 data-number="5.2.2" class="anchored" data-anchor-id="comparing-negative-binomial-and-cmp-models">
 <span class="header-section-number">5.2.2</span> Comparing Negative Binomial and CMP Models</h3>
@@ -2211,6 +2211,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 <p>Posterior predictive checks indicated that the negative binomial location–scale model adequately captured the central tendency of gaze frequencies. However, the model slightly underestimated the heaviness of the right tail, suggesting that a small number of extreme observations were not fully reproduced.</p>
+<p>Note that we can also conduct the CMP model in <code>brms</code> using the <code>family = brmsfamily("com_poisson")</code> family, but it is still at an experimental stage and may not work well.</p>
 </div>
 <div id="tabset-2-8" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-8-tab">
 <div class="cell">
@@ -3096,7 +3097,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <span id="cb20-380"><a href="#cb20-380" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-381"><a href="#cb20-381" aria-hidden="true" tabindex="-1"></a>In all three models, food-supplied birds showed significantly lower gaze frequencies toward dot stimuli. There was no evidence of sex differences in the location part in any model.</span>
 <span id="cb20-382"><a href="#cb20-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-383"><a href="#cb20-383" aria-hidden="true" tabindex="-1"></a>Regarding the dispersion parameter, in the location-scale <span class="in">`NB`</span> model (model_1), the dispersion part revealed a significant change in residual variance in the food-supplied condition ($\beta_{<span class="co">[</span><span class="ot">\text{conditionSupplied}</span><span class="co">]</span>}^{(l)}$ = –0.662). Given the parameterization of the Negative Binomial distribution (where a smaller dispersion parameter $\theta$ indicates greater overdispersion), this suggests an increase in overdispersion when food was supplied, implying less consistent behaviour across individuals. However, this effect was not statistically significant in the location-scale <span class="in">`CMP`</span> model (model_2), where the corresponding estimate was 1.20 (p = 0.12). In the <span class="in">`CMP`</span> model, a positive estimate for the dispersion parameter $\nu$ would imply a decrease in overdispersion (i.e., more consistent behavior) if it were significant.</span>
+<span id="cb20-383"><a href="#cb20-383" aria-hidden="true" tabindex="-1"></a>Regarding the dispersion parameter, in the location-scale <span class="in">`NB`</span> model (model_1), the dispersion part revealed a significant change in residual variance in the food-supplied condition ($\beta_{<span class="co">[</span><span class="ot">\text{conditionSupplied}</span><span class="co">]</span>}^{(l)}$ = –0.662). Given the parameterisation of the Negative Binomial distribution (where a smaller dispersion parameter $\theta$ indicates greater overdispersion), this suggests an increase in overdispersion when food was supplied, implying less consistent behaviour across individuals. However, this effect was not statistically significant in the location-scale <span class="in">`CMP`</span> model (model_2), where the corresponding estimate was 1.20 (p = 0.12). In the <span class="in">`CMP`</span> model, a positive estimate for the dispersion parameter $\nu$ would imply a decrease in overdispersion (i.e., more consistent behavior) if it were significant.</span>
 <span id="cb20-384"><a href="#cb20-384" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-385"><a href="#cb20-385" aria-hidden="true" tabindex="-1"></a>Random effects in all models consistently showed greater variance among species than among id within species. For example, in the location-scale CMP model, species-level variance was 0.246, while individual-level variance was 0.151.</span>
 <span id="cb20-386"><a href="#cb20-386" aria-hidden="true" tabindex="-1"></a></span>
@@ -3166,239 +3167,241 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <span id="cb20-456"><a href="#cb20-456" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-457"><a href="#cb20-457" aria-hidden="true" tabindex="-1"></a>Posterior predictive checks indicated that the negative binomial location–scale model adequately captured the central tendency of gaze frequencies. However, the model slightly underestimated the heaviness of the right tail, suggesting that a small number of extreme observations were not fully reproduced.</span>
 <span id="cb20-458"><a href="#cb20-458" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-459"><a href="#cb20-459" aria-hidden="true" tabindex="-1"></a><span class="fu">## Result figures</span></span>
+<span id="cb20-459"><a href="#cb20-459" aria-hidden="true" tabindex="-1"></a>Note that we can also conduct the CMP model in <span class="in">`brms`</span> using the <span class="in">`family = brmsfamily("com_poisson")`</span> family, but it is still at an experimental stage and may not work well.</span>
 <span id="cb20-460"><a href="#cb20-460" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-463"><a href="#cb20-463" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-464"><a href="#cb20-464" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: result_figure_nb</span></span>
-<span id="cb20-465"><a href="#cb20-465" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb20-466"><a href="#cb20-466" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-467"><a href="#cb20-467" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: change colours and maybe set figure size</span></span>
+<span id="cb20-461"><a href="#cb20-461" aria-hidden="true" tabindex="-1"></a><span class="fu">## Result figures</span></span>
+<span id="cb20-462"><a href="#cb20-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-465"><a href="#cb20-465" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-466"><a href="#cb20-466" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: result_figure_nb</span></span>
+<span id="cb20-467"><a href="#cb20-467" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
 <span id="cb20-468"><a href="#cb20-468" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-469"><a href="#cb20-469" aria-hidden="true" tabindex="-1"></a><span class="co"># glmmTMB ----</span></span>
-<span id="cb20-470"><a href="#cb20-470" aria-hidden="true" tabindex="-1"></a><span class="co"># Location part</span></span>
-<span id="cb20-471"><a href="#cb20-471" aria-hidden="true" tabindex="-1"></a>emm_mu_link <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(model_1, <span class="sc">~</span> condition <span class="sc">*</span> sex,</span>
-<span id="cb20-472"><a href="#cb20-472" aria-hidden="true" tabindex="-1"></a>                       <span class="at">component =</span> <span class="st">"cond"</span>, <span class="at">type =</span> <span class="st">"link"</span>)  <span class="co"># return log(mu)</span></span>
-<span id="cb20-473"><a href="#cb20-473" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-474"><a href="#cb20-474" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(emm_mu_link)) </span>
-<span id="cb20-475"><a href="#cb20-475" aria-hidden="true" tabindex="-1"></a><span class="co"># condition sex   emmean        SE  df asymp.LCL asymp.UCL</span></span>
-<span id="cb20-476"><a href="#cb20-476" aria-hidden="true" tabindex="-1"></a><span class="co"># deprived  F   4.873695 0.2041941 Inf  4.473482  5.273908</span></span>
-<span id="cb20-477"><a href="#cb20-477" aria-hidden="true" tabindex="-1"></a><span class="co"># supplied  F   4.028497 0.2231513 Inf  3.591129  4.465866</span></span>
-<span id="cb20-478"><a href="#cb20-478" aria-hidden="true" tabindex="-1"></a><span class="co"># deprived  M   4.769738 0.2079726 Inf  4.362120  5.177357</span></span>
-<span id="cb20-479"><a href="#cb20-479" aria-hidden="true" tabindex="-1"></a><span class="co"># supplied  M   3.924540 0.2228790 Inf  3.487705  4.361375</span></span>
-<span id="cb20-480"><a href="#cb20-480" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb20-481"><a href="#cb20-481" aria-hidden="true" tabindex="-1"></a><span class="co"># Results are given on the log (not the response) scale. </span></span>
-<span id="cb20-482"><a href="#cb20-482" aria-hidden="true" tabindex="-1"></a><span class="co"># Confidence level used: 0.95 </span></span>
-<span id="cb20-483"><a href="#cb20-483" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-484"><a href="#cb20-484" aria-hidden="true" tabindex="-1"></a>df_mu_link <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(emm_mu_link) <span class="sc">%&gt;%</span></span>
-<span id="cb20-485"><a href="#cb20-485" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb20-486"><a href="#cb20-486" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_log =</span> emmean, <span class="co"># estimated log(mean frequency)</span></span>
-<span id="cb20-487"><a href="#cb20-487" aria-hidden="true" tabindex="-1"></a>    <span class="at">lwr =</span> asymp.LCL, <span class="co"># lower 95% CI on log scale</span></span>
-<span id="cb20-488"><a href="#cb20-488" aria-hidden="true" tabindex="-1"></a>    <span class="at">upr =</span> asymp.UCL <span class="co"># upper 95% CI on log scale</span></span>
-<span id="cb20-489"><a href="#cb20-489" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb20-490"><a href="#cb20-490" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-491"><a href="#cb20-491" aria-hidden="true" tabindex="-1"></a><span class="co"># Scale part</span></span>
-<span id="cb20-492"><a href="#cb20-492" aria-hidden="true" tabindex="-1"></a>emm_disp_link <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(model_1, <span class="sc">~</span> condition <span class="sc">*</span> sex,</span>
-<span id="cb20-493"><a href="#cb20-493" aria-hidden="true" tabindex="-1"></a>                         <span class="at">component =</span> <span class="st">"disp"</span>, <span class="at">type =</span> <span class="st">"link"</span>)  <span class="co"># return log(θ)</span></span>
-<span id="cb20-494"><a href="#cb20-494" aria-hidden="true" tabindex="-1"></a>df_disp_link <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(emm_disp_link) <span class="sc">%&gt;%</span></span>
-<span id="cb20-495"><a href="#cb20-495" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb20-496"><a href="#cb20-496" aria-hidden="true" tabindex="-1"></a>    <span class="at">log_theta =</span> emmean, <span class="co"># estimated log(dispersion parameter theta)</span></span>
-<span id="cb20-497"><a href="#cb20-497" aria-hidden="true" tabindex="-1"></a>    <span class="at">lwr =</span> asymp.LCL, <span class="co"># lower 95% CI on log scale</span></span>
-<span id="cb20-498"><a href="#cb20-498" aria-hidden="true" tabindex="-1"></a>    <span class="at">upr =</span> asymp.UCL <span class="co"># upper 95% CI on log scale</span></span>
-<span id="cb20-499"><a href="#cb20-499" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb20-500"><a href="#cb20-500" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-501"><a href="#cb20-501" aria-hidden="true" tabindex="-1"></a>pos <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.4</span>)</span>
+<span id="cb20-469"><a href="#cb20-469" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: change colours and maybe set figure size</span></span>
+<span id="cb20-470"><a href="#cb20-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-471"><a href="#cb20-471" aria-hidden="true" tabindex="-1"></a><span class="co"># glmmTMB ----</span></span>
+<span id="cb20-472"><a href="#cb20-472" aria-hidden="true" tabindex="-1"></a><span class="co"># Location part</span></span>
+<span id="cb20-473"><a href="#cb20-473" aria-hidden="true" tabindex="-1"></a>emm_mu_link <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(model_1, <span class="sc">~</span> condition <span class="sc">*</span> sex,</span>
+<span id="cb20-474"><a href="#cb20-474" aria-hidden="true" tabindex="-1"></a>                       <span class="at">component =</span> <span class="st">"cond"</span>, <span class="at">type =</span> <span class="st">"link"</span>)  <span class="co"># return log(mu)</span></span>
+<span id="cb20-475"><a href="#cb20-475" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-476"><a href="#cb20-476" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(emm_mu_link)) </span>
+<span id="cb20-477"><a href="#cb20-477" aria-hidden="true" tabindex="-1"></a><span class="co"># condition sex   emmean        SE  df asymp.LCL asymp.UCL</span></span>
+<span id="cb20-478"><a href="#cb20-478" aria-hidden="true" tabindex="-1"></a><span class="co"># deprived  F   4.873695 0.2041941 Inf  4.473482  5.273908</span></span>
+<span id="cb20-479"><a href="#cb20-479" aria-hidden="true" tabindex="-1"></a><span class="co"># supplied  F   4.028497 0.2231513 Inf  3.591129  4.465866</span></span>
+<span id="cb20-480"><a href="#cb20-480" aria-hidden="true" tabindex="-1"></a><span class="co"># deprived  M   4.769738 0.2079726 Inf  4.362120  5.177357</span></span>
+<span id="cb20-481"><a href="#cb20-481" aria-hidden="true" tabindex="-1"></a><span class="co"># supplied  M   3.924540 0.2228790 Inf  3.487705  4.361375</span></span>
+<span id="cb20-482"><a href="#cb20-482" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb20-483"><a href="#cb20-483" aria-hidden="true" tabindex="-1"></a><span class="co"># Results are given on the log (not the response) scale. </span></span>
+<span id="cb20-484"><a href="#cb20-484" aria-hidden="true" tabindex="-1"></a><span class="co"># Confidence level used: 0.95 </span></span>
+<span id="cb20-485"><a href="#cb20-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-486"><a href="#cb20-486" aria-hidden="true" tabindex="-1"></a>df_mu_link <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(emm_mu_link) <span class="sc">%&gt;%</span></span>
+<span id="cb20-487"><a href="#cb20-487" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb20-488"><a href="#cb20-488" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_log =</span> emmean, <span class="co"># estimated log(mean frequency)</span></span>
+<span id="cb20-489"><a href="#cb20-489" aria-hidden="true" tabindex="-1"></a>    <span class="at">lwr =</span> asymp.LCL, <span class="co"># lower 95% CI on log scale</span></span>
+<span id="cb20-490"><a href="#cb20-490" aria-hidden="true" tabindex="-1"></a>    <span class="at">upr =</span> asymp.UCL <span class="co"># upper 95% CI on log scale</span></span>
+<span id="cb20-491"><a href="#cb20-491" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-492"><a href="#cb20-492" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-493"><a href="#cb20-493" aria-hidden="true" tabindex="-1"></a><span class="co"># Scale part</span></span>
+<span id="cb20-494"><a href="#cb20-494" aria-hidden="true" tabindex="-1"></a>emm_disp_link <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(model_1, <span class="sc">~</span> condition <span class="sc">*</span> sex,</span>
+<span id="cb20-495"><a href="#cb20-495" aria-hidden="true" tabindex="-1"></a>                         <span class="at">component =</span> <span class="st">"disp"</span>, <span class="at">type =</span> <span class="st">"link"</span>)  <span class="co"># return log(θ)</span></span>
+<span id="cb20-496"><a href="#cb20-496" aria-hidden="true" tabindex="-1"></a>df_disp_link <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(emm_disp_link) <span class="sc">%&gt;%</span></span>
+<span id="cb20-497"><a href="#cb20-497" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb20-498"><a href="#cb20-498" aria-hidden="true" tabindex="-1"></a>    <span class="at">log_theta =</span> emmean, <span class="co"># estimated log(dispersion parameter theta)</span></span>
+<span id="cb20-499"><a href="#cb20-499" aria-hidden="true" tabindex="-1"></a>    <span class="at">lwr =</span> asymp.LCL, <span class="co"># lower 95% CI on log scale</span></span>
+<span id="cb20-500"><a href="#cb20-500" aria-hidden="true" tabindex="-1"></a>    <span class="at">upr =</span> asymp.UCL <span class="co"># upper 95% CI on log scale</span></span>
+<span id="cb20-501"><a href="#cb20-501" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb20-502"><a href="#cb20-502" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-503"><a href="#cb20-503" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot location (mean, on log scale)</span></span>
-<span id="cb20-504"><a href="#cb20-504" aria-hidden="true" tabindex="-1"></a>p_mu_link <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_mu_link, <span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> mean_log, <span class="at">color =</span> condition)) <span class="sc">+</span></span>
-<span id="cb20-505"><a href="#cb20-505" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> pos, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb20-506"><a href="#cb20-506" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lwr, <span class="at">ymax =</span> upr), <span class="at">position =</span> pos, <span class="at">width =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb20-507"><a href="#cb20-507" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb20-508"><a href="#cb20-508" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Location"</span>,</span>
-<span id="cb20-509"><a href="#cb20-509" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sex"</span>, <span class="at">y =</span> <span class="st">"log(mean frequency)"</span> <span class="co"># log scale</span></span>
-<span id="cb20-510"><a href="#cb20-510" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb20-511"><a href="#cb20-511" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">2.0</span>, <span class="fl">6.5</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="fl">2.0</span>, <span class="fl">6.5</span>, <span class="at">by =</span> <span class="fl">0.5</span>) ) <span class="sc">+</span> </span>
-<span id="cb20-512"><a href="#cb20-512" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
-<span id="cb20-513"><a href="#cb20-513" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-514"><a href="#cb20-514" aria-hidden="true" tabindex="-1"></a><span class="co"># p_mu_link_raw &lt;- p_mu_link +</span></span>
-<span id="cb20-515"><a href="#cb20-515" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_point(</span></span>
-<span id="cb20-516"><a href="#cb20-516" aria-hidden="true" tabindex="-1"></a><span class="co">#     data = dat_pref,</span></span>
-<span id="cb20-517"><a href="#cb20-517" aria-hidden="true" tabindex="-1"></a><span class="co">#     aes(x = sex, y = log(frequency), color = condition),</span></span>
-<span id="cb20-518"><a href="#cb20-518" aria-hidden="true" tabindex="-1"></a><span class="co">#     position = position_jitterdodge(dodge.width = 0.4, jitter.width = 0.08),</span></span>
-<span id="cb20-519"><a href="#cb20-519" aria-hidden="true" tabindex="-1"></a><span class="co">#     alpha = 0.35, size = 1.6, inherit.aes = FALSE</span></span>
-<span id="cb20-520"><a href="#cb20-520" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
-<span id="cb20-521"><a href="#cb20-521" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-522"><a href="#cb20-522" aria-hidden="true" tabindex="-1"></a>dat_pref<span class="sc">$</span>pred_logmu <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_1, <span class="at">type =</span> <span class="st">"link"</span>, <span class="at">re.form =</span> <span class="cn">NULL</span>)</span>
+<span id="cb20-503"><a href="#cb20-503" aria-hidden="true" tabindex="-1"></a>pos <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.4</span>)</span>
+<span id="cb20-504"><a href="#cb20-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-505"><a href="#cb20-505" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot location (mean, on log scale)</span></span>
+<span id="cb20-506"><a href="#cb20-506" aria-hidden="true" tabindex="-1"></a>p_mu_link <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_mu_link, <span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> mean_log, <span class="at">color =</span> condition)) <span class="sc">+</span></span>
+<span id="cb20-507"><a href="#cb20-507" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> pos, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb20-508"><a href="#cb20-508" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lwr, <span class="at">ymax =</span> upr), <span class="at">position =</span> pos, <span class="at">width =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb20-509"><a href="#cb20-509" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb20-510"><a href="#cb20-510" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Location"</span>,</span>
+<span id="cb20-511"><a href="#cb20-511" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sex"</span>, <span class="at">y =</span> <span class="st">"log(mean frequency)"</span> <span class="co"># log scale</span></span>
+<span id="cb20-512"><a href="#cb20-512" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-513"><a href="#cb20-513" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">2.0</span>, <span class="fl">6.5</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="fl">2.0</span>, <span class="fl">6.5</span>, <span class="at">by =</span> <span class="fl">0.5</span>) ) <span class="sc">+</span> </span>
+<span id="cb20-514"><a href="#cb20-514" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb20-515"><a href="#cb20-515" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-516"><a href="#cb20-516" aria-hidden="true" tabindex="-1"></a><span class="co"># p_mu_link_raw &lt;- p_mu_link +</span></span>
+<span id="cb20-517"><a href="#cb20-517" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_point(</span></span>
+<span id="cb20-518"><a href="#cb20-518" aria-hidden="true" tabindex="-1"></a><span class="co">#     data = dat_pref,</span></span>
+<span id="cb20-519"><a href="#cb20-519" aria-hidden="true" tabindex="-1"></a><span class="co">#     aes(x = sex, y = log(frequency), color = condition),</span></span>
+<span id="cb20-520"><a href="#cb20-520" aria-hidden="true" tabindex="-1"></a><span class="co">#     position = position_jitterdodge(dodge.width = 0.4, jitter.width = 0.08),</span></span>
+<span id="cb20-521"><a href="#cb20-521" aria-hidden="true" tabindex="-1"></a><span class="co">#     alpha = 0.35, size = 1.6, inherit.aes = FALSE</span></span>
+<span id="cb20-522"><a href="#cb20-522" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
 <span id="cb20-523"><a href="#cb20-523" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-524"><a href="#cb20-524" aria-hidden="true" tabindex="-1"></a>p_mu_link_predObs <span class="ot">&lt;-</span> p_mu_link <span class="sc">+</span></span>
-<span id="cb20-525"><a href="#cb20-525" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
-<span id="cb20-526"><a href="#cb20-526" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dat_pref,</span>
-<span id="cb20-527"><a href="#cb20-527" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> pred_logmu, <span class="at">color =</span> condition),</span>
-<span id="cb20-528"><a href="#cb20-528" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_jitterdodge</span>(<span class="at">dodge.width =</span> <span class="fl">0.4</span>, <span class="at">jitter.width =</span> <span class="fl">0.08</span>),</span>
-<span id="cb20-529"><a href="#cb20-529" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.35</span>, <span class="at">size =</span> <span class="fl">1.6</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span></span>
-<span id="cb20-530"><a href="#cb20-530" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb20-531"><a href="#cb20-531" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-532"><a href="#cb20-532" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-533"><a href="#cb20-533" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot dispersion (theta, on log scale)</span></span>
-<span id="cb20-534"><a href="#cb20-534" aria-hidden="true" tabindex="-1"></a>p_disp_link <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_disp_link, <span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> log_theta, <span class="at">color =</span> condition)) <span class="sc">+</span></span>
-<span id="cb20-535"><a href="#cb20-535" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> pos, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb20-536"><a href="#cb20-536" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lwr, <span class="at">ymax =</span> upr), <span class="at">position =</span> pos, <span class="at">width =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb20-537"><a href="#cb20-537" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb20-538"><a href="#cb20-538" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Scale"</span>,</span>
-<span id="cb20-539"><a href="#cb20-539" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sex"</span>, <span class="at">y =</span> <span class="st">"log(theta)"</span> <span class="co"># log scale</span></span>
-<span id="cb20-540"><a href="#cb20-540" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb20-541"><a href="#cb20-541" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">2.0</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">2.0</span>, <span class="at">by =</span> <span class="fl">0.5</span>) ) <span class="sc">+</span> </span>
-<span id="cb20-542"><a href="#cb20-542" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
-<span id="cb20-543"><a href="#cb20-543" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-544"><a href="#cb20-544" aria-hidden="true" tabindex="-1"></a>p_glmmTMB_nb <span class="ot">&lt;-</span> p_mu_link_predObs <span class="sc">+</span> p_disp_link</span>
+<span id="cb20-524"><a href="#cb20-524" aria-hidden="true" tabindex="-1"></a>dat_pref<span class="sc">$</span>pred_logmu <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_1, <span class="at">type =</span> <span class="st">"link"</span>, <span class="at">re.form =</span> <span class="cn">NULL</span>)</span>
+<span id="cb20-525"><a href="#cb20-525" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-526"><a href="#cb20-526" aria-hidden="true" tabindex="-1"></a>p_mu_link_predObs <span class="ot">&lt;-</span> p_mu_link <span class="sc">+</span></span>
+<span id="cb20-527"><a href="#cb20-527" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb20-528"><a href="#cb20-528" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dat_pref,</span>
+<span id="cb20-529"><a href="#cb20-529" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> pred_logmu, <span class="at">color =</span> condition),</span>
+<span id="cb20-530"><a href="#cb20-530" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_jitterdodge</span>(<span class="at">dodge.width =</span> <span class="fl">0.4</span>, <span class="at">jitter.width =</span> <span class="fl">0.08</span>),</span>
+<span id="cb20-531"><a href="#cb20-531" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.35</span>, <span class="at">size =</span> <span class="fl">1.6</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-532"><a href="#cb20-532" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-533"><a href="#cb20-533" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-534"><a href="#cb20-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-535"><a href="#cb20-535" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot dispersion (theta, on log scale)</span></span>
+<span id="cb20-536"><a href="#cb20-536" aria-hidden="true" tabindex="-1"></a>p_disp_link <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_disp_link, <span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> log_theta, <span class="at">color =</span> condition)) <span class="sc">+</span></span>
+<span id="cb20-537"><a href="#cb20-537" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> pos, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb20-538"><a href="#cb20-538" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lwr, <span class="at">ymax =</span> upr), <span class="at">position =</span> pos, <span class="at">width =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb20-539"><a href="#cb20-539" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb20-540"><a href="#cb20-540" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Scale"</span>,</span>
+<span id="cb20-541"><a href="#cb20-541" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sex"</span>, <span class="at">y =</span> <span class="st">"log(theta)"</span> <span class="co"># log scale</span></span>
+<span id="cb20-542"><a href="#cb20-542" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-543"><a href="#cb20-543" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">2.0</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">2.0</span>, <span class="at">by =</span> <span class="fl">0.5</span>) ) <span class="sc">+</span> </span>
+<span id="cb20-544"><a href="#cb20-544" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
 <span id="cb20-545"><a href="#cb20-545" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-546"><a href="#cb20-546" aria-hidden="true" tabindex="-1"></a><span class="co"># brms ----</span></span>
+<span id="cb20-546"><a href="#cb20-546" aria-hidden="true" tabindex="-1"></a>p_glmmTMB_nb <span class="ot">&lt;-</span> p_mu_link_predObs <span class="sc">+</span> p_disp_link</span>
 <span id="cb20-547"><a href="#cb20-547" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-548"><a href="#cb20-548" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a grid of predictor values for posterior distributions</span></span>
-<span id="cb20-549"><a href="#cb20-549" aria-hidden="true" tabindex="-1"></a>nd <span class="ot">&lt;-</span> tidyr<span class="sc">::</span><span class="fu">expand_grid</span>(</span>
-<span id="cb20-550"><a href="#cb20-550" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> <span class="fu">levels</span>(dat_pref<span class="sc">$</span>condition),</span>
-<span id="cb20-551"><a href="#cb20-551" aria-hidden="true" tabindex="-1"></a>  <span class="at">sex  =</span> <span class="fu">levels</span>(dat_pref<span class="sc">$</span>sex)</span>
-<span id="cb20-552"><a href="#cb20-552" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-553"><a href="#cb20-553" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-554"><a href="#cb20-554" aria-hidden="true" tabindex="-1"></a><span class="co"># Get posterior draws for mu and shape and reshape the data</span></span>
-<span id="cb20-555"><a href="#cb20-555" aria-hidden="true" tabindex="-1"></a>draws_link <span class="ot">&lt;-</span> tidybayes<span class="sc">::</span><span class="fu">linpred_draws</span>(</span>
-<span id="cb20-556"><a href="#cb20-556" aria-hidden="true" tabindex="-1"></a>  model_nb_brms, </span>
-<span id="cb20-557"><a href="#cb20-557" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> nd, </span>
-<span id="cb20-558"><a href="#cb20-558" aria-hidden="true" tabindex="-1"></a>  <span class="at">re_formula =</span> <span class="cn">NA</span>, </span>
-<span id="cb20-559"><a href="#cb20-559" aria-hidden="true" tabindex="-1"></a>  <span class="at">dpar =</span> <span class="cn">TRUE</span></span>
-<span id="cb20-560"><a href="#cb20-560" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-561"><a href="#cb20-561" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb20-562"><a href="#cb20-562" aria-hidden="true" tabindex="-1"></a>    sex, condition, .draw,</span>
-<span id="cb20-563"><a href="#cb20-563" aria-hidden="true" tabindex="-1"></a>    <span class="at">log_mu =</span> mu,</span>
-<span id="cb20-564"><a href="#cb20-564" aria-hidden="true" tabindex="-1"></a>    <span class="at">log_theta =</span> shape</span>
-<span id="cb20-565"><a href="#cb20-565" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-566"><a href="#cb20-566" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
-<span id="cb20-567"><a href="#cb20-567" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(log_mu, log_theta), </span>
-<span id="cb20-568"><a href="#cb20-568" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"parameter"</span>, </span>
-<span id="cb20-569"><a href="#cb20-569" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"value"</span></span>
-<span id="cb20-570"><a href="#cb20-570" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb20-571"><a href="#cb20-571" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-572"><a href="#cb20-572" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-573"><a href="#cb20-573" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the posterior median of the linear predictor for each observation</span></span>
-<span id="cb20-574"><a href="#cb20-574" aria-hidden="true" tabindex="-1"></a>pred_obs <span class="ot">&lt;-</span> <span class="fu">add_linpred_draws</span>(</span>
-<span id="cb20-575"><a href="#cb20-575" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> dat_pref,    <span class="co"># Use the original data here</span></span>
-<span id="cb20-576"><a href="#cb20-576" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> model_nb_brms,</span>
-<span id="cb20-577"><a href="#cb20-577" aria-hidden="true" tabindex="-1"></a>    <span class="at">dpar   =</span> <span class="st">"mu"</span>,</span>
-<span id="cb20-578"><a href="#cb20-578" aria-hidden="true" tabindex="-1"></a>    <span class="at">re_formula =</span> <span class="cn">NULL</span>      <span class="co"># Include group-level effects for specific predictions</span></span>
-<span id="cb20-579"><a href="#cb20-579" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-580"><a href="#cb20-580" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(.row, condition, sex) <span class="sc">%&gt;%</span> <span class="co"># .row is added by add_linpred_draws</span></span>
-<span id="cb20-581"><a href="#cb20-581" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb20-582"><a href="#cb20-582" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted_logmu =</span> <span class="fu">median</span>(.linpred), <span class="co"># Calculate the posterior median</span></span>
-<span id="cb20-583"><a href="#cb20-583" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb20-584"><a href="#cb20-584" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb20-585"><a href="#cb20-585" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-586"><a href="#cb20-586" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the plot for the Location parameter (mu) with predicted points</span></span>
-<span id="cb20-587"><a href="#cb20-587" aria-hidden="true" tabindex="-1"></a>p_loc <span class="ot">&lt;-</span> draws_link <span class="sc">%&gt;%</span></span>
-<span id="cb20-588"><a href="#cb20-588" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(parameter <span class="sc">==</span> <span class="st">"log_mu"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-589"><a href="#cb20-589" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> value, <span class="at">fill =</span> condition)) <span class="sc">+</span></span>
-<span id="cb20-590"><a href="#cb20-590" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(</span>
-<span id="cb20-591"><a href="#cb20-591" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.9</span>, <span class="at">trim =</span> <span class="cn">FALSE</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>,</span>
-<span id="cb20-592"><a href="#cb20-592" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NA</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="fl">0.6</span>)</span>
-<span id="cb20-593"><a href="#cb20-593" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb20-594"><a href="#cb20-594" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_pointinterval</span>(</span>
-<span id="cb20-595"><a href="#cb20-595" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> condition),</span>
-<span id="cb20-596"><a href="#cb20-596" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.6</span>),</span>
-<span id="cb20-597"><a href="#cb20-597" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fl">0.95</span>, <span class="at">size =</span> <span class="fl">0.8</span></span>
-<span id="cb20-598"><a href="#cb20-598" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb20-599"><a href="#cb20-599" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add the new layer for predicted data points</span></span>
-<span id="cb20-600"><a href="#cb20-600" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
-<span id="cb20-601"><a href="#cb20-601" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> pred_obs,</span>
-<span id="cb20-602"><a href="#cb20-602" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> predicted_logmu, <span class="at">color =</span> condition), <span class="co"># y-aesthetic is the predicted value</span></span>
-<span id="cb20-603"><a href="#cb20-603" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_jitterdodge</span>(</span>
-<span id="cb20-604"><a href="#cb20-604" aria-hidden="true" tabindex="-1"></a>      <span class="at">dodge.width =</span> <span class="fl">0.6</span>,     <span class="co"># Must match the dodge width above</span></span>
-<span id="cb20-605"><a href="#cb20-605" aria-hidden="true" tabindex="-1"></a>      <span class="at">jitter.width =</span> <span class="fl">0.1</span></span>
-<span id="cb20-606"><a href="#cb20-606" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb20-607"><a href="#cb20-607" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>,</span>
-<span id="cb20-608"><a href="#cb20-608" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">1.5</span></span>
-<span id="cb20-609"><a href="#cb20-609" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb20-610"><a href="#cb20-610" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb20-611"><a href="#cb20-611" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Location"</span>, </span>
-<span id="cb20-612"><a href="#cb20-612" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sex"</span>, </span>
-<span id="cb20-613"><a href="#cb20-613" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"log(mean frequency)"</span></span>
-<span id="cb20-614"><a href="#cb20-614" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb20-615"><a href="#cb20-615" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">2.0</span>, <span class="fl">6.5</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="fl">2.0</span>, <span class="fl">6.5</span>, <span class="at">by =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
-<span id="cb20-616"><a href="#cb20-616" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb20-617"><a href="#cb20-617" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"right"</span>)</span>
-<span id="cb20-618"><a href="#cb20-618" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-619"><a href="#cb20-619" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the plot for the Scale parameter (shape)</span></span>
-<span id="cb20-620"><a href="#cb20-620" aria-hidden="true" tabindex="-1"></a>p_scl <span class="ot">&lt;-</span> draws_link <span class="sc">%&gt;%</span></span>
-<span id="cb20-621"><a href="#cb20-621" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(parameter <span class="sc">==</span> <span class="st">"log_theta"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-622"><a href="#cb20-622" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> value, <span class="at">fill =</span> condition)) <span class="sc">+</span></span>
-<span id="cb20-623"><a href="#cb20-623" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(</span>
-<span id="cb20-624"><a href="#cb20-624" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.9</span>, <span class="at">trim =</span> <span class="cn">FALSE</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>,</span>
-<span id="cb20-625"><a href="#cb20-625" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NA</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="fl">0.6</span>)</span>
-<span id="cb20-626"><a href="#cb20-626" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb20-627"><a href="#cb20-627" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_pointinterval</span>(</span>
-<span id="cb20-628"><a href="#cb20-628" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> condition),</span>
-<span id="cb20-629"><a href="#cb20-629" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.6</span>),</span>
-<span id="cb20-630"><a href="#cb20-630" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fl">0.95</span>, <span class="at">size =</span> <span class="fl">0.8</span></span>
-<span id="cb20-631"><a href="#cb20-631" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb20-632"><a href="#cb20-632" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb20-633"><a href="#cb20-633" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Scale"</span>, </span>
-<span id="cb20-634"><a href="#cb20-634" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sex"</span>, </span>
-<span id="cb20-635"><a href="#cb20-635" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"log(theta)"</span></span>
-<span id="cb20-636"><a href="#cb20-636" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb20-637"><a href="#cb20-637" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">2.0</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">2.0</span>, <span class="at">by =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
-<span id="cb20-638"><a href="#cb20-638" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb20-639"><a href="#cb20-639" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"right"</span>)</span>
-<span id="cb20-640"><a href="#cb20-640" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-641"><a href="#cb20-641" aria-hidden="true" tabindex="-1"></a>p_brms_nb <span class="ot">&lt;-</span> p_loc <span class="sc">+</span> p_scl</span>
+<span id="cb20-548"><a href="#cb20-548" aria-hidden="true" tabindex="-1"></a><span class="co"># brms ----</span></span>
+<span id="cb20-549"><a href="#cb20-549" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-550"><a href="#cb20-550" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a grid of predictor values for posterior distributions</span></span>
+<span id="cb20-551"><a href="#cb20-551" aria-hidden="true" tabindex="-1"></a>nd <span class="ot">&lt;-</span> tidyr<span class="sc">::</span><span class="fu">expand_grid</span>(</span>
+<span id="cb20-552"><a href="#cb20-552" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> <span class="fu">levels</span>(dat_pref<span class="sc">$</span>condition),</span>
+<span id="cb20-553"><a href="#cb20-553" aria-hidden="true" tabindex="-1"></a>  <span class="at">sex  =</span> <span class="fu">levels</span>(dat_pref<span class="sc">$</span>sex)</span>
+<span id="cb20-554"><a href="#cb20-554" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-555"><a href="#cb20-555" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-556"><a href="#cb20-556" aria-hidden="true" tabindex="-1"></a><span class="co"># Get posterior draws for mu and shape and reshape the data</span></span>
+<span id="cb20-557"><a href="#cb20-557" aria-hidden="true" tabindex="-1"></a>draws_link <span class="ot">&lt;-</span> tidybayes<span class="sc">::</span><span class="fu">linpred_draws</span>(</span>
+<span id="cb20-558"><a href="#cb20-558" aria-hidden="true" tabindex="-1"></a>  model_nb_brms, </span>
+<span id="cb20-559"><a href="#cb20-559" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> nd, </span>
+<span id="cb20-560"><a href="#cb20-560" aria-hidden="true" tabindex="-1"></a>  <span class="at">re_formula =</span> <span class="cn">NA</span>, </span>
+<span id="cb20-561"><a href="#cb20-561" aria-hidden="true" tabindex="-1"></a>  <span class="at">dpar =</span> <span class="cn">TRUE</span></span>
+<span id="cb20-562"><a href="#cb20-562" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-563"><a href="#cb20-563" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb20-564"><a href="#cb20-564" aria-hidden="true" tabindex="-1"></a>    sex, condition, .draw,</span>
+<span id="cb20-565"><a href="#cb20-565" aria-hidden="true" tabindex="-1"></a>    <span class="at">log_mu =</span> mu,</span>
+<span id="cb20-566"><a href="#cb20-566" aria-hidden="true" tabindex="-1"></a>    <span class="at">log_theta =</span> shape</span>
+<span id="cb20-567"><a href="#cb20-567" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-568"><a href="#cb20-568" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
+<span id="cb20-569"><a href="#cb20-569" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(log_mu, log_theta), </span>
+<span id="cb20-570"><a href="#cb20-570" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"parameter"</span>, </span>
+<span id="cb20-571"><a href="#cb20-571" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"value"</span></span>
+<span id="cb20-572"><a href="#cb20-572" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-573"><a href="#cb20-573" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-574"><a href="#cb20-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-575"><a href="#cb20-575" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the posterior median of the linear predictor for each observation</span></span>
+<span id="cb20-576"><a href="#cb20-576" aria-hidden="true" tabindex="-1"></a>pred_obs <span class="ot">&lt;-</span> <span class="fu">add_linpred_draws</span>(</span>
+<span id="cb20-577"><a href="#cb20-577" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> dat_pref,    <span class="co"># Use the original data here</span></span>
+<span id="cb20-578"><a href="#cb20-578" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> model_nb_brms,</span>
+<span id="cb20-579"><a href="#cb20-579" aria-hidden="true" tabindex="-1"></a>    <span class="at">dpar   =</span> <span class="st">"mu"</span>,</span>
+<span id="cb20-580"><a href="#cb20-580" aria-hidden="true" tabindex="-1"></a>    <span class="at">re_formula =</span> <span class="cn">NULL</span>      <span class="co"># Include group-level effects for specific predictions</span></span>
+<span id="cb20-581"><a href="#cb20-581" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-582"><a href="#cb20-582" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(.row, condition, sex) <span class="sc">%&gt;%</span> <span class="co"># .row is added by add_linpred_draws</span></span>
+<span id="cb20-583"><a href="#cb20-583" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb20-584"><a href="#cb20-584" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted_logmu =</span> <span class="fu">median</span>(.linpred), <span class="co"># Calculate the posterior median</span></span>
+<span id="cb20-585"><a href="#cb20-585" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb20-586"><a href="#cb20-586" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-587"><a href="#cb20-587" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-588"><a href="#cb20-588" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the plot for the Location parameter (mu) with predicted points</span></span>
+<span id="cb20-589"><a href="#cb20-589" aria-hidden="true" tabindex="-1"></a>p_loc <span class="ot">&lt;-</span> draws_link <span class="sc">%&gt;%</span></span>
+<span id="cb20-590"><a href="#cb20-590" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(parameter <span class="sc">==</span> <span class="st">"log_mu"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-591"><a href="#cb20-591" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> value, <span class="at">fill =</span> condition)) <span class="sc">+</span></span>
+<span id="cb20-592"><a href="#cb20-592" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(</span>
+<span id="cb20-593"><a href="#cb20-593" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.9</span>, <span class="at">trim =</span> <span class="cn">FALSE</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>,</span>
+<span id="cb20-594"><a href="#cb20-594" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NA</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="fl">0.6</span>)</span>
+<span id="cb20-595"><a href="#cb20-595" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-596"><a href="#cb20-596" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_pointinterval</span>(</span>
+<span id="cb20-597"><a href="#cb20-597" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> condition),</span>
+<span id="cb20-598"><a href="#cb20-598" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.6</span>),</span>
+<span id="cb20-599"><a href="#cb20-599" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fl">0.95</span>, <span class="at">size =</span> <span class="fl">0.8</span></span>
+<span id="cb20-600"><a href="#cb20-600" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-601"><a href="#cb20-601" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add the new layer for predicted data points</span></span>
+<span id="cb20-602"><a href="#cb20-602" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb20-603"><a href="#cb20-603" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> pred_obs,</span>
+<span id="cb20-604"><a href="#cb20-604" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> predicted_logmu, <span class="at">color =</span> condition), <span class="co"># y-aesthetic is the predicted value</span></span>
+<span id="cb20-605"><a href="#cb20-605" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_jitterdodge</span>(</span>
+<span id="cb20-606"><a href="#cb20-606" aria-hidden="true" tabindex="-1"></a>      <span class="at">dodge.width =</span> <span class="fl">0.6</span>,     <span class="co"># Must match the dodge width above</span></span>
+<span id="cb20-607"><a href="#cb20-607" aria-hidden="true" tabindex="-1"></a>      <span class="at">jitter.width =</span> <span class="fl">0.1</span></span>
+<span id="cb20-608"><a href="#cb20-608" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb20-609"><a href="#cb20-609" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>,</span>
+<span id="cb20-610"><a href="#cb20-610" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">1.5</span></span>
+<span id="cb20-611"><a href="#cb20-611" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-612"><a href="#cb20-612" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb20-613"><a href="#cb20-613" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Location"</span>, </span>
+<span id="cb20-614"><a href="#cb20-614" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sex"</span>, </span>
+<span id="cb20-615"><a href="#cb20-615" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"log(mean frequency)"</span></span>
+<span id="cb20-616"><a href="#cb20-616" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-617"><a href="#cb20-617" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">2.0</span>, <span class="fl">6.5</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="fl">2.0</span>, <span class="fl">6.5</span>, <span class="at">by =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb20-618"><a href="#cb20-618" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb20-619"><a href="#cb20-619" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"right"</span>)</span>
+<span id="cb20-620"><a href="#cb20-620" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-621"><a href="#cb20-621" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the plot for the Scale parameter (shape)</span></span>
+<span id="cb20-622"><a href="#cb20-622" aria-hidden="true" tabindex="-1"></a>p_scl <span class="ot">&lt;-</span> draws_link <span class="sc">%&gt;%</span></span>
+<span id="cb20-623"><a href="#cb20-623" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(parameter <span class="sc">==</span> <span class="st">"log_theta"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-624"><a href="#cb20-624" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> value, <span class="at">fill =</span> condition)) <span class="sc">+</span></span>
+<span id="cb20-625"><a href="#cb20-625" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(</span>
+<span id="cb20-626"><a href="#cb20-626" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.9</span>, <span class="at">trim =</span> <span class="cn">FALSE</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>,</span>
+<span id="cb20-627"><a href="#cb20-627" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NA</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="fl">0.6</span>)</span>
+<span id="cb20-628"><a href="#cb20-628" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-629"><a href="#cb20-629" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_pointinterval</span>(</span>
+<span id="cb20-630"><a href="#cb20-630" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> condition),</span>
+<span id="cb20-631"><a href="#cb20-631" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.6</span>),</span>
+<span id="cb20-632"><a href="#cb20-632" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fl">0.95</span>, <span class="at">size =</span> <span class="fl">0.8</span></span>
+<span id="cb20-633"><a href="#cb20-633" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-634"><a href="#cb20-634" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb20-635"><a href="#cb20-635" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Scale"</span>, </span>
+<span id="cb20-636"><a href="#cb20-636" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sex"</span>, </span>
+<span id="cb20-637"><a href="#cb20-637" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"log(theta)"</span></span>
+<span id="cb20-638"><a href="#cb20-638" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-639"><a href="#cb20-639" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">2.0</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">2.0</span>, <span class="at">by =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb20-640"><a href="#cb20-640" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb20-641"><a href="#cb20-641" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"right"</span>)</span>
 <span id="cb20-642"><a href="#cb20-642" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-643"><a href="#cb20-643" aria-hidden="true" tabindex="-1"></a><span class="co"># combine ----</span></span>
-<span id="cb20-644"><a href="#cb20-644" aria-hidden="true" tabindex="-1"></a>(p_glmmTMB_nb <span class="sc">/</span> p_brms_nb) <span class="sc">+</span> <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="st">"top: glmmTMB / bottom: brms"</span>)</span>
-<span id="cb20-645"><a href="#cb20-645" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-646"><a href="#cb20-646" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Location part**: Points and error bars indicate the estimated log(mean frequency) for each combination of feeding condition and sex. For <span class="in">`glmmTMB`</span>, values are estimated marginal means (on the log scale) with 95% confidence intervals. For <span class="in">`brms`</span>, values are posterior medians with 95% credible intervals. In addition, the <span class="in">`brms`</span> panels include violin plots, which visualise the full posterior distributions of the estimates. Faint dots represent model-based predictions of log(mean frequency) for individual observations (i.e. fitted values including random effects), shown to illustrate how the model maps observed data points onto the underlying mean structure.</span>
-<span id="cb20-647"><a href="#cb20-647" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-648"><a href="#cb20-648" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Scale part**: Points and error bars show the estimated log(theta), the dispersion (shape) parameter of the negative binomial distribution, for each condition–sex cell. Because theta is a distributional parameter rather than an observed variable, there are no fitted or raw data points that can be plotted at the observation level. In the <span class="in">`brms`</span> panels, violin plots again illustrate the posterior distributions for log(theta), while points and intervals indicate the posterior median and 95% credible interval.</span>
+<span id="cb20-643"><a href="#cb20-643" aria-hidden="true" tabindex="-1"></a>p_brms_nb <span class="ot">&lt;-</span> p_loc <span class="sc">+</span> p_scl</span>
+<span id="cb20-644"><a href="#cb20-644" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-645"><a href="#cb20-645" aria-hidden="true" tabindex="-1"></a><span class="co"># combine ----</span></span>
+<span id="cb20-646"><a href="#cb20-646" aria-hidden="true" tabindex="-1"></a>(p_glmmTMB_nb <span class="sc">/</span> p_brms_nb) <span class="sc">+</span> <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="st">"top: glmmTMB / bottom: brms"</span>)</span>
+<span id="cb20-647"><a href="#cb20-647" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-648"><a href="#cb20-648" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Location part**: Points and error bars indicate the estimated log(mean frequency) for each combination of feeding condition and sex. For <span class="in">`glmmTMB`</span>, values are estimated marginal means (on the log scale) with 95% confidence intervals. For <span class="in">`brms`</span>, values are posterior medians with 95% credible intervals. In addition, the <span class="in">`brms`</span> panels include violin plots, which visualise the full posterior distributions of the estimates. Faint dots represent model-based predictions of log(mean frequency) for individual observations (i.e. fitted values including random effects), shown to illustrate how the model maps observed data points onto the underlying mean structure.</span>
 <span id="cb20-649"><a href="#cb20-649" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-650"><a href="#cb20-650" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb20-650"><a href="#cb20-650" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Scale part**: Points and error bars show the estimated log(theta), the dispersion (shape) parameter of the negative binomial distribution, for each condition–sex cell. Because theta is a distributional parameter rather than an observed variable, there are no fitted or raw data points that can be plotted at the observation level. In the <span class="in">`brms`</span> panels, violin plots again illustrate the posterior distributions for log(theta), while points and intervals indicate the posterior median and 95% credible interval.</span>
 <span id="cb20-651"><a href="#cb20-651" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-652"><a href="#cb20-652" aria-hidden="true" tabindex="-1"></a><span class="fu">### Comparison of location-only model and location-scale model</span></span>
+<span id="cb20-652"><a href="#cb20-652" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb20-653"><a href="#cb20-653" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-654"><a href="#cb20-654" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Modeling dispersion improves model fit and better captures the structure of the data.</span>
+<span id="cb20-654"><a href="#cb20-654" aria-hidden="true" tabindex="-1"></a><span class="fu">### Comparison of location-only model and location-scale model</span></span>
 <span id="cb20-655"><a href="#cb20-655" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-656"><a href="#cb20-656" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Location-scale model had a lower AICc (2172.8) than location-only model (2176.8), indicating better model fit. It also had a higher model weight (0.877 vs. 0.123), suggesting stronger support for the location-scale model.</span>
+<span id="cb20-656"><a href="#cb20-656" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Modeling dispersion improves model fit and better captures the structure of the data.</span>
 <span id="cb20-657"><a href="#cb20-657" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-658"><a href="#cb20-658" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretation of location-scale model :</span></span>
+<span id="cb20-658"><a href="#cb20-658" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Location-scale model had a lower AICc (2172.8) than location-only model (2176.8), indicating better model fit. It also had a higher model weight (0.877 vs. 0.123), suggesting stronger support for the location-scale model.</span>
 <span id="cb20-659"><a href="#cb20-659" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-660"><a href="#cb20-660" aria-hidden="true" tabindex="-1"></a><span class="fu">#### How to back-transflrm the log-link scale to natural scale?</span></span>
-<span id="cb20-661"><a href="#cb20-661" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The location part uses a log link, so estimates are on the log(mean frequency) scale. To obtain the expected mean frequency on the natural scale, simply exponentiate the estimate.</span>
-<span id="cb20-662"><a href="#cb20-662" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-663"><a href="#cb20-663" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The dispersion part also uses a log link, so estimates are on the log(theta) scale. To get theta on the natural scale, exponentiate the estimate.</span>
+<span id="cb20-660"><a href="#cb20-660" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretation of location-scale model :</span></span>
+<span id="cb20-661"><a href="#cb20-661" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-662"><a href="#cb20-662" aria-hidden="true" tabindex="-1"></a><span class="fu">#### How to back-transflrm the log-link scale to natural scale?</span></span>
+<span id="cb20-663"><a href="#cb20-663" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The location part uses a log link, so estimates are on the log(mean frequency) scale. To obtain the expected mean frequency on the natural scale, simply exponentiate the estimate.</span>
 <span id="cb20-664"><a href="#cb20-664" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-665"><a href="#cb20-665" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Biological meanings:</span></span>
-<span id="cb20-666"><a href="#cb20-666" aria-hidden="true" tabindex="-1"></a>**Location (mean) part:**</span>
-<span id="cb20-667"><a href="#cb20-667" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-668"><a href="#cb20-668" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Birds gazed significantly less at dots when food was supplied ($\beta^{(l)}_{\text{deprived–supplied}} = -0.85$, 95% CI -1.08, -0.61), corresponding to a rate ratio of $\exp(\beta^{(l)}) = 0.43$ (i.e., mean frequency reduced by 57.3%; CI −66.0% to −45.7%).</span>
-<span id="cb20-669"><a href="#cb20-669" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>There is no significant sex difference in mean gaze frequency ($\beta_{<span class="co">[</span><span class="ot">\text{sex-male}</span><span class="co">]</span>}^{(l)}$ = -0.104, 95% CI <span class="sc">\[</span>-0.37, 0.16<span class="sc">\]</span>\$).</span>
-<span id="cb20-670"><a href="#cb20-670" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-671"><a href="#cb20-671" aria-hidden="true" tabindex="-1"></a>**Scale (dispersion) part:**</span>
+<span id="cb20-665"><a href="#cb20-665" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The dispersion part also uses a log link, so estimates are on the log(theta) scale. To get theta on the natural scale, exponentiate the estimate.</span>
+<span id="cb20-666"><a href="#cb20-666" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-667"><a href="#cb20-667" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Biological meanings:</span></span>
+<span id="cb20-668"><a href="#cb20-668" aria-hidden="true" tabindex="-1"></a>**Location (mean) part:**</span>
+<span id="cb20-669"><a href="#cb20-669" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-670"><a href="#cb20-670" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Birds gazed significantly less at dots when food was supplied ($\beta^{(l)}_{\text{deprived–supplied}} = -0.85$, 95% CI -1.08, -0.61), corresponding to a rate ratio of $\exp(\beta^{(l)}) = 0.43$ (i.e., mean frequency reduced by 57.3%; CI −66.0% to −45.7%).</span>
+<span id="cb20-671"><a href="#cb20-671" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>There is no significant sex difference in mean gaze frequency ($\beta_{<span class="co">[</span><span class="ot">\text{sex-male}</span><span class="co">]</span>}^{(l)}$ = -0.104, 95% CI <span class="sc">\[</span>-0.37, 0.16<span class="sc">\]</span>\$).</span>
 <span id="cb20-672"><a href="#cb20-672" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-673"><a href="#cb20-673" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The supplied condition significantly reduced the precision parameter ($\beta^{(s)}_{\text{deprived–supplied}}=-0.66$, 95% CI -1.15, -0.18), giving a $\theta$-ratio of $\exp(\beta^{(s)})=0.52$ (i.e., 48.3% lower precision; CI −68.3% to −16.5%). Because lower $\theta$ implies more scatter than the Poisson expectation, this means individual gaze behaviour was more variable when food was supplied.</span>
+<span id="cb20-673"><a href="#cb20-673" aria-hidden="true" tabindex="-1"></a>**Scale (dispersion) part:**</span>
 <span id="cb20-674"><a href="#cb20-674" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-675"><a href="#cb20-675" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>There was no significant sex difference in the variability of gaze frequency ($\beta^{(s)}_{\text{sex-male}}=0.13$, 95% CI -0.36, 0.62).</span>
+<span id="cb20-675"><a href="#cb20-675" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The supplied condition significantly reduced the precision parameter ($\beta^{(s)}_{\text{deprived–supplied}}=-0.66$, 95% CI -1.15, -0.18), giving a $\theta$-ratio of $\exp(\beta^{(s)})=0.52$ (i.e., 48.3% lower precision; CI −68.3% to −16.5%). Because lower $\theta$ implies more scatter than the Poisson expectation, this means individual gaze behaviour was more variable when food was supplied.</span>
 <span id="cb20-676"><a href="#cb20-676" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-677"><a href="#cb20-677" aria-hidden="true" tabindex="-1"></a>**Location (mean) random effects:**</span>
+<span id="cb20-677"><a href="#cb20-677" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>There was no significant sex difference in the variability of gaze frequency ($\beta^{(s)}_{\text{sex-male}}=0.13$, 95% CI -0.36, 0.62).</span>
 <span id="cb20-678"><a href="#cb20-678" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-679"><a href="#cb20-679" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Species-level variation ($sd^{(l)}_{\text{species}}=0.55$, 95% CI 0.31, 0.99) exceeded within-species individual variation.</span>
+<span id="cb20-679"><a href="#cb20-679" aria-hidden="true" tabindex="-1"></a>**Location (mean) random effects:**</span>
 <span id="cb20-680"><a href="#cb20-680" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-681"><a href="#cb20-681" aria-hidden="true" tabindex="-1"></a>**Location (dispersion) random effects:**</span>
+<span id="cb20-681"><a href="#cb20-681" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Species-level variation ($sd^{(l)}_{\text{species}}=0.55$, 95% CI 0.31, 0.99) exceeded within-species individual variation.</span>
 <span id="cb20-682"><a href="#cb20-682" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-683"><a href="#cb20-683" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Individual-level variation ($sd^{(l)}_{\text{id}}=0.34$, 95% CI 0.17, 0.68) was present but smaller than species-level differences.</span>
+<span id="cb20-683"><a href="#cb20-683" aria-hidden="true" tabindex="-1"></a>**Location (dispersion) random effects:**</span>
 <span id="cb20-684"><a href="#cb20-684" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-685"><a href="#cb20-685" aria-hidden="true" tabindex="-1"></a><span class="fu">## Conclusion</span></span>
+<span id="cb20-685"><a href="#cb20-685" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Individual-level variation ($sd^{(l)}_{\text{id}}=0.34$, 95% CI 0.17, 0.68) was present but smaller than species-level differences.</span>
 <span id="cb20-686"><a href="#cb20-686" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-687"><a href="#cb20-687" aria-hidden="true" tabindex="-1"></a>**Q1: Do birds gaze at dot patterns more (or less) when food-deprived compared to food-supplied?**</span>
+<span id="cb20-687"><a href="#cb20-687" aria-hidden="true" tabindex="-1"></a><span class="fu">## Conclusion</span></span>
 <span id="cb20-688"><a href="#cb20-688" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-689"><a href="#cb20-689" aria-hidden="true" tabindex="-1"></a>Answer: Yes. The average gaze frequency is lower when food is supplied.</span>
+<span id="cb20-689"><a href="#cb20-689" aria-hidden="true" tabindex="-1"></a>**Q1: Do birds gaze at dot patterns more (or less) when food-deprived compared to food-supplied?**</span>
 <span id="cb20-690"><a href="#cb20-690" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-691"><a href="#cb20-691" aria-hidden="true" tabindex="-1"></a>**Q2: Does the variability in gaze responses differ between conditions?**</span>
+<span id="cb20-691"><a href="#cb20-691" aria-hidden="true" tabindex="-1"></a>Answer: Yes. The average gaze frequency is lower when food is supplied.</span>
 <span id="cb20-692"><a href="#cb20-692" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-693"><a href="#cb20-693" aria-hidden="true" tabindex="-1"></a>Answer: Yes. Birds showed more consistent gaze responses when food was deprived, and more varied responses when food was available.</span>
+<span id="cb20-693"><a href="#cb20-693" aria-hidden="true" tabindex="-1"></a>**Q2: Does the variability in gaze responses differ between conditions?**</span>
+<span id="cb20-694"><a href="#cb20-694" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-695"><a href="#cb20-695" aria-hidden="true" tabindex="-1"></a>Answer: Yes. Birds showed more consistent gaze responses when food was deprived, and more varied responses when food was available.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
