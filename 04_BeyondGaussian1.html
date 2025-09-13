@@ -2211,7 +2211,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 <p>Posterior predictive checks indicated that the negative binomial location–scale model adequately captured the central tendency of gaze frequencies. However, the model slightly underestimated the heaviness of the right tail, suggesting that a small number of extreme observations were not fully reproduced.</p>
-<p>Note that we can also conduct the CMP model in <code>brms</code> using the <code>family = brmsfamily("com_poisson")</code> family, but it is still at an experimental stage and may not work well.</p>
+<p>Note that we can also conduct the CMP model in <code>brms</code> using the <code>family = brmsfamily("com_poisson")</code> family, but it is still at an experimental stage and may not work well, so we recommend the <code>glmmTMB</code> package for CMP models for now…</p>
 </div>
 <div id="tabset-2-8" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-8-tab">
 <div class="cell">
@@ -3167,7 +3167,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <span id="cb20-456"><a href="#cb20-456" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-457"><a href="#cb20-457" aria-hidden="true" tabindex="-1"></a>Posterior predictive checks indicated that the negative binomial location–scale model adequately captured the central tendency of gaze frequencies. However, the model slightly underestimated the heaviness of the right tail, suggesting that a small number of extreme observations were not fully reproduced.</span>
 <span id="cb20-458"><a href="#cb20-458" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-459"><a href="#cb20-459" aria-hidden="true" tabindex="-1"></a>Note that we can also conduct the CMP model in <span class="in">`brms`</span> using the <span class="in">`family = brmsfamily("com_poisson")`</span> family, but it is still at an experimental stage and may not work well.</span>
+<span id="cb20-459"><a href="#cb20-459" aria-hidden="true" tabindex="-1"></a>Note that we can also conduct the CMP model in <span class="in">`brms`</span> using the <span class="in">`family = brmsfamily("com_poisson")`</span> family, but it is still at an experimental stage and may not work well, so we recommend the <span class="in">`glmmTMB`</span> package for CMP models for now...</span>
 <span id="cb20-460"><a href="#cb20-460" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-461"><a href="#cb20-461" aria-hidden="true" tabindex="-1"></a><span class="fu">## Result figures</span></span>
 <span id="cb20-462"><a href="#cb20-462" aria-hidden="true" tabindex="-1"></a></span>

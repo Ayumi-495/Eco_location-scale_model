@@ -428,7 +428,7 @@ pp_check(model_nb_brms)
 
 Posterior predictive checks indicated that the negative binomial location–scale model adequately captured the central tendency of gaze frequencies. However, the model slightly underestimated the heaviness of the right tail, suggesting that a small number of extreme observations were not fully reproduced.
 
-Note that we can also conduct the CMP model in `brms` using the `family = brmsfamily("com_poisson")` family, but it is still at an experimental stage and may not work well.
+Note that we can also conduct the CMP model in `brms` using the `family = brmsfamily("com_poisson")` family, but it is still at an experimental stage and may not work well, so we recommend the `glmmTMB` package for CMP models for now...
 
 ## Result figures
 
