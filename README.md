@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/1019745124.svg)](https://doi.org/10.5281/zenodo.17449762)
+
 This repository was created for the paper:
 
 "**Location-scale models in ecology: heteroscedasticity in continuous, count and proportion data**"
@@ -16,3 +18,6 @@ Google Drive link: https://drive.google.com/drive/folders/1CvshmYMowXSB9MdbCprP1
 Please save the RDS files in a folder named `Rdata` inside the same directory that contains `online_tutorial.qmd` and the `data` folder.
 If everything is placed correctly, the `.qmd` file should run without any issues :)
 
+In addition, the folder repro_package contains all data and scripts used in this tutorial, compiled into single files for convenience:
+  - An `.RData` file that includes all datasets used in the analyses
+  - A single `.R` script that consolidates all code used throughout the tutorial
