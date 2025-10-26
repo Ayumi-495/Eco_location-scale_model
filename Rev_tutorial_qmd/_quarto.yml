@@ -6,6 +6,14 @@ book:
   title: "Location–scale models in ecology and evolution: handling heterogeneity in continuous, count and proportion data"
   subtitle: "step by step online tutorial"
  
+  author: 
+    - name: "Shinichi Nakagawa"
+    - name: "Santiago Ortega"
+    - name: "Elena Gazzea"  
+    - name: "Malgorzata Lagisz"
+    - name: "Erick Lundgren"
+    - name: "Anna Lenz"
+    - name: "Ayumi Mizuno"
 
   date: last-modified
   date-format: "MMMM D, YYYY"

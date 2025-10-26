@@ -216,6 +216,14 @@ model_eg2.1 <- brm(
 )
 ```
 
+```{r}
+#| echo: false
+model_eg2.0 <- readRDS(here("Rdata", "model_eg2.0.rds"))
+summary(model_eg2.0)
+model_eg2.1 <- readRDS(here("Rdata", "model_eg2.1.rds"))
+summary(model_eg2.1)
+```
+
 ### Step 4
 
 #### Gradually increase model complexity
@@ -299,6 +307,14 @@ model_eg2.3 <- brm(
 
 summary(model_eg2.3)
 
+```
+
+```{r}
+#| echo: false
+model_eg2.2 <- readRDS(here("Rdata", "model_eg2.2.rds"))
+summary(model_eg2.2)
+model_eg2.3 <- readRDS(here("Rdata", "model_eg2.3.rds"))
+summary(model_eg2.3)
 ```
 
 ### Step 5

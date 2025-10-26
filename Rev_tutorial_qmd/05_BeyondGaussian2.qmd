@@ -65,7 +65,6 @@ dat <- dat %>%
 
 str(dat)
 
-
 ggplot(dat, aes(x = if_kill, y = cover, fill = if_kill)) +
   geom_violin(
     aes(fill = if_kill), # Fill violins based on 'if_kill'
@@ -318,10 +317,6 @@ burro_draws<-fit1 %>%
   epred_draws(newdata = expand.grid(if_kill=unique(dat$if_kill)
                                     ),re_formula = NA, dpar=TRUE) 
 
-
-
-
-
 # Plot for location
 plot_mu <- ggplot(burro_draws, aes(x = factor(if_kill), y = mu, fill = factor(if_kill))) +
   geom_violin(alpha = 0.5, show.legend = FALSE) +
@@ -377,15 +372,7 @@ combined_plot <- (plot_mu + plot_zoi) / (plot_coi + plot_phi) &
 
 # Display the final combined plot
 combined_plot
-
-
-
-
 ```
-
-
-
-
 
 ::::::
 

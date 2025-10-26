@@ -118,9 +118,6 @@ Having established our initial modeling framework, we now move to a critical pha
 model2_1<-glmmTMB(lnSMI ~ 1 + RANK + (1|NEST)+(1|WORKYEAR),
               family = gaussian(),data=dat)
 
-
-
-# | label: model_diagnostics - model0
 simulationOutput <- simulateResiduals(fittedModel = model2_1, plot = F)
 plot(simulationOutput)
 

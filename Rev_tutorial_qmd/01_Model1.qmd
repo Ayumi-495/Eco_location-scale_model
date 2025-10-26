@@ -63,7 +63,6 @@ It should be noted that we applied a log-transformation to `AdTarsus` to reduce 
 
 dat_tarsus <- read.csv(here("data", "SparrowTarsusData.csv"), header = TRUE)
 
-#'*Added*
 ggplot(dat_tarsus, aes(x = Treatment, y = log(AdTarsus), fill = Sex)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.5, position = position_dodge(width = 0.8)) +
   geom_jitter(
